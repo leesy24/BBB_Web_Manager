@@ -1,0 +1,467 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[v, device_name] Web Manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+<script Language="JavaScript">
+<!--
+function submit()
+{
+    if( Validator(document.f1) )
+    {
+    	document.f1.submit();
+    }
+}
+-->
+</script>
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<!--  <tr valign="top"> 
+    <td height="16" colspan="4" bgcolor="#000000">&nbsp;</td>
+  </tr> -->
+  <tr valign="top"> 
+	  <td width="158" height="121" bgcolor="#000000" valign="top">
+			<img src="/images/LOGO.jpg" width="158" height="72"> 
+	<table height=26 cellSpacing=0 cellPadding=0 border=0>
+		<TR> 
+		<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+		<!-- background=images/left_top.gif -->
+		<font color="white">Setup Menu</font>
+		</TD>
+	    </TR>
+		</table>
+	  <table  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+          <TR vAlign=top> 
+		  <TD vAlign=top align=right class="menu">
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</A><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+[v,S4M_START]
+		  <A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+[v,S4M_END]
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>          
+		  <A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font><font color="white"><BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font><font color="white"><BR>
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0></font></font></font></font></font></font></font></font></font></font> 
+		  </TD>
+          </TR>
+          
+          
+            <tr valign="top"> 
+		  <td height="500" align="right" bgcolor="393C39"><font color="white"><br />Copyright 2014&nbsp;&nbsp;<br>DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>All rights reserved.&nbsp;&nbsp;</font></td> 
+  </tr>
+          
+          
+      </table></td>
+      
+	<td valign="top" height="68">
+	<td colspan="3" rowspan="2" valign="top" height="68">
+	  <table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td height="72" bgcolor="6B0808">
+			<div align="right">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+					<td width="530" rowspan=3 class="pagetitle"><font color="white">[Peripheral Settings]</td>
+                    <td width="252"><div align="center"><font color="#FFFFFF">
+						Device Name: [v, device_name]</font></div></td>
+                </tr>
+				<tr>
+						<td><div align="center"><font color="#FFFFFF">
+						Logged in as [v, username]</font></div></td>
+                </tr>
+                <tr> 
+                  <td><div align="center"><font color="#FFFFFF">
+				  <a href="/cgi-bin/setagent.cgi?type=o"><font color="red">Logout</a></font></div></td>
+                </tr>
+              </table>
+            </div>
+	      </td>
+        </tr>
+      </table>
+
+
+<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=3" onSubmit="return Validator(this)">
+      <table width="805" border="0" cellspacing="0" cellpadding="20">
+        <tr>
+          <td>
+
+<table width="775" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+<tr bgcolor="#393C39"><font color=white>
+
+<td width="80" bgcolor="#393C39"><font color="white">Device</font></td>
+<td width="69" bgcolor="#393C39"><font color="white">Select</font></td>
+<td width="65" bgcolor="#393C39"><font color="white">Port No.</font></td>
+<td width="110" bgcolor="#393C39"><font color="white">Value</font></td>
+<td width="156" bgcolor="#393C39"><font color="white">Eddy Peripheral</font></td>
+<td width="295" bgcolor="#393C39"><font color="white">User Peripheral</font></td>
+</tr>   
+
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><span style="font-size:15pt; background-color:white;">Analog<br>Digital<br>Converter</span></p></td>
+    <td width="69" bgcolor="white"><span style="font-size:15pt; background-color:white;"><select name="ADC" onchange="changeType()" >
+		<option [v, adc_0] value="0">GPIO</option>
+		<option [v, adc_1] value="1">Eddy</option>
+		<option [v, adc_2] value="2">User</option>
+		</select></span></td>
+    <td width="65" bgcolor="white"><span style="font-size:15pt; background-color:white;">C-00<br>C-01<br>C-02<br>C-03</span></td>
+    <td width="110" bgcolor="white">
+    	<span style="background-color:white;">
+    	<select name="PC00" [v, hide_adc]>
+		<option [v, PC00_0] value="0">Input (PullUp)</option>
+		<option [v, PC00_1] value="1">Input (PullDown)</option>
+		<option [v, PC00_2] value="2">Output (Low)</option>
+		<option [v, PC00_3] value="3">Output (High)</option></select>
+    	<select name="PC01" [v, hide_adc]>
+		<option [v, PC01_0] value="0">Input (PullUp)</option>
+		<option [v, PC01_1] value="1">Input (PullDown)</option>
+		<option [v, PC01_2] value="2">Output (Low)</option>
+		<option [v, PC01_3] value="3">Output (High)</option></select>
+    	<select name="PC02" [v, hide_adc]>
+		<option [v, PC02_0] value="0">Input (PullUp)</option>
+		<option [v, PC02_1] value="1">Input (PullDown)</option>
+		<option [v, PC02_2] value="2">Output (Low)</option>
+		<option [v, PC02_3] value="3">Output (High)</option></select>
+    	<select name="PC03" [v, hide_adc]>
+		<option [v, PC03_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC03_1] value="1">Input (PullDown)</option>
+		<option [v, PC03_2] value="2">Output (Low)</option>
+		<option [v, PC03_3] value="3">Output (High)</option></select>
+		</span></td>
+        <td width="156" bgcolor="white"><span style="font-size:15pt; background-color:white;">ADC Ch0<br>ADC Ch1<br>ADC Ch2<br>ADC Ch3</span></td>
+        <td width="295" bgcolor="white"><span style="font-size:15pt; background-color:white;">USARTx Serial Clock<br>Program Clock Output 0<br>Program Clock Output 1<br>SP1 Chip Select 3
+        </span></td>
+    	</tr>
+
+
+
+	<tr><td width="80" bgcolor="white"><p><span style="font-size:15pt;">User<br>Peripheral<br>Interface</span></td>
+    <td width="69" bgcolor="white"><span>
+    	<select name="PA05EN" onchange="changeType()" >
+		<option [v, PA05EN_0] value="0">User</option>
+		<option [v, PA05EN_1] value="1">GPIO</option></select>
+    	<select name="PA22EN" onchange="changeType()" >
+		<option [v, PA22EN_0] value="0">User</option>
+		<option [v, PA22EN_1] value="1">GPIO</option></select>
+    	<select name="PA30EN" onchange="changeType()" >
+		<option [v, PA30EN_0] value="0">User</option>
+		<option [v, PA30EN_1] value="1">GPIO</option></select>    	
+    	
+
+    	<select name="PB00EN" onchange="changeType()" >
+		<option [v, PB00EN_0] value="0">User</option>
+		<option [v, PB00EN_1] value="1">GPIO</option></select>
+    	<select name="PB01EN" onchange="changeType()" >
+		<option [v, PB01EN_0] value="0">User</option>
+		<option [v, PB01EN_1] value="1">GPIO</option></select>
+    	<select name="PB02EN" onchange="changeType()" >
+		<option [v, PB02EN_0] value="0">User</option>
+		<option [v, PB02EN_1] value="1">GPIO</option></select>						
+    	<select name="PB03EN" onchange="changeType()" >
+		<option [v, PB03EN_0] value="0">User</option>
+		<option [v, PB03EN_1] value="1">GPIO</option></select>			
+						
+    	<select name="PB12EN" onchange="changeType()" >
+		<option [v, PB12EN_0] value="0">User</option>
+		<option [v, PB12EN_1] value="1">GPIO</option></select>
+    	<select name="PB13EN" onchange="changeType()" >
+		<option [v, PB13EN_0] value="0">User</option>
+		<option [v, PB13EN_1] value="1">GPIO</option></select>
+    	<select name="PB16EN" onchange="changeType()" >
+		<option [v, PB16EN_0] value="0">User</option>
+		<option [v, PB16EN_1] value="1">GPIO</option></select>
+    	<select name="PB17EN" onchange="changeType()" >
+		<option [v, PB17EN_0] value="0">User</option>
+		<option [v, PB17EN_1] value="1">GPIO</option></select>
+    	<select name="PB18EN" onchange="changeType()" >
+		<option [v, PB18EN_0] value="0">User</option>
+		<option [v, PB18EN_1] value="1">GPIO</option></select>
+    	<select name="PB19EN" onchange="changeType()" >
+		<option [v, PB19EN_0] value="0">User</option>
+		<option [v, PB19EN_1] value="1">GPIO</option></select>
+    	<select name="PB20EN" onchange="changeType()" >
+		<option [v, PB20EN_0] value="0">User</option>
+		<option [v, PB20EN_1] value="1">GPIO</option></select>
+    	<select name="PB21EN" onchange="changeType()" >
+		<option [v, PB21EN_0] value="0">User</option>
+		<option [v, PB21EN_1] value="1">GPIO</option></select>
+    	<select name="PB30EN" onchange="changeType()" >
+		<option [v, PB30EN_0] value="0">User</option>
+		<option [v, PB30EN_1] value="1">GPIO</option></select>
+    	<select name="PB31EN" onchange="changeType()" >
+		<option [v, PB31EN_0] value="0">User</option>
+		<option [v, PB31EN_1] value="1">GPIO</option></select>
+
+    	<select name="PC05EN" onchange="changeType()" >
+		<option [v, PC05EN_0] value="0">User</option>
+		<option [v, PC05EN_1] value="1">GPIO</option></select>
+    	<select name="PC09EN" onchange="changeType()" >
+		<option [v, PC09EN_0] value="0">User</option>
+		<option [v, PC09EN_1] value="1">GPIO</option></select>
+    	<select name="PC10EN" onchange="changeType()" >
+		<option [v, PC10EN_0] value="0">User</option>
+		<option [v, PC10EN_1] value="1">GPIO</option></select>
+
+    	<select name="PC12EN" onchange="changeType()" >
+		<option [v, PC12EN_0] value="0">User</option>
+		<option [v, PC12EN_1] value="1">GPIO</option></select>
+    	<select name="PC13EN" onchange="changeType()" >
+		<option [v, PC13EN_0] value="0">User</option>
+		<option [v, PC13EN_1] value="1">GPIO</option></select>
+    	<select name="PC14EN" onchange="changeType()" >
+		<option [v, PC14EN_0] value="0">User</option>
+		<option [v, PC14EN_1] value="1">GPIO</option></select>
+    	<select name="PC15EN" onchange="changeType()" >
+		<option [v, PC15EN_0] value="0">User</option>
+		<option [v, PC15EN_1] value="1">GPIO</option></select>
+    	<select name="PC17EN" onchange="changeType()" >
+		<option [v, PC17EN_0] value="0">User</option>
+		<option [v, PC17EN_1] value="1">GPIO</option></select>
+    	<select name="PC18EN" onchange="changeType()" >
+		<option [v, PC18EN_0] value="0">User</option>
+		<option [v, PC18EN_1] value="1">GPIO</option></select>
+    	<select name="PC19EN" onchange="changeType()" >
+		<option [v, PC19EN_0] value="0">User</option>
+		<option [v, PC19EN_1] value="1">GPIO</option></select>
+    	<select name="PC20EN" onchange="changeType()" >
+		<option [v, PC20EN_0] value="0">User</option>
+		<option [v, PC20EN_1] value="1">GPIO</option></select>
+    	<select name="PC24EN" onchange="changeType()" >
+		<option [v, PC24EN_0] value="0">User</option>
+		<option [v, PC24EN_1] value="1">GPIO</option></select>
+    	<select name="PC25EN" onchange="changeType()" >
+		<option [v, PC25EN_0] value="0">User</option>
+		<option [v, PC25EN_1] value="1">GPIO</option></select>
+		</span></td>
+
+    <td width="65" bgcolor="white"><span style="font-size:15pt;">A-05<br>A-22<br>A-30<br>B-00<br>B-01<br>B-02<br>B-03<br>B-12<br>B-13<br>B-16<br>B-17<br>B-18<br>B-19<br>B-20<br>B-21<br>B-30<br>B-31<br>C-05<br>C-09<br>C-10<br>C-12<br>C-13<br>C-14<br>C-15<br>C-17<br>C-18<br>C-19<br>C-20<br>C-24<br>C-25<br></span></td>
+
+    <td width="110" bgcolor="white"><span>
+    	<select name="PA05" [v, hide_PA05EN]>
+		<option [v,PA05_0] value="0">Input (PullUp)</option>    		
+		<option [v,PA05_1] value="1">Input (PullDown)</option>
+		<option [v,PA05_2] value="2">Output (Low)</option>
+		<option [v,PA05_3] value="3">Output (High)</option></select>
+    	<select name="PA22" [v, hide_PA22EN]>
+		<option [v,PA22_0] value="0">Input (PullUp)</option>    		
+		<option [v,PA22_1] value="1">Input (PullDown)</option>
+		<option [v,PA22_2] value="2">Output (Low)</option>
+		<option [v,PA22_3] value="3">Output (High)</option></select>
+    	<select name="PA30" [v, hide_PA30EN]>
+		<option [v,PA30_0] value="0">Input (PullUp)</option>    		
+		<option [v,PA30_1] value="1">Input (PullDown)</option>
+		<option [v,PA30_2] value="2">Output (Low)</option>
+		<option [v,PA30_3] value="3">Output (High)</option></select>
+
+    	<select name="PB00" [v, hide_PB00EN]>
+		<option [v,PB00_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB00_1] value="1">Input (PullDown)</option>
+		<option [v,PB00_2] value="2">Output (Low)</option>
+		<option [v,PB00_3] value="3">Output (High)</option></select>
+    	<select name="PB01" [v, hide_PB01EN]>
+		<option [v,PB01_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB01_1] value="1">Input (PullDown)</option>
+		<option [v,PB01_2] value="2">Output (Low)</option>
+		<option [v,PB01_3] value="3">Output (High)</option></select>
+    	<select name="PB02" [v, hide_PB02EN]>
+		<option [v,PB02_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB02_1] value="1">Input (PullDown)</option>
+		<option [v,PB02_2] value="2">Output (Low)</option>
+		<option [v,PB02_3] value="3">Output (High)</option></select>
+    	<select name="PB03" [v, hide_PB03EN]>
+		<option [v,PB03_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB03_1] value="1">Input (PullDown)</option>
+		<option [v,PB03_2] value="2">Output (Low)</option>
+		<option [v,PB03_3] value="3">Output (High)</option></select>
+    	<select name="PB12" [v, hide_PB12EN]>
+		<option [v,PB12_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB12_1] value="1">Input (PullDown)</option>
+		<option [v,PB12_2] value="2">Output (Low)</option>
+		<option [v,PB12_3] value="3">Output (High)</option></select>
+    	<select name="PB13" [v, hide_PB13EN]>
+		<option [v,PB13_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB13_1] value="1">Input (PullDown)</option>
+		<option [v,PB13_2] value="2">Output (Low)</option>
+		<option [v,PB13_3] value="3">Output (High)</option></select>
+    	<select name="PB16" [v, hide_PB16EN]>
+		<option [v,PB16_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB16_1] value="1">Input (PullDown)</option>
+		<option [v,PB16_2] value="2">Output (Low)</option>
+		<option [v,PB16_3] value="3">Output (High)</option></select>
+    	<select name="PB17" [v, hide_PB17EN]>
+		<option [v,PB17_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB17_1] value="1">Input (PullDown)</option>
+		<option [v,PB17_2] value="2">Output (Low)</option>
+		<option [v,PB17_3] value="3">Output (High)</option></select>
+    	<select name="PB18" [v, hide_PB18EN]>
+		<option [v,PB18_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB18_1] value="1">Input (PullDown)</option>
+		<option [v,PB18_2] value="2">Output (Low)</option>
+		<option [v,PB18_3] value="3">Output (High)</option></select>
+    	<select name="PB19" [v, hide_PB19EN]>
+		<option [v,PB19_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB19_1] value="1">Input (PullDown)</option>
+		<option [v,PB19_2] value="2">Output (Low)</option>
+		<option [v,PB19_3] value="3">Output (High)</option></select>
+    	<select name="PB20" [v, hide_PB20EN]>
+		<option [v,PB20_0] value="0">Input (PullUp)</option>
+		<option [v,PB20_1] value="1">Input (PullDown)</option>
+		<option [v,PB20_2] value="2">Output (Low)</option>
+		<option [v,PB20_3] value="3">Output (High)</option></select>
+    	<select name="PB21" [v, hide_PB21EN]>
+		<option [v,PB21_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB21_1] value="1">Input (PullDown)</option>
+		<option [v,PB21_2] value="2">Output (Low)</option>
+		<option [v,PB21_3] value="3">Output (High)</option></select>
+    	<select name="PB30" [v, hide_PB30EN]>
+		<option [v,PB30_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB30_1] value="1">Input (PullDown)</option>
+		<option [v,PB30_2] value="2">Output (Low)</option>
+		<option [v,PB30_3] value="3">Output (High)</option></select>
+    	<select name="PB31" [v, hide_PB31EN]>
+		<option [v,PB31_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB31_1] value="1">Input (PullDown)</option>
+		<option [v,PB31_2] value="2">Output (Low)</option>
+		<option [v,PB31_3] value="3">Output (High)</option></select>
+			
+    	<select name="PC05" [v, hide_PC05EN]>
+		<option [v, PC05_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC05_1] value="1">Input (PullDown)</option>
+		<option [v, PC05_2] value="2">Output (Low)</option>
+		<option [v, PC05_3] value="3">Output (High)</option></select>
+    	<select name="PC09" [v, hide_PC09EN]>
+		<option [v,PC09_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC09_1] value="1">Input (PullDown)</option>
+		<option [v,PC09_2] value="2">Output (Low)</option>
+		<option [v,PC09_3] value="3">Output (High)</option></select>
+    	<select name="PC10" [v, hide_PC10EN]>
+		<option [v,PC10_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC10_1] value="1">Input (PullDown)</option>
+		<option [v,PC10_2] value="2">Output (Low)</option>
+		<option [v,PC10_3] value="3">Output (High)</option></select>
+    	<select name="PC12" [v, hide_PC12EN]>
+		<option [v,PC12_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC12_1] value="1">Input (PullDown)</option>
+		<option [v,PC12_2] value="2">Output (Low)</option>
+		<option [v,PC12_3] value="3">Output (High)</option></select>
+    	<select name="PC13" [v, hide_PC13EN]>
+		<option [v,PC13_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC13_1] value="1">Input (PullDown)</option>
+		<option [v,PC13_2] value="2">Output (Low)</option>
+		<option [v,PC13_3] value="3">Output (High)</option></select>
+    	<select name="PC14" [v, hide_PC14EN]>
+		<option [v,PC14_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC14_1] value="1">Input (PullDown)</option>
+		<option [v,PC14_2] value="2">Output (Low)</option>
+		<option [v,PC14_3] value="3">Output (High)</option></select>
+    	<select name="PC15" [v, hide_PC15EN]>
+		<option [v,PC15_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC15_1] value="1">Input (PullDown)</option>
+		<option [v,PC15_2] value="2">Output (Low)</option>
+		<option [v,PC15_3] value="3">Output (High)</option></select>
+    	<select name="PC17" [v, hide_PC17EN]>
+		<option [v,PC17_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC17_1] value="1">Input (PullDown)</option>
+		<option [v,PC17_2] value="2">Output (Low)</option>
+		<option [v,PC17_3] value="3">Output (High)</option></select>
+    	<select name="PC18" [v, hide_PC18EN]>
+		<option [v, PC18_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC18_1] value="1">Input (PullDown)</option>
+		<option [v, PC18_2] value="2">Output (Low)</option>
+		<option [v, PC18_3] value="3">Output (High)</option></select>
+    	<select name="PC19" [v, hide_PC19EN]>
+		<option [v, PC19_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC19_1] value="1">Input (PullDown)</option>
+		<option [v, PC19_2] value="2">Output (Low)</option>
+		<option [v, PC19_3] value="3">Output (High)</option></select>
+    	<select name="PC20" [v, hide_PC20EN]>
+		<option [v, PC20_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC20_1] value="1">Input (PullDown)</option>
+		<option [v, PC20_2] value="2">Output (Low)</option>
+		<option [v, PC20_3] value="3">Output (High)</option></select>
+    	<select name="PC24" [v, hide_PC24EN]>
+		<option [v, PC24_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC24_1] value="1">Input (PullDown)</option>
+		<option [v, PC24_2] value="2">Output (Low)</option>
+		<option [v, PC24_3] value="3">Output (High)</option></select>
+    	<select name="PC25" [v, hide_PC25EN]>
+		<option [v, PC25_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC25_1] value="1">Input (PullDown)</option>
+		<option [v, PC25_2] value="2">Output (Low)</option>
+		<option [v, PC25_3] value="3">Output (High)</option></select>
+		</span></td>
+
+    <td width="455" colspan="2" bgcolor="white"><span style="font-size:15pt;">  
+GPIO <br>
+GPIO <br>
+GPIO <br>
+SPI Master in Slave Out<br>
+SPI Master in Slave In<br>
+SPI Serial Clock<br>
+SPI Chip Select 0<br>
+GPIO<br>
+GPIO<br>
+SSC Transmit Clock<br>
+SSC Transmit Frame Sync<br>
+SSC Transmit Data<br>
+SSC Receive Data<br>
+SSC Receive Clock<br>
+SSC Receive Frame Sync<br>
+GPIO<br>
+GPIO<br>
+SPI Chip Select 1<br>
+GPIO<br>
+GPIO<br>
+GPIO<br>
+GPIO<br>
+GPIO<br>
+External Wait Signal<br>
+GPIO<br>
+SPI Chip Select 1<br>
+SPI Chip Select 2<br>
+SPI Chip Select 3<br>
+GPIO<br>
+GPIO<br>
+</span></td></tr>
+</table>
+
+	  		
+		<tr style="background-color=#FFFFFF">
+		  <td>&nbsp; <div align="left"> 
+            <input type="button" value="Submit" onClick="submit()" />
+			&nbsp;&nbsp;&nbsp;
+			<input type="reset" value="Cancel" />
+			</div></td>
+		</tr>
+
+</table>
+</form> 
+</table>
+<br>
+</body>
+</html>

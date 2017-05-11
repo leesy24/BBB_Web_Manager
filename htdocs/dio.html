@@ -1,0 +1,213 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[v, device_name] Web Manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+<script Language="JavaScript">
+<!--
+function submit()
+{
+    if( Validator(document.f1) )
+    {
+    	document.f1.submit();
+    }
+}
+-->
+</script>
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<!--  <tr valign="top"> 
+    <td height="16" colspan="4" bgcolor="#000000">&nbsp;</td>
+  </tr> -->
+  <tr valign="top"> 
+	  <td width="158" height="121" bgcolor="#000000" valign="top">
+			<img src="/images/LOGO.jpg" width="158" height="72"> 
+	<TABLE height=26 cellSpacing=0 cellPadding=0 border=0>
+		<TR> 
+		<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+		<!-- background=images/left_top.gif -->
+		<font color="white">Setup Menu</font>
+		</TD>
+	    </TR>
+		</TABLE>
+	  <TABLE  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+          <TR vAlign=top> 
+		  <TD vAlign=top align=right class="menu">
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</A><BR> 
+
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>          
+		  <A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font><font color="white"><BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font><font color="white"><BR>
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0></font></font></font></font></font></font></font></font></font></font> 
+		  </TD>
+          </TR>
+      </TABLE></td>
+      
+	<td valign="top" height="68">
+	<td colspan="3" rowspan="2" valign="top" height="68">
+	  <table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td height="72" bgcolor="6B0808">
+			<div align="right">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+					<td width="530" rowspan=3 class="pagetitle"><font color="white">[DIO Settings]</td>
+                    <td width="252"><div align="center"><font color="#FFFFFF">
+						Device Name: [v, device_name]</font></div></td>
+                </tr>
+				<tr>
+						<td><div align="center"><font color="#FFFFFF">
+						Logged in as [v, username]</font></div></td>
+                </tr>
+                <tr> 
+                  <td><div align="center"><font color="#FFFFFF">
+				  <a href="/cgi-bin/setagent.cgi?type=o"><font color="red">Logout</a></font></div></td>
+                </tr>
+              </table>
+            </div>
+	      </td>
+        </tr>
+      </table>
+
+
+<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=d" onSubmit="return Validator(this)">
+      <table width="805" border="0" cellspacing="0" cellpadding="20">
+        <tr>
+          <td>
+
+<table width="400" border="0" align="left" cellpadding="4" cellspacing="1" bgcolor="#999999">
+<tr bgcolor="#393C39"><font color=white>
+
+<td width="120"" align="center" bgcolor="#393C39"><font color="white">Device</font></td>
+<td width="90" align="center" bgcolor="#393C39"><font color="white">Select</font></td>
+<td width="150" align="left" bgcolor="#393C39"><font color="white">&nbsp;&nbsp;&nbsp;No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value</font></td>
+</tr>   
+
+	<tr>
+	<td width="120"" bgcolor="white" align="center"><p><background-color:white;">DIO or LCD</span></p></td>
+    <td width="90" bgcolor="white" align="center"><span style="background-color:white;"><select name="LCD" onchange="changeType()" >
+		<option [v, lcd_0] value="0">DIO   </option>
+		<option [v, lcd_1] value="1">LCD   </option>
+		</select></span></td>
+    <td width="150" bgcolor="white" align="center"><span style="background-color:white;">
+    	00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO00" [v, hide_lcd]>
+		<option [v,DIO00_0] value="0">Input</option>
+		<option [v,DIO00_1] value="1">Output (Low)</option>
+		<option [v,DIO00_2] value="2">Output (High)</option></select>
+    	01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO01" [v, hide_lcd]>
+		<option [v,DIO01_0] value="0">Input</option>
+		<option [v,DIO01_1] value="1">Output (Low)</option>
+		<option [v,DIO01_2] value="2">Output (High)</option></select>
+    	02&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO02" [v, hide_lcd]>
+		<option [v,DIO02_0] value="0">Input</option>
+		<option [v,DIO02_1] value="1">Output (Low)</option>
+		<option [v,DIO02_2] value="2">Output (High)</option></select>
+    	03&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO03" [v, hide_lcd]>
+		<option [v,DIO03_0] value="0">Input</option>
+		<option [v,DIO03_1] value="1">Output (Low)</option>
+		<option [v,DIO03_2] value="2">Output (High)</option></select>
+    	04&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO04" [v, hide_lcd]>
+		<option [v,DIO04_0] value="0">Input</option>
+		<option [v,DIO04_1] value="1">Output (Low)</option>
+		<option [v,DIO04_2] value="2">Output (High)</option></select>
+    	05&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO05" [v, hide_lcd]>
+		<option [v,DIO05_0] value="0">Input</option>
+		<option [v,DIO05_1] value="1">Output (Low)</option>
+		<option [v,DIO05_2] value="2">Output (High)</option></select>
+    	06&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO06" [v, hide_lcd]>
+		<option [v,DIO06_0] value="0">Input</option>
+		<option [v,DIO06_1] value="1">Output (Low)</option>
+		<option [v,DIO06_2] value="2">Output (High)</option></select>
+    	07&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO07" [v, hide_lcd]>
+		<option [v,DIO07_0] value="0">Input</option>
+		<option [v,DIO07_1] value="1">Output (Low)</option>
+		<option [v,DIO07_2] value="2">Output (High)</option></select>
+    	08&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO08" [v, hide_lcd]>
+		<option [v,DIO08_0] value="0">Input</option>
+		<option [v,DIO08_1] value="1">Output (Low)</option>
+		<option [v,DIO08_2] value="2">Output (High)</option></select>
+    	09&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO09" [v, hide_lcd]>
+		<option [v,DIO09_0] value="0">Input</option>
+		<option [v,DIO09_1] value="1">Output (Low)</option>
+		<option [v,DIO09_2] value="2">Output (High)</option></select>
+    	10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO10" [v, hide_lcd]>
+		<option [v,DIO10_0] value="0">Input</option>
+		<option [v,DIO10_1] value="1">Output (Low)</option>
+		<option [v,DIO10_2] value="2">Output (High)</option></select>
+    	11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO11" [v, hide_lcd]>
+		<option [v,DIO11_0] value="0">Input</option>
+		<option [v,DIO11_1] value="1">Output (Low)</option>
+		<option [v,DIO11_2] value="2">Output (High)</option></select>
+    	12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO12" [v, hide_lcd]>
+		<option [v,DIO12_0] value="0">Input</option>
+		<option [v,DIO12_1] value="1">Output (Low)</option>
+		<option [v,DIO12_2] value="2">Output (High)</option></select>
+    	13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO13" [v, hide_lcd]>
+		<option [v,DIO13_0] value="0">Input</option>
+		<option [v,DIO13_1] value="1">Output (Low)</option>
+		<option [v,DIO13_2] value="2">Output (High)</option></select>
+    	14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO14" [v, hide_lcd]>
+		<option [v,DIO14_0] value="0">Input</option>
+		<option [v,DIO14_1] value="1">Output (Low)</option>
+		<option [v,DIO14_2] value="2">Output (High)</option></select>
+    	15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name="DIO15" [v, hide_lcd]>
+		<option [v,DIO15_0] value="0">Input</option>
+		<option [v,DIO15_1] value="1">Output (Low)</option>
+		<option [v,DIO15_2] value="2">Output (High)</option></select>
+		</span></td>
+
+    	</tr>
+
+</table>
+
+	  		
+
+		<tr>
+		  <td>&nbsp; <div align="left"> 
+            <input type="button" value="Submit" onClick="submit()" />
+			&nbsp;&nbsp;&nbsp;
+			<input type="reset" value="Cancel" />
+			</div></td>
+		</tr>
+
+</table>
+</form> 
+
+
+
+	</td>
+  </tr>
+  <tr valign="top"> 
+		  <!--	  <td height="322" valign="top" bgcolor="393C39"> <img src="images/right.jpg" width="158" height="33"></td> -->
+		  <td height="500" align="right" bgcolor="393C39"><font color="white"><br />Copyright 2014&nbsp;&nbsp;<br>DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>All rights reserved.&nbsp;&nbsp;</font></td> 
+  </tr>
+</table>
+<br>
+</body>
+</html>

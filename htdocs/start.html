@@ -1,0 +1,207 @@
+
+<html>
+	<head>
+		<title>[v,device_name] Web Manager</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<script language="JavaScript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+function setFocus()
+{
+   document.f1.username.focus();
+}
+
+function submit()
+{
+    if( Validator(document.f1) )
+	{
+    	document.f1.submit();
+    }
+}
+
+function cancel()
+{
+	document.f1.reset();
+}
+
+NS4 = (document.layers) ? true : false;
+
+function checkEnter(event)
+{ 	
+	var code = 0;
+	
+	if (NS4)
+		code = event.which;
+	else
+		code = event.keyCode;
+	if (code==13)
+    	document.f1.submit();
+}
+
+function Validator(theForm)
+{
+
+  if (theForm.username.value == "")
+  {
+    alert("Your user name contains invalid characters.");
+    theForm.username.focus();
+    return (false);
+  }
+
+
+  if (theForm.pw.value == "")
+  {
+    alert("You need to enter a password.");
+    theForm.pw.focus();
+    return (false);
+  }
+
+  var checkOK = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-";
+  var userNameStr = theForm.username.value;
+  var checkStr = theForm.pw.value;
+  var user_check_flag = false;
+  var allValid = true;
+  
+/*    if(userNameStr == "portbase") user_check_flag = true;
+//    if(userNameStr == "user") user_check_flag = true;
+
+  if(user_check_flag == false)
+    	{
+	alert("Invalid User Name or Password !");
+	theForm.username.focus();
+	return (false);
+  	}
+*/  
+  for (i = 0;  i < checkStr.length;  i++)
+  {
+    ch = checkStr.charAt(i);
+    for (j = 0;  j < checkOK.length;  j++)
+      if (ch == checkOK.charAt(j))
+        break;
+    if (j == checkOK.length)
+    {
+      allValid = false;
+      break;
+    }
+  }
+  if (!allValid)
+  {
+    alert("Please enter text and number only.");
+    theForm.pw.focus();
+    return (false);
+  }
+  return (true);
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.0
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && document.getElementById) x=document.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+		</script>
+		<style type="text/css">
+		<!--
+			table.inner	{border-color: #666666; border-style:solid; border-width:thin}
+			td			{border-style:solid; border-width:thin; border-color:white}
+			td.middle 	{color: #666666; font-size:16pt; font-family:Arial; font-weight:bold; text-align:center; }
+			td.left 	{color: #999999; margin-right:10px; font-size:10pt; font-family:Arial; font-weight:bold; text-align:right; }
+			td.right 	{color: #666666; margin-left:30px; font-size:10pt; font-family:Verdana, Arial; font-weight:bold; text-align:left; }
+			td.idpw 	{color: #666666; font-size:10pt; font-family:Arial; font-weight:bold; text-align:right; }
+		-->
+		</style>
+	</head>
+	
+	<body onLoad="setFocus();" bgcolor="white" text="black" link="blue" vlink="purple" alink="red">
+	<form method="POST" action="/cgi-bin/setagent.cgi?type=l" name="f1">
+		<table width="400" align="center" cellspacing="0" cellpadding="0">
+		<tr height="150">
+			<td class="top">&nbsp;</td>
+		</tr>
+		<tr>
+		<td>
+		
+		<table class="inner" width="390" align="center" cellspacing="0" cellpadding="0">
+		<tr>
+		<td colspan="2" align="center" valign="middle"><img src="/images/LOGO.jpg" width="158" height="72"></td>
+		</tr>
+		
+[v,WARNING_START]
+		<tr height="20">
+			<td class="middle" colspan="2"><font color="red"><P>Warning !!!<br>(Please MAC address change)</FONT></P></td>
+		</tr>
+[v,WARNING_END]
+
+		<tr height="50">
+			<td class="middle" colspan="2">Welcome to Web Manager</td>
+		</tr>
+		<tr height="20">
+        	<td class="left" ><p style="margin-right:20px">Device Name</p></td>
+            <td class="right"><p style="margin-left:20px">[v,device_name]</p></td>
+        </tr>
+
+        <tr height="20">
+        	<td class="left" ><p style="margin-right:20px">BootLoader Version</p></td>
+			<td class="right" ><p style="margin-left:20px">[v,bl_version]</p></td>
+        </tr>
+        <tr height="20">
+        	<td class="left" ><p style="margin-right:20px">Kernel Version</p></td>
+			<td class="right" ><p style="margin-left:20px">[v,kr_version]</p></td>
+        </tr>
+        <tr height="20">
+        	<td class="left" ><p style="margin-right:20px">Firmware Version</p></td>
+			<td class="right" ><p style="margin-left:20px">[v,fw_version]</p></td>
+        </tr>
+        
+<!--        <tr height="20">
+        	<td class="left" ><p style="margin-right:20px">IP Address</p></td>
+            <td class="right" ><p style="margin-left:20px">[v,front_ip]</p></td>
+	</tr> -->
+		<tr>
+			<td colspan="2" height="20">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="idpw"><p style="margin-right:20px">Username</p></td>
+			<td align="left" style="color:#ffffff"><p style="margin-left:20px">
+				<input type="text" name="username" size="12" maxlength="12" /></p>
+			</td>
+		</tr>
+		<tr>
+			<td class="idpw"><p style="margin-right:20px">Password</td>
+			<td align="left" style="color:#ffffff"><p style="margin-left:20px">
+				<input type="password" name="pw" size="12" onKeyPress="checkEnter(event)" maxlength="12" /></p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" height="10">&nbsp;</td>
+		</tr>
+		<tr>
+				<td align="right" ><input type="button" value="Login" onClick="submit()" /></td>
+				<td align="left" ><input type="reset" value="Cancel" /></td>
+		</tr>
+		<tr>
+			<td colspan="2" height="10">&nbsp;</td>
+		</tr>
+		</table>
+		
+		</td>
+		</tr>
+		</table>	
+		</form>
+	</body>
+</html>

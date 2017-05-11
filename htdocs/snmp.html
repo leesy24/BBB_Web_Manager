@@ -1,0 +1,260 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[v, device_name] Web Manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+<script Language="JavaScript" src="/utility.js">
+</script>
+<script Language="JavaScript">
+<!--
+function submit()
+{
+    if( Validator(document.f1) )
+    {
+    	document.f1.submit();
+    }
+}
+	
+function changeType()
+	{
+		document.f1.action="/cgi-bin/getagent.cgi?type=5";
+		document.f1.submit();
+	}
+	
+function Validator(theForm)
+{
+  if (!isValidIP(theForm.N_TRAPIP.value))
+  {
+    alert("IP Address is invalid!");
+    theForm.N_TRAPIP.focus();
+    return (false);
+  }
+
+  if (!isValidRange(theForm.N_TRAPPORT.value, 0, 60000))
+  {
+    alert("Socket number is invalid");
+	theForm.N_TRAPPORT.focus();
+    return (false);
+  }
+
+  if (!isValidAdminPassword(theForm.N_V3PASS.value))
+  {
+    alert("The Password is at least eight charecter!");
+    theForm.N_V3PASS.focus();
+    return (false);
+  }
+  return (true);
+}
+-->
+</script>
+
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<!--  <tr valign="top"> 
+    <td height="16" colspan="4" bgcolor="#000000">&nbsp;</td>
+  </tr> -->
+  <tr valign="top"> 
+	  <td width="158" height="121" bgcolor="#000000" valign="top">
+			<img src="/images/LOGO.jpg" width="158" height="72"> 
+	<TABLE height=26 cellSpacing=0 cellPadding=0 border=0>
+		<TR> 
+		<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+		<!-- background=images/left_top.gif -->
+		<font color="white">Setup Menu</font>
+		</TD>
+	    </TR>
+		</TABLE>
+	  <TABLE  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+          <TR vAlign=top> 
+		  <TD vAlign=top align=right class="menu">
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</A><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+[v,S4M_START]
+		  <A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+[v,S4M_END]
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>          
+		  <A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font><font color="white"><BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font><font color="white"><BR>
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0></font></font></font></font></font></font></font></font></font></font> 
+		  </TD>
+          </TR>
+      </TABLE></td>
+	<td valign="top" height="68">
+	<td colspan="3" rowspan="2" valign="top" height="68">
+	  <table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td height="72" bgcolor="6B0808">
+			<div align="right">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+						<td width="530" rowspan=3 class="pagetitle"><font color="white">[SNMP Setting]</td>
+                    <td width="252"><div align="center"><font color="#FFFFFF">
+						Device Name: [v, device_name]</font></div></td>
+                </tr>
+				<tr>
+						<td><div align="center"><font color="#FFFFFF">
+						Logged in as [v, username]</font></div></td>
+                </tr>
+                <tr> 
+                  <td><div align="center"><font color="#FFFFFF">
+				  <a href="/cgi-bin/setagent.cgi?type=o"><font color="red">Logout</a></font></div></td>
+                </tr>
+              </table>
+			</div>
+	      </td>
+        </tr>
+      </table>
+
+<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=4" onSubmit="return Validator(this)">
+      <table width="805" border="0" cellspacing="0" cellpadding="20">
+        <tr>
+          <td>
+			<table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+              <tr bgcolor="393C39"> 
+                <td height="24" colspan="2" class="title"><font color=white>SNMP Agnet Configuration</td>
+              </tr>
+
+            <tr bgcolor="#FFFFFF"> 
+			<td class="content">SNMP v1/v2/v3 Agent</td>
+			 <td class="content"><select name="N_SNMP"  onchange="changeType()">
+					  <option [v, n_snmp_di] value="0">Disable</option>
+					  <option [v, n_snmp_en] value="1">Enable</option>
+			</select>
+			&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+			<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+			Enable or disable SNMP(Simple Network Management Protocol) support.<br>
+			MIB-II (RFC 1213):	System, Interface, IP, ICMP, TCP, UDP<br>
+			MIB-I (RFC 1317):	Serial Interface<br>
+			</div></div>
+			</td></tr>
+
+            <tr bgcolor="#FFFFFF"> 
+			<td class="content">V1/2&nbsp;Attribution</td>
+			 <td class="content"><select name="N_V1_ATTRIB" [v,snmp_start]>
+					  <option [v, n_v1ro] value="0">ReadOnly</option>
+					  <option [v, n_v1rw] value="1">Read/Write</option>
+					  <option [v, n_v1rd] value="2">Disable</option>
+			</select>
+			&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+			<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+			Use SNMP V1/2 Attribution ReadOnly or Read/Write or Disable.<br>
+			SNMP V1/2 Readonly and Read/Write Community name is public<br>
+			</div></div>
+			</td></tr>
+					
+            <tr bgcolor="#FFFFFF"> 
+			<td class="content">V3&nbsp;&nbsp;&nbsp;&nbsp;Attribution</td>
+			 <td class="content"><select name="N_V3_ATTRIB" [v,snmp_start]>
+					  <option [v, n_v3ro] value="0">ReadOnly</option>
+					  <option [v, n_v3rw] value="1">Read/Write</option>
+			</select>
+			&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+			<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+			Use SNMP V3 Attribution ReadOnly or Read/Write.<br>
+			</div></div>
+			</td></tr>
+
+
+              <tr bgcolor="#FFFFFF"> 
+					  <td width="250" class="content">V3 Username / Password</td>
+				<td class="content"><input type="text" size="16" maxlength="16" name="N_V3USER" value="[v,n_v3user]" [v,snmp_start]/> 
+				&nbsp;/&nbsp; <input type="text" size="16" maxlength="16" name="N_V3PASS" value="[v,n_v3pass]" [v,snmp_start]/>
+			&nbsp;&nbsp;<a href=#option6 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+			<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		     Set the V3 username & password of the Eddy SNMP Agent.<br><font color="#FF4500">The Password is at least 8 character string!</font><br>please refer to the Eddy User Manual.<br>
+		     </div></div>
+			  </td></tr>
+
+              <tr bgcolor="#FFFFFF"> 
+					  <td width="250" class="content">TRAP IP&nbsp;/&nbspPort</td>
+				<td class="content"><input type="text" size="16" maxlength="16" name="N_TRAPIP" value="[v,n_trapip]" [v,snmp_start]/> 
+				&nbsp;/&nbsp; <input type="text" size="5" maxlength="5" name="N_TRAPPORT" value="[v,n_trapport]" [v,snmp_start]/>
+				&nbsp;&nbsp;<a href=#option6 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+			<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Set the IP address and Socket Number of the SNMP TRAP Server.<br>please refer to the Eddy User Manual.<br>
+		If IP is set to 0.0.0.0, TRAP feature is disabled.
+		</div></div>
+			  </td></tr>
+
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">System reset notification</td>
+				  <td class="content"><select name="N_RESET_ALARM" [v,snmp_start]>
+					  <option [v, n_reset_di] value="0">Disable</option>
+					  <option [v, n_reset_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				System Reset Trap notification Enable or disable.<br>
+				</div></div>
+			  </td></tr>
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">Port connect notification</td>
+				  <td class="content"><select name="N_CON_ALARM" [v,snmp_start]>
+					  <option [v, n_con_di] value="0">Disable</option>
+					  <option [v, n_con_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				each Port connect Trap notification Enable or disable.<br>
+				</div></div>
+			  </td></tr>
+			  
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">Port disconnect notification</td>
+				  <td class="content"><select name="N_DIS_ALARM" [v,snmp_start]>
+					  <option [v, n_dis_di] value="0">Disable</option>
+					  <option [v, n_dis_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				each Port disconnect Trap notification Enable or disable.<br>
+				</div></div>
+			  </td></tr>
+
+            </table>
+          </td>
+        </tr>
+		<tr>
+		  <td>&nbsp; <div align="left"> 
+            <input type="button" value="Submit" onClick="submit()" />
+			&nbsp;&nbsp;&nbsp;
+			<input type="reset" value="Cancel" />
+			</div></td>
+		</tr>
+	  </table>
+</form> 
+	</td>
+  </tr>
+  <tr valign="top"> 
+		  <!--	  <td height="322" valign="top" bgcolor="393C39"> <img src="images/right.jpg" width="158" height="33"></td> -->
+		  <td height="500" align="right" bgcolor="393C39"><font color="white"><br />Copyright 2014&nbsp;&nbsp;<br>DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>All rights reserved.&nbsp;&nbsp;</font></td> 
+  </tr>
+</table>
+<br>
+</body>
+</html>
+

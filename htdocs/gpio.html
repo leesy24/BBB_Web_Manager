@@ -1,0 +1,717 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[v, device_name] Web Manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+<script Language="JavaScript">
+<!--
+function submit()
+{
+    if( Validator(document.f1) )
+    {
+    	document.f1.submit();
+    }
+}
+-->
+</script>
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<!--  <tr valign="top"> 
+    <td height="16" colspan="4" bgcolor="#000000">&nbsp;</td>
+  </tr> -->
+  <tr valign="top"> 
+	  <td width="158" height="121" bgcolor="#000000" valign="top">
+			<img src="/images/LOGO.jpg" width="158" height="72"> 
+	<table height=26 cellSpacing=0 cellPadding=0 border=0>
+		<TR> 
+		<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+		<!-- background=images/left_top.gif -->
+		<font color="white">Setup Menu</font>
+		</TD>
+	    </TR>
+		</table>
+	  <table  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+          <TR vAlign=top> 
+		  <TD vAlign=top align=right class="menu">
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</A><BR> 
+
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+[v,S4M_START]
+		  <A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+[v,S4M_END]		  	
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>          
+		  <A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font><font color="white"><BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font><font color="white"><BR>
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0></font></font></font></font></font></font></font></font></font></font> 
+		  </TD>
+          </TR>
+          
+          
+            <tr valign="top"> 
+		  <td height="500" align="right" bgcolor="393C39"><font color="white"><br />Copyright 2014&nbsp;&nbsp;<br>DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>All rights reserved.&nbsp;&nbsp;</font></td> 
+  </tr>
+          
+          
+      </table></td>
+      
+	<td valign="top" height="68">
+	<td colspan="3" rowspan="2" valign="top" height="68">
+	  <table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td height="72" bgcolor="6B0808">
+			<div align="right">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+					<td width="530" rowspan=3 class="pagetitle"><font color="white">[Peripheral Settings]</td>
+                    <td width="252"><div align="center"><font color="#FFFFFF">
+						Device Name: [v, device_name]</font></div></td>
+                </tr>
+				<tr>
+						<td><div align="center"><font color="#FFFFFF">
+						Logged in as [v, username]</font></div></td>
+                </tr>
+                <tr> 
+                  <td><div align="center"><font color="#FFFFFF">
+				  <a href="/cgi-bin/setagent.cgi?type=o"><font color="red">Logout</a></font></div></td>
+                </tr>
+              </table>
+            </div>
+	      </td>
+        </tr>
+      </table>
+
+
+<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=3" onSubmit="return Validator(this)">
+      <table width="805" border="0" cellspacing="0" cellpadding="20">
+        <tr>
+          <td>
+
+<table width="775" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+<tr bgcolor="#393C39"><font color=white>
+
+<td width="80" bgcolor="#393C39"><font color="white">Device</font></td>
+<td width="69" bgcolor="#393C39"><font color="white">Select</font></td>
+<td width="600" bgcolor="#393C39"><font color="white">&nbsp;&nbsp;Port&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Eddy Peripheral&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User Peripheral</font></td>
+</tr>   
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Serial 1<br>(RS-232)</span></p></td>
+    <td width="69" bgcolor="white"><span style="background-color:white;"><select name="SIO1" onchange="changeType()" >
+		<option [v, sio1_0] value="0">GPIO</option>
+		<option [v, sio1_1] value="1">Eddy</option>
+		<option [v, sio1_2] value="2">User</option>
+		</select></span></td>
+
+    <td width="600" bgcolor="white"><span style="background-color:white;">
+    	&nbsp;&nbsp;B-04&nbsp;&nbsp;&nbsp;<select name="PB04" [v, hide_sio1]>
+		<option [v,PB04_0] value="0">Input (PullUp)</option>
+		<option [v,PB04_1] value="1">Input (PullDown)</option>
+		<option [v,PB04_2] value="2">Output (Low)</option>
+		<option [v,PB04_3] value="3">Output (High)</option></select>&nbsp;&nbsp;TxD<br>
+			
+    	&nbsp;&nbsp;B-05&nbsp;&nbsp;&nbsp;<select name="PB05" [v, hide_sio1]>
+		<option [v,PB05_0] value="0">Input (PullUp)</option>
+		<option [v,PB05_1] value="1">Input (PullDown)</option>
+		<option [v,PB05_2] value="2">Output (Low)</option>
+		<option [v,PB05_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RxD<br>
+						
+		&nbsp;&nbsp;B-22&nbsp;&nbsp;&nbsp;<select name="PB22" [v, hide_sio1]>
+		<option [v,PB22_0] value="0">Input (PullUp)</option>
+		<option [v,PB22_1] value="1">Input (PullDown)</option>
+		<option [v,PB22_2] value="2">Output (Low)</option>
+		<option [v,PB22_3] value="3">Output (High)</option></select>&nbsp;&nbsp;DSR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Data2<br>
+			
+    	&nbsp;&nbsp;B-23&nbsp;&nbsp;&nbsp;<select name="PB23" [v, hide_sio1]>
+		<option [v,PB23_0] value="0">Input (PullUp)</option>
+		<option [v,PB23_1] value="1">Input (PullDown)</option>
+		<option [v,PB23_2] value="2">Output (Low)</option>
+		<option [v,PB23_3] value="3">Output (High)</option></select>&nbsp;&nbsp;DCD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Data3<br>
+			
+    	&nbsp;&nbsp;B-24&nbsp;&nbsp;&nbsp;<select name="PB24" [v, hide_sio1]>
+		<option [v,PB24_0] value="0">Input (PullUp)</option>
+		<option [v,PB24_1] value="1">Input (PullDown)</option>
+		<option [v,PB24_2] value="2">Output (Low)</option>
+		<option [v,PB24_3] value="3">Output (High)</option></select>&nbsp;&nbsp;DTR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Data4<br>
+			
+    	&nbsp;&nbsp;B-25&nbsp;&nbsp;&nbsp;<select name="PB25" [v, hide_sio1]>
+		<option [v,PB25_0] value="0">Input (PullUp)</option>
+		<option [v,PB25_1] value="1">Input (PullDown)</option>
+		<option [v,PB25_2] value="2">Output (Low)</option>
+		<option [v,PB25_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Data5<br>
+			
+    	&nbsp;&nbsp;B-26&nbsp;&nbsp;&nbsp;<select name="PB26" [v, hide_sio1]>
+		<option [v,PB26_0] value="0">Input (PullUp)</option>
+		<option [v,PB26_1] value="1">Input (PullDown)</option>
+		<option [v,PB26_2] value="2">Output (Low)</option>
+		<option [v,PB26_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Data6<br>
+    	
+    	&nbsp;&nbsp;B-27&nbsp;&nbsp;&nbsp;<select name="PB27" [v, hide_sio1]>
+		<option [v,PB27_0] value="0">Input (PullUp)</option>
+		<option [v,PB27_1] value="1">Input (PullDown)</option>
+		<option [v,PB27_2] value="2">Output (Low)</option>
+		<option [v,PB27_3] value="3">Output (High)</option></select>&nbsp;&nbsp;CTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Data7<br>
+		</span></td>
+    	</tr>
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Serial 2<br>(RS-232)</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="SIO2" onchange="changeType()" >
+		<option [v, sio2_0] value="0">GPIO</option>
+		<option [v, sio2_1] value="1">Eddy</option>
+		<option [v, sio2_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;B-06&nbsp;&nbsp;&nbsp;<select name="PB06" [v, hide_sio2]>
+		<option [v,PB06_0] value="0">Input (PullUp)</option>
+		<option [v,PB06_1] value="1">Input (PullDown)</option>
+		<option [v,PB06_2] value="2">Output (Low)</option>
+		<option [v,PB06_3] value="3">Output (High)</option></select>&nbsp;&nbsp;TxD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TC Ch1 Externel CLK In<br>
+		    	
+    	&nbsp;&nbsp;B-07&nbsp;&nbsp;&nbsp;<select name="PB07" [v, hide_sio2]>
+		<option [v,PB07_0] value="0">Input (PullUp)</option>
+		<option [v,PB07_1] value="1">Input (PullDown)</option>
+		<option [v,PB07_2] value="2">Output (Low)</option>
+		<option [v,PB07_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RxD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TC Ch2 Externel CLK In <br>   	
+		    	
+    	&nbsp;&nbsp;B-28&nbsp;&nbsp;&nbsp;<select name="PB28" [v, hide_sio2]>
+		<option [v,PB28_0] value="0">Input (PullUp)</option>
+		<option [v,PB28_1] value="1">Input (PullDown)</option>
+		<option [v,PB28_2] value="2">Output (Low)</option>
+		<option [v,PB28_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Data Clock<br>
+    	
+    	&nbsp;&nbsp;B-29&nbsp;&nbsp;&nbsp;<select name="PB29" [v, hide_sio2]>
+		<option [v,PB29_0] value="0">Input (PullUp)</option>
+		<option [v,PB29_1] value="1">Input (PullDown)</option>
+		<option [v,PB29_2] value="2">Output (Low)</option>
+		<option [v,PB29_3] value="3">Output (High)</option></select>&nbsp;&nbsp;CTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor Vertical Sync<br>
+        </span></td>        
+    	</tr>
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Serial 3<br>(Combo)</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="SIO3" onchange="changeType()" >
+		<option [v, sio3_0] value="0">GPIO</option>
+		<option [v, sio3_1] value="1">Eddy</option>
+		<option [v, sio3_2] value="2">User</option>
+		</select></span></td>
+
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;A-04&nbsp;&nbsp;&nbsp;<select name="PA04" [v, hide_sio3]>
+		<option [v, PA04_0] value="0">Input (PullUp)</option>
+		<option [v, PA04_1] value="1">Input (PullDown)</option>
+		<option [v, PA04_2] value="2">Output (Low)</option>
+		<option [v, PA04_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LED Control(A-04)<br>
+    	
+    	
+    	&nbsp;&nbsp;A-05&nbsp;&nbsp;&nbsp;<select name="PA05" [v, hide_sio3]>
+		<option [v, PA05_0] value="0">Input (PullUp)</option>
+		<option [v, PA05_1] value="1">Input (PullDown)</option>
+		<option [v, PA05_2] value="2">Output (Low)</option>
+		<option [v, PA05_3] value="3">Output (High)</option></select>&nbsp;&nbsp;CTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LED Control(A-05)<br>
+    	
+    	
+    	&nbsp;&nbsp;B-08&nbsp;&nbsp;&nbsp;<select name="PB08" [v, hide_sio3]>
+		<option [v,PB08_0] value="0">Input (PullUp)</option>
+		<option [v,PB08_1] value="1">Input (PullDown)</option>
+		<option [v,PB08_2] value="2">Output (Low)</option>
+		<option [v,PB08_3] value="3">Output (High)</option></select>&nbsp;&nbsp;TxD<br>
+    	
+    	
+    	&nbsp;&nbsp;B-09&nbsp;&nbsp;&nbsp;<select name="PB09" [v, hide_sio3]>
+		<option [v,PB09_0] value="0">Input (PullUp)</option>
+		<option [v,PB09_1] value="1">Input (PullDown)</option>
+		<option [v,PB09_2] value="2">Output (Low)</option>
+		<option [v,PB09_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RxD<br>
+		</span></td>
+		
+    	</tr>
+
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Serial 4<br>(Combo)</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="SIO4" onchange="changeType()" >
+		<option [v, sio4_0] value="0">GPIO</option>
+		<option [v, sio4_1] value="1">Eddy</option>
+		<option [v, sio4_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;B-10&nbsp;&nbsp;&nbsp;<select name="PB10" [v, hide_sio4]>
+		<option [v,PB10_0] value="0">Input (PullUp)</option>
+		<option [v,PB10_1] value="1">Input (PullDown)</option>
+		<option [v,PB10_2] value="2">Output (Low)</option>
+		<option [v,PB10_3] value="3">Output (High)</option></select>&nbsp;&nbsp;TxD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor I/F<br>
+    	
+    	
+    	&nbsp;&nbsp;B-11&nbsp;&nbsp;&nbsp;<select name="PB11" [v, hide_sio4]>
+		<option [v,PB11_0] value="0">Input (PullUp)</option>
+		<option [v,PB11_1] value="1">Input (PullDown)</option>
+		<option [v,PB11_2] value="2">Output (Low)</option>
+		<option [v,PB11_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RxD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image Sensor I/F<br>
+    	
+    	
+    	&nbsp;&nbsp;C-08&nbsp;&nbsp;&nbsp;<select name="PC08" [v, hide_sio4]>
+		<option [v, PC08_0] value="0">Input (PullUp)</option>
+		<option [v, PC08_1] value="1">Input (PullDown)</option>
+		<option [v, PC08_2] value="2">Output (Low)</option>
+		<option [v, PC08_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Chip Select 4<br>
+    	
+    	
+    	&nbsp;&nbsp;C-10&nbsp;&nbsp;&nbsp;<select name="PC10" [v, hide_sio4]>
+		<option [v, PC10_0] value="0">Input (PullUp)</option>
+		<option [v, PC10_1] value="1">Input (PullDown)</option>
+		<option [v, PC10_2] value="2">Output (Low)</option>
+		<option [v, PC10_3] value="3">Output (High)</option></select>&nbsp;&nbsp;CTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Address Bus<br>
+		</span></td>
+    	</tr>
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Debug<br>Port</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="DEBUGPORT" onchange="changeType()" >
+		<option [v, debugport_0] value="0">GPIO</option>
+		<option [v, debugport_1] value="1">Eddy</option>
+		<option [v, debugport_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;B-14&nbsp;&nbsp;&nbsp;<select name="PB14" [v, hide_debugport]>
+		<option [v,PB14_0] value="0">Input (PullUp)</option>
+		<option [v,PB14_1] value="1">Input (PullDown)</option>
+		<option [v,PB14_2] value="2">Output (Low)</option>
+		<option [v,PB14_3] value="3">Output (High)</option></select>&nbsp;&nbsp;RxD<br>
+    	
+    	
+    	&nbsp;&nbsp;B-15&nbsp;&nbsp;&nbsp;<select name="PB15" [v, hide_debugport]>
+		<option [v,PB15_0] value="0">Input (PullUp)</option>
+		<option [v,PB15_1] value="1">Input (PullDown)</option>
+		<option [v,PB15_2] value="2">Output (Low)</option>
+		<option [v,PB15_3] value="3">Output (High)</option></select>&nbsp;&nbsp;TxD<br>
+		</span></td>
+    	</tr>
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Analog<br>Digital<br>Converter</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="ADC" onchange="changeType()" >
+		<option [v, adc_0] value="0">GPIO</option>
+		<option [v, adc_1] value="1">Eddy</option>
+		<option [v, adc_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;C-00&nbsp;&nbsp;&nbsp;<select name="PC00" [v, hide_adc]>
+		<option [v, PC00_0] value="0">Input (PullUp)</option>
+		<option [v, PC00_1] value="1">Input (PullDown)</option>
+		<option [v, PC00_2] value="2">Output (Low)</option>
+		<option [v, PC00_3] value="3">Output (High)</option></select>&nbsp;&nbsp;ADC Ch0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USARTx Serial Clock<br>
+    	
+    	
+    	&nbsp;&nbsp;C-01&nbsp;&nbsp;&nbsp;<select name="PC01" [v, hide_adc]>
+		<option [v, PC01_0] value="0">Input (PullUp)</option>
+		<option [v, PC01_1] value="1">Input (PullDown)</option>
+		<option [v, PC01_2] value="2">Output (Low)</option>
+		<option [v, PC01_3] value="3">Output (High)</option></select>&nbsp;&nbsp;ADC Ch1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Program Clock Output 0<br>
+    	
+    	
+    	&nbsp;&nbsp;C-02&nbsp;&nbsp;&nbsp;<select name="PC02" [v, hide_adc]>
+		<option [v, PC02_0] value="0">Input (PullUp)</option>
+		<option [v, PC02_1] value="1">Input (PullDown)</option>
+		<option [v, PC02_2] value="2">Output (Low)</option>
+		<option [v, PC02_3] value="3">Output (High)</option></select>&nbsp;&nbsp;ADC Ch2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Program Clock Output 1<br>
+    	
+    	
+    	&nbsp;&nbsp;C-03&nbsp;&nbsp;&nbsp;<select name="PC03" [v, hide_adc]>
+		<option [v, PC03_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC03_1] value="1">Input (PullDown)</option>
+		<option [v, PC03_2] value="2">Output (Low)</option>
+		<option [v, PC03_3] value="3">Output (High)</option></select>&nbsp;&nbsp;ADC Ch3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPI Chip Select 3 <br>
+		</span></td>
+        </span></td>
+    	</tr>
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">EEPROM<br>(SPI)</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;">
+    	<select name="EEPROM" onchange="changeType()" >
+		<option [v, eeprom_0] value="0">GPIO</option>
+		<option [v, eeprom_1] value="1">Eddy</option>
+		<option [v, eeprom_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;B-00&nbsp;&nbsp;&nbsp;<select name="PB00" [v, hide_eeprom]>
+		<option [v, PB00_0] value="0">Input (PullUp)</option>
+		<option [v, PB00_1] value="1">Input (PullDown)</option>
+		<option [v, PB00_2] value="2">Output (Low)</option>
+		<option [v, PB00_3] value="3">Output (High)</option></select>&nbsp;&nbsp;EEPROM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPI1 Master Slave Out <br>
+    	
+    	
+    	&nbsp;&nbsp;B-01&nbsp;&nbsp;&nbsp;<select name="PB01" [v, hide_eeprom]>
+		<option [v, PB01_0] value="0">Input (PullUp)</option>
+		<option [v, PB01_1] value="1">Input (PullDown)</option>
+		<option [v, PB01_2] value="2">Output (Low)</option>
+		<option [v, PB01_3] value="3">Output (High)</option></select>&nbsp;&nbsp;EEPROM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPI1 Master Out Slave In<br>
+    	
+    	
+    	&nbsp;&nbsp;B-02&nbsp;&nbsp;&nbsp;<select name="PB02" [v, hide_eeprom]>
+		<option [v, PB02_0] value="0">Input (PullUp)</option>
+		<option [v, PB02_1] value="1">Input (PullDown)</option>
+		<option [v, PB02_2] value="2">Output (Low)</option>
+		<option [v, PB02_3] value="3">Output (High)</option></select>&nbsp;&nbsp;EEPROM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPI1 Serial Clock <br>
+    	
+    	
+    	&nbsp;&nbsp;B-03&nbsp;&nbsp;&nbsp;<select name="PB03" [v, hide_eeprom]>
+		<option [v, PB03_0] value="0">Input (PullUp)</option>    		
+		<option [v, PB03_1] value="1">Input (PullDown)</option>
+		<option [v, PB03_2] value="2">Output (Low)</option>
+		<option [v, PB03_3] value="3">Output (High)</option></select>&nbsp;&nbsp;EEPROM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPI1 Chip Select 0 <br>
+		</span></td>
+        </span></td>
+    	</tr>
+
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">LAN</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="LAN" onchange="changeType()" >
+		<option [v, lan_0] value="0">GPIO</option>
+		<option [v, lan_1] value="1">Eddy</option>
+		<option [v, lan_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;C-12&nbsp;&nbsp;&nbsp;<select name="PC12" [v, hide_lan]>
+		<option [v, PC12_0] value="0">Input (PullUp)</option>
+		<option [v, PC12_1] value="1">Input (PullDown)</option>
+		<option [v, PC12_2] value="2">Output (Low)</option>
+		<option [v, PC12_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Chip Select&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Chip Select 7<br>
+    	
+    	
+    	&nbsp;&nbsp;C-15&nbsp;&nbsp;&nbsp;<select name="PC15" [v, hide_lan]>
+		<option [v, PC15_0] value="0">Input (PullUp)</option>
+		<option [v, PC15_1] value="1">Input (PullDown)</option>
+		<option [v, PC15_2] value="2">Output (Low)</option>
+		<option [v, PC15_3] value="3">Output (High)</option></select>&nbsp;&nbsp;Interrupt Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ext. Interrupt in 1<br>
+		</span></td>
+    	</tr>
+
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">NAND<br>Flash</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="NAND" onchange="changeType()" >
+		<option [v, nand_0] value="0">GPIO</option>
+		<option [v, nand_1] value="1">Eddy</option>
+		<option [v, nand_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;C-14&nbsp;&nbsp;&nbsp;<select name="PC14" [v, hide_nand]>
+		<option [v, PC14_0] value="0">Input (PullUp)</option>
+		<option [v, PC14_1] value="1">Input (PullDown)</option>
+		<option [v, PC14_2] value="2">Output (Low)</option>
+		<option [v, PC14_3] value="3">Output (High)</option></select>&nbsp;&nbsp;Chip Select&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;External Interrupt Input 2<br>
+    	
+    	
+    	&nbsp;&nbsp;C-17&nbsp;&nbsp;&nbsp;<select name="PC17" [v, hide_nand]>
+		<option [v, PC17_0] value="0">Input (PullUp)</option>
+		<option [v, PC17_1] value="1">Input (PullDown)</option>
+		<option [v, PC17_2] value="2">Output (Low)</option>
+		<option [v, PC17_3] value="3">Output (High)</option></select>&nbsp;&nbsp;Ready/Busy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPI0 Chip Select 3<br>
+		</span></td>
+    	</tr>
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">LED</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="RDYLED" onchange="changeType()" >
+		<option [v, rdyled_0] value="0">GPIO</option>
+		<option [v, rdyled_1] value="1">Eddy</option>
+		<option [v, rdyled_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;C-04&nbsp;&nbsp;&nbsp;<select name="PC04" [v, hide_rdyled]>
+		<option [v, PC04_0] value="0">Input (PullUp)</option>
+		<option [v, PC04_1] value="1">Input (PullDown)</option>
+		<option [v, PC04_2] value="2">Output (Low)</option>
+		<option [v, PC04_3] value="3">Output (High)</option></select>&nbsp;&nbsp;Ready LED&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Address Bus<br>
+		</span></td>
+    	</tr>
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Reset</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="RESET" onchange="changeType()" >
+		<option [v, reset_0] value="0">GPIO</option>
+		<option [v, reset_1] value="1">Eddy</option>
+		<option [v, reset_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;C-16&nbsp;&nbsp;&nbsp;<select name="PC16" [v, hide_reset]>
+		<option [v, PC16_0] value="0">Input (PullUp)</option>
+		<option [v, PC16_1] value="1">Input (PullDown)</option>
+		<option [v, PC16_2] value="2">Output (Low)</option>
+		<option [v, PC16_3] value="3">Output (High)</option></select>&nbsp;&nbsp;Reset/Factory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPI0 Chip Select 2<br>
+		</span></td>
+    	</tr>
+
+	<tr>
+	<td width="80" bgcolor="white"><p><background-color:white;">Key Pad</span></p></td>
+    <td width="69" bgcolor="white"><background-color:white;"><select name="KEYPAD" onchange="changeType()" >
+		<option [v, keypad_0] value="0">GPIO</option>
+		<option [v, keypad_1] value="1">Eddy</option>
+		<option [v, keypad_2] value="2">User</option>
+		</select></span></td>
+    <td width="600" bgcolor="white">
+    	<span style="background-color:white;">
+    	&nbsp;&nbsp;B-20&nbsp;&nbsp;&nbsp;<select name="PB20" [v, hide_keypad]>
+		<option [v, PB20_0] value="0">Input (PullUp)</option>
+		<option [v, PB20_1] value="1">Input (PullDown)</option>
+		<option [v, PB20_2] value="2">Output (Low)</option>
+		<option [v, PB20_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 01,02,03,04&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SSC Receive Clock<br>
+    	                                                                                                                                 
+    	                                                                                                                                 
+    	&nbsp;&nbsp;B-10&nbsp;&nbsp;&nbsp;<select name="PB10" [v, hide_keypad]>                                                                            
+		<option [v, PB21_0] value="0">Input (PullUp)</option>                                                                            
+		<option [v, PB21_1] value="1">Input (PullDown)</option>                                                                          
+		<option [v, PB21_2] value="2">Output (Low)</option>                                                                              
+		<option [v, PB21_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 05,06,07,08&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SSC Receive Frame Sync<br>
+    	                                                                                                                                 
+    	                                                                                                                                 
+    	&nbsp;&nbsp;B-30&nbsp;&nbsp;&nbsp;<select name="PB30" [v, hide_keypad]>                                                                            
+		<option [v, PB30_0] value="0">Input (PullUp)</option>                                                                            
+		<option [v, PB30_1] value="1">Input (PullDown)</option>                                                                          
+		<option [v, PB30_2] value="2">Output (Low)</option>                                                                              
+		<option [v, PB30_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 09,10,11,12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pgmm Clk Output 0<br>
+    	                                                                                                                                 
+    	                                                                                                                                 
+    	&nbsp;&nbsp;B-31&nbsp;&nbsp;&nbsp;<select name="PB31" [v, hide_keypad]>                                                                            
+		<option [v, PB31_0] value="0">Input (PullUp)</option>                                                                            
+		<option [v, PB31_1] value="1">Input (PullDown)</option>                                                                          
+		<option [v, PB31_2] value="2">Output (Low)</option>                                                                              
+		<option [v, PB31_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 13,14,15,16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pgmm Clk Output 1<br>
+    	                                                                                                                                 
+    	                                                                                                                                 
+    	&nbsp;&nbsp;C-20&nbsp;&nbsp;&nbsp;<select name="PC20" [v, hide_keypad]>                                                                            
+		<option [v, PC20_0] value="0">Input (PullUp)</option>                                                                            
+		<option [v, PC20_1] value="1">Input (PullDown)</option>                                                                          
+		<option [v, PC20_2] value="2">Output (Low)</option>                                                                              
+		<option [v, PC20_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 01,05,09,13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data Bus<br>
+    	                                                                                                                                 
+    	                                                                                                                                 
+    	&nbsp;&nbsp;C-21&nbsp;&nbsp;&nbsp;<select name="PC21" [v, hide_keypad]>                                                                            
+		<option [v, PC21_0] value="0">Input (PullUp)</option>                                                                            
+		<option [v, PC21_1] value="1">Input (PullDown)</option>                                                                          
+		<option [v, PC21_2] value="2">Output (Low)</option>                                                                              
+		<option [v, PC21_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 02,06,10,14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data Bus<br>
+    	                                                                                                                                 
+    	                                                                                                                                 
+    	&nbsp;&nbsp;C-22&nbsp;&nbsp;&nbsp;<select name="PC22" [v, hide_keypad]>                                                                            
+		<option [v, PC22_0] value="0">Input (PullUp)</option>                                                                            
+		<option [v, PC22_1] value="1">Input (PullDown)</option>                                                                          
+		<option [v, PC22_2] value="2">Output (Low)</option>                                                                              
+		<option [v, PC22_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 03,07,11,15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data Bus<br>
+    	                                                                                                                                 
+    	                                                                                                                                 
+    	&nbsp;&nbsp;C-23&nbsp;&nbsp;&nbsp;<select name="PC23" [v, hide_keypad]>                                                                            
+		<option [v, PC23_0] value="0">Input (PullUp)</option>                                                                            
+		<option [v, PC23_1] value="1">Input (PullDown)</option>                                                                          
+		<option [v, PC23_2] value="2">Output (Low)</option>                                                                              
+		<option [v, PC23_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SW 04,08,12,16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data Bus<br>
+		</span></td>
+    	</tr>
+
+
+	<tr><td width="80" bgcolor="white"><p>User<br>Peripheral<br>Interface</span></td>
+    <td width="69" bgcolor="white"><span>
+    	<select name="PA22EN" onchange="changeType()" >
+		<option [v, PA22EN_0] value="0">User</option>
+		<option [v, PA22EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PB12EN" onchange="changeType()" >
+		<option [v, PB12EN_0] value="0">User</option>
+		<option [v, PB12EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PB13EN" onchange="changeType()" >
+		<option [v, PB13EN_0] value="0">User</option>
+		<option [v, PB13EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PB16EN" onchange="changeType()" >
+		<option [v, PB16EN_0] value="0">User</option>
+		<option [v, PB16EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PB17EN" onchange="changeType()" >
+		<option [v, PB17EN_0] value="0">User</option>
+		<option [v, PB17EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PB18EN" onchange="changeType()" >
+		<option [v, PB18EN_0] value="0">User</option>
+		<option [v, PB18EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PB19EN" onchange="changeType()" >
+		<option [v, PB19EN_0] value="0">User</option>
+		<option [v, PB19EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PC05EN" onchange="changeType()" >
+		<option [v, PC05EN_0] value="0">User</option>
+		<option [v, PC05EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PC09EN" onchange="changeType()" >
+		<option [v, PC09EN_0] value="0">User</option>
+		<option [v, PC09EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PC18EN" onchange="changeType()" >
+		<option [v, PC18EN_0] value="0">User</option>
+		<option [v, PC18EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PC19EN" onchange="changeType()" >
+		<option [v, PC19EN_0] value="0">User</option>
+		<option [v, PC19EN_1] value="1">GPIO</option></select>
+    	
+    	
+    	<select name="PC26EN" onchange="changeType()" >
+		<option [v, PC26EN_0] value="0">User</option>
+		<option [v, PC26EN_1] value="1">GPIO</option></select>
+		</span></td>
+
+    <td width="600" bgcolor="white"><span>
+    	&nbsp;&nbsp;A-22&nbsp;&nbsp;&nbsp;<select name="PA22" [v, hide_PA22EN]>
+		<option [v,PA22_0] value="0">Input (PullUp)</option>    		
+		<option [v,PA22_1] value="1">Input (PullDown)</option>
+		<option [v,PA22_2] value="2">Output (Low)</option>
+		<option [v,PA22_3] value="3">Output (High)</option></select><br>
+    	
+    	
+    	&nbsp;&nbsp;B-12&nbsp;&nbsp;&nbsp;<select name="PB12" [v, hide_PB12EN]>
+		<option [v,PB12_0] value="0">Input (PullUp)</option>	
+		<option [v,PB12_1] value="1">Input (PullDown)</option>
+		<option [v,PB12_2] value="2">Output (Low)</option>
+		<option [v,PB12_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Serial Port 5(Tx), Image Sensor I/F<br>
+    	
+    	
+    	&nbsp;&nbsp;B-13&nbsp;&nbsp;&nbsp;<select name="PB13" [v, hide_PB13EN]>
+		<option [v,PB13_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB13_1] value="1">Input (PullDown)</option>
+		<option [v,PB13_2] value="2">Output (Low)</option>
+		<option [v,PB13_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Serial Port 5(Rx), Image Sensor I/F<br>
+    	
+    	
+    	&nbsp;&nbsp;B-16&nbsp;&nbsp;&nbsp;<select name="PB16" [v, hide_PB16EN]>
+		<option [v,PB16_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB16_1] value="1">Input (PullDown)</option>
+		<option [v,PB16_2] value="2">Output (Low)</option>
+		<option [v,PB16_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;TC Ch4 Ext. CLK In<br>
+    	
+    	
+    	&nbsp;&nbsp;B-17&nbsp;&nbsp;&nbsp;<select name="PB17" [v, hide_PB17EN]>
+		<option [v,PB17_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB17_1] value="1">Input (PullDown)</option>
+		<option [v,PB17_2] value="2">Output (Low)</option>
+		<option [v,PB17_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SSC Transmit Frame Sync, TC ch4 Ext CLK IN<br>
+    	
+    	
+    	&nbsp;&nbsp;B-18&nbsp;&nbsp;&nbsp;<select name="PB18" [v, hide_PB18EN]>
+		<option [v,PB18_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB18_1] value="1">Input (PullDown)</option>
+		<option [v,PB18_2] value="2">Output (Low)</option>
+		<option [v,PB18_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SSC Transmit Data, TC ch4 I/O B<br>
+    	
+    	
+    	&nbsp;&nbsp;B-19&nbsp;&nbsp;&nbsp;<select name="PB19" [v, hide_PB19EN]>
+		<option [v,PB19_0] value="0">Input (PullUp)</option>    		
+		<option [v,PB19_1] value="1">Input (PullDown)</option>
+		<option [v,PB19_2] value="2">Output (Low)</option>
+		<option [v,PB19_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;SSC Receive Data, TC ch5 I/O B<br>
+    	
+    	
+    	&nbsp;&nbsp;C-05&nbsp;&nbsp;&nbsp;<select name="PC05" [v, hide_PC05EN]>
+		<option [v, PC05_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC05_1] value="1">Input (PullDown)</option>
+		<option [v, PC05_2] value="2">Output (Low)</option>
+		<option [v, PC05_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Ch0 I/O Line B<br>
+    	
+    	
+    	&nbsp;&nbsp;C-09&nbsp;&nbsp;&nbsp;<select name="PC09" [v, hide_PC09EN]>
+		<option [v,PC09_0] value="0">Input (PullUp)</option>    		
+		<option [v,PC09_1] value="1">Input (PullDown)</option>
+		<option [v,PC09_2] value="2">Output (Low)</option>
+		<option [v,PC09_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Address Bus, SPI1 Perripheral Chip Select 1
+<br>
+    	
+    	
+    	&nbsp;&nbsp;C-18&nbsp;&nbsp;&nbsp;<select name="PC18" [v, hide_PC18EN]>
+		<option [v, PC18_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC18_1] value="1">Input (PullDown)</option>
+		<option [v, PC18_2] value="2">Output (Low)</option>
+		<option [v, PC18_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Data Bus, SPI1 Perripheral Chip Select 1<br>
+    	
+    	
+    	&nbsp;&nbsp;C-19&nbsp;&nbsp;&nbsp;<select name="PC19" [v, hide_PC19EN]>
+		<option [v, PC19_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC19_1] value="1">Input (PullDown)</option>
+		<option [v, PC19_2] value="2">Output (Low)</option>
+		<option [v, PC19_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Address Bus, SPI1 Perripheral Chip Select 2<br>
+    	
+    	
+    	&nbsp;&nbsp;C-26&nbsp;&nbsp;&nbsp;<select name="PC26" [v, hide_PC26EN]>
+		<option [v, PC26_0] value="0">Input (PullUp)</option>    		
+		<option [v, PC26_1] value="1">Input (PullDown)</option>
+		<option [v, PC26_2] value="2">Output (Low)</option>
+		<option [v, PC26_3] value="3">Output (High)</option></select>&nbsp;&nbsp;&nbsp;Data Bus <br>
+</span></td></tr>
+</table>
+
+	  		
+		<tr style="background-color=#FFFFFF">
+		  <td>&nbsp; <div align="left"> 
+            <input type="button" value="Submit" onClick="submit()" />
+			&nbsp;&nbsp;&nbsp;
+			<input type="reset" value="Cancel" />
+			</div></td>
+		</tr>
+
+</table>
+</form> 
+</table>
+<br>
+</body>
+</html>

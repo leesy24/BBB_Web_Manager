@@ -1,0 +1,381 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[v, device_name] Web Manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+<script Language="JavaScript" src="/utility.js">
+</script>
+<script Language="JavaScript">
+
+function changeType()
+{
+	document.f1.action = "/cgi-bin/getagent.cgi?type=J";
+	document.f1.submit();
+}
+
+function Validator(theForm)
+{
+
+	if (!isInValidRange(theForm.W_RTSTHR.value, 1, 2347))
+	{
+		alert("RTS threshold value is invalid: Value needs to be between 1 and 2347");
+		theForm.W_RTSTHR.focus();
+		return (false);
+	}
+
+	if ((theForm.W_FRAGTHR.value != 0) && (!isInValidRange(theForm.W_FRAGTHR.value, 256, 2346)))
+	{
+		alert("Fragment threshold value is invalid: Value needs to be between 256 and 2346");
+		theForm.W_FRAGTHR.focus();
+		return (false);
+	}
+	
+	if (!isInValidRange(theForm.W_ROAMTHR.value, 61, 89))
+	{
+		alert("Roaming threshold value is invalid: Value needs to be between 61 and 89");
+		theForm.W_ROAMTHR.focus();
+		return (false);
+	}
+
+	return (true);
+}
+
+</script>
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+
+<tr valign="top"> 
+<td width="158" height="121" bgcolor="#000000" valign="top">
+<img src="/images/LOGO.jpg" width="158" height="72"> 
+	<TABLE height=26 cellSpacing=0 cellPadding=0 border=0>
+	<TR> 
+	<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+	
+	<font color="white">Setup Menu</font>
+	</TD>
+	</TR>
+	</TABLE>
+
+	<TABLE  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+		<TR vAlign=top> 
+			<TD vAlign=top align=right class="menu">
+			<A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font><font color="white"><BR> 
+			<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+			<A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+			<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+			<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</A><BR> 
+
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+[v,S4M_START]
+		  <A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+[v,S4M_END]
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>          
+		  <A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font><font color="white"><BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font><font color="white"><BR>
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font><font color="white"><BR> 
+          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+		  <BR>
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+		  <A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font><font color="white"><BR> 
+		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0></font></font></font></font></font></font></font></font></font></font> 
+		  </TD>
+          </TR>
+	</TABLE>
+	
+	<td valign="top" height="68">
+	<td colspan="3" rowspan="2" valign="top" height="68">
+	  <table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td height="72" bgcolor="6B0808">
+			<div align="right">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+						<td width="530" rowspan=3 class="pagetitle"><font color="white">[Wireless Settings]</td>
+                    <td width="252"><div align="center"><font color="#FFFFFF">
+						Device Name: [v, device_name]</font></div></td>
+                </tr>
+				<tr>
+						<td><div align="center"><font color="#FFFFFF">
+						Logged in as [v, username]</font></div></td>
+                </tr>
+                <tr> 
+                  <td><div align="center"><font color="#FFFFFF">
+				  <a href="/cgi-bin/setagent.cgi?type=o"><font color="red">Logout</a></font></div></td>
+                </tr>
+              </table>
+			</div>
+	      </td>
+        </tr>
+      </table>
+	
+	<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=J" onSubmit="return Validator(this)">
+	<table width="805" border="0" cellspacing="0" cellpadding="20">
+	<tr>
+	<td>
+		<table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+		<tr bgcolor="#393C39"> 
+		<td height="24" colspan="2" class="title"><font color=white>Wireless Network Configuration</td>
+		</tr>
+
+
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">Wireless Network</td>
+		<td class="content">
+		<select name="W_USBWIFI" onchange="changeType()">
+		<option [v, w_usbwifi0] value="0">Disable</option>
+		<option [v, w_usbwifi1] value="1">Enable</option>
+		</select>
+		&nbsp;&nbsp;
+		<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		The [v,device_name] supports USB WiFi Network. In order to use the USB WiFi, you need to you need to select the Enable.
+		<br>
+		</div></div>
+		</td></tr>	
+		</tr>
+
+
+
+		<tr bgcolor="#FFFFFF"> 
+		<td width="250" class="content">Wireless Mode</td>
+		<td class="content">
+
+		<select name="W_MODE" onchange="changeType()" [v,wifi_all]>
+		<option [v, w_mode0] value="0">Infrastructure</option>
+		<option [v, w_mode1] value="1">Ad-Hoc</option>
+		</select>
+		&nbsp;&nbsp;
+		<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		<strong>Infrastructure:</strong> This in turn connects to a Wireless access point. The client is isolated from other Wireless clients. Also only one ethernet device can be connected though it could be a router in AP mode.<br />
+		<strong>Ad-Hoc:</strong> This is for peer to peer wireless connections. Clients running in Ad-Hoc mode can connect to each other as required without involving central access points.<br />
+		</div></div>
+		</td></tr>	
+		</tr>
+
+
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">Wireless Network Name (SSID)</td>
+		<td class="content"><input type="text" size="32" maxlength="32" name="W_SSID" value="[v,w_ssid]" [v,wifi_all]> 
+		&nbsp;&nbsp;<a href=#option2 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		The SSID is the network name shared among all devices in a wireless network. The SSID must be identical for all devices in the wireless network. It is case-sensitive and must not exceed 32 alphanumeric characters, which may be any keyboard character. Make sure this setting is the same for all devices in your wireless network.
+		<br>
+		</div></div>
+		</td></tr>
+
+		<tr bgcolor="#FFFFFF"> 
+		<td width="250" class="content">Channel</td>
+		<td class="content">
+		<select name="W_CHANNEL" [v,wifi_all]>
+		<option [v, w_channel0] value="0">Auto</option>
+		<option [v, w_channel1] value="1">1</option>
+		<option [v, w_channel2] value="2">2</option>
+		<option [v, w_channel3] value="3">3</option>
+		<option [v, w_channel4] value="4">4</option>
+		<option [v, w_channel5] value="5">5</option>
+		<option [v, w_channel6] value="6">6</option>
+		<option [v, w_channel7] value="7">7</option>
+		<option [v, w_channel8] value="8">8</option>
+		<option [v, w_channel9] value="9">9</option>
+		<option [v, w_channel10] value="10">10</option>
+		<option [v, w_channel11] value="11">11</option>
+		<option [v, w_channel12] value="12">12</option>
+		<option [v, w_channel13] value="13">13</option>
+		</select>
+		&nbsp;&nbsp;<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Select an appropriate channel from the list provided to correspond with your network settings. All devices in your wireless network must use the same channel in order to function correctly. Try to avoid conflicts with other wireless networks by choosing a channel where the upper and lower three channels are not in use. 
+		<br />
+		</div></div>
+		</td></tr>	
+
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">Bitrate</td>
+		<td class="content">
+		<select name="W_BITRATE" [v,wifi_all]>
+		<option [v, w_bitrate0] value="0">Auto</option>
+		<option [v, w_bitrate1] value="1">1 Mbps</option>
+		<option [v, w_bitrate2] value="2">2 Mbps</option>
+		<option [v, w_bitrate3] value="3">5.5 Mbps</option>
+		<option [v, w_bitrate4] value="4">11 Mbps</option>
+		<option [v, w_bitrate5] value="5">6 Mbps</option>
+		<option [v, w_bitrate6] value="6">9 Mbps</option>
+		<option [v, w_bitrate7] value="7">12 Mbps</option>
+		<option [v, w_bitrate8] value="8">18 Mbps</option>
+		<option [v, w_bitrate9] value="9">24 Mbps</option>
+		<option [v, w_bitrate10] value="10">36 Mbps</option>
+		<option [v, w_bitrate11] value="11">48 Mbps</option>
+		<option [v, w_bitrate12] value="12">54 Mbps</option>
+		</select>
+		&nbsp;Mbps&nbsp;&nbsp;&nbsp;<a href=#option2 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Select an appropriate bit rate for the wireless communication. If set to Auto, speed will be determined automatically to an optimized rate. Otherwise, selected speed will be applied. Please note that 802.11b only mode supports 1, 2, 5.5, and 11Mbps, while 802.11g only mode supports 6, 9, 12, 18, 24, 36, 48, and 54Mbps. In the mixed mode, all otions are available.
+		<br />
+		</div></div>
+		</td></tr>
+
+		
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">Fragment Threshold</td>
+		<td class="content"><input type="text" size="16" maxlength="16" name="W_FRAGTHR" value="[v,w_fragthr]" [v,wifi_all]/> 
+		&nbsp;byte(s)&nbsp;&nbsp;&nbsp;<a href=#option2 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		[Default: 2346] [Range: 256~2346] <br />
+		Fragmentation allows to split an IP packet in a burst of smaller fragments transmitted on the medium. In most cases this adds overhead, but in a very noisy environment this reduces the error penalty and allow packets to get through interference bursts. This parameter sets the maximum fragment size which is always lower than the maximum packet size. (excerpted from iwconfig manual)
+		<br />
+		</div></div>
+		</td></tr>
+		
+		<tr bgcolor="#FFFFFF"> 
+		<td width="250" class="content">Authentication Mode</td>
+		<td class="content">
+		<select name="W_AUTHMODE" onchange="changeType()" [v,wifi_all]>
+		<option [v, w_authmode0] value="0">AUTO</option>
+		<option [v, w_authmode1] value="1">OPEN</option>
+		<option [v, w_authmode2] value="2">SHARED</option>
+		<option [v, w_authmode3] value="3">WPAPSK</option>
+		<option [v, w_authmode4] value="4">WPA2PSK</option>		
+		</select>
+		&nbsp;&nbsp;<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		The [v,device_name] supports an authentication mode that the 802.11 device uses when it authenticates and associates with an access point or IBSS cell.
+		<br>
+		</div></div>
+		</td></tr>
+
+		<tr bgcolor="#FFFFFF"> 
+		<td width="250" class="content">Encryption Type</td>
+		<td class="content">
+		<select name="W_ENCRYPTYPE" onchange="changeType()" [v,wifi_all]>
+[v, OPENMODE_START]		
+[v, SHAREMODE_START]		
+		<option [v, w_encryptype0] value="0">NONE</option>
+[v, SHAREMODE_END]
+		<option [v, w_encryptype1] value="1">WEP40</option>
+		<option [v, w_encryptype2] value="2">WEP104</option>
+[v, OPENMODE_END]
+[v, WPAPSK_START]
+		<option [v, w_encryptype3] value="3">TKIP</option>
+		<option [v, w_encryptype4] value="4">AES</option>
+		<option [v, w_encryptype5] value="5">TKIP/AES</option>
+[v, WPAPSK_END]		
+		</select>
+		&nbsp;&nbsp;<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		The [v,device_name] supports different types of encryption settings for your network. WEP (Wired Equivalent Privacy) is the old, original, now discredited wireless security standard. TKIP is Temporal Key Integrity Protocol. The replacement encryption system for WEP. Several features were added to make keys more secure than they were under WEP. AES is Advanced Encryption Standard. This is now the preferred encryption method, replacing the old TKIP.
+		<br>
+		</div></div>
+		</td></tr>
+
+[v, NETWORKKEYon]	
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">Network key</td>
+		<td class="content"><input type="text" size="36" maxlength="[v,KEYLENGTH]" name="W_KEY1" value="[v,w_key1]" [v,wifi_all]/> 
+		</div></div>
+		</td></tr>
+[v, NETWORKKEYoff]	
+
+		</tr>
+		<!-- Wireless Security end -->
+		<!-- Wireless Setup End -->
+	
+		<br>
+
+		<!-- Wireless Network Setting-->			
+		
+		<tr bgcolor="#FFFFFF"> 
+		<td width="250" class="content">Connection Type</td>
+		<td class="content">
+		<select name="W_LINE" onchange="changeType()" [v,wifi_all]>
+		<option [v, w_line0] value="0">DHCP</option>
+		<option [v, w_line1] value="1">Static IP</option>
+		</select>
+		&nbsp;&nbsp;<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		IP obtaining address method for Eddy’s wireless network connection
+		</div></div>
+		</td></tr>
+		</tr>
+	
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">IP Address</td>
+		<td class="content"><input type="text" size="16" maxlength="16" name="W_IP" value="[v,w_ip]" [v,w_option1] [v,wifi_all]/> 
+		&nbsp;&nbsp;<a href=#option2 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current Wireless IP address Eddy is assigned to.<br>
+		When address type is DHCP, current IP is displayed, but it is not editable.<br>
+		When address type is Static IP, manually enter an appropriate IP address.<br>
+		</div></div>
+		</td></tr>
+
+		<tr bgcolor="#FFFFFF">
+		<td class="content">Subnet Mask</td>
+		<td class="content"><input type="text" size="16" maxlength="16" name="W_MASK" value="[v,w_mask]" [v,w_option1] [v,wifi_all]/> 
+		&nbsp;&nbsp;<a href=#option3 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current wireless subnet mask Eddy is assigned to.<br>
+		When address type is DHCP, current subnet mask is displayed, but it is not editable.<br>
+		When address type is Static IP, manually enter an appropriate subnet mask.<br>
+		</div></div>
+		</td></tr>
+
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">Gateway</td>
+		<td class="content"><input type="text" size="16" maxlength="16" name="W_GW" value="[v,w_gw]" [v,w_option1] [v,wifi_all]/> 
+		&nbsp;&nbsp;<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current default gateway for wireless network is assigned to.<br>
+		When address type is DHCP, current default gateway is displayed, but it is not editable.<br>
+		When address type is Static IP, manually enter an appropriate default gateway.<br>
+		</div></div>
+		</td></tr>
+
+		<tr bgcolor="#FFFFFF"> 
+		<td class="content">DNS</td>
+		<td class="content"><input type="text" size="16" maxlength="16" name="W_DNS" value="[v,w_dns]" [v,w_option1] [v,wifi_all]/> 
+		&nbsp;&nbsp;<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+		<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current default Wireless DNS Address is assigned to.<br>
+		</div></div>
+		</td></tr>
+		</table>
+		<!-- Wireless Network end -->
+
+	</td>
+	</tr>
+
+	<tr>
+	<td>&nbsp; <div align="left"> 
+	<input type="button" value="Submit" onClick="submit()" />
+	&nbsp;&nbsp;&nbsp;
+	
+	<input type="reset" value="Cancel" />
+	</div></td>
+	</tr>
+	</table>
+	</form> 
+	</td>
+	</tr>
+
+	<tr valign="top">
+	<td height="500" align="right" bgcolor="393C39"><font color="white"><br />Copyright 2014&nbsp;&nbsp;<br>DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>All rights reserved.&nbsp;&nbsp;</font></td>
+	</tr>
+</table>
+<br>
+</body>
+</html>

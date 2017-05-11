@@ -1,0 +1,1112 @@
+3c3
+< //#include "../../src/include/p_default.h"
+---
+> #include "../../src/include/p_default.h"
+5c5
+< //#include "../../src/set/func.h"
+---
+> #include "../../src/set/func.h"
+7,8d6
+< #define HEADER_FROM_CGI 1
+< #include "../../src/set/set.h"
+42,43c40,41
+< //static int dev_fd = -1;
+< //static int fil_fd = -1;
+---
+> static int dev_fd = -1;
+> static int fil_fd = -1;
+53c51,52
+< int set_serial();
+---
+> void set_serial();
+> void set_gpio();
+59a59
+> void set_test();
+61,63d60
+< unsigned char get_char_from_dps( unsigned char char_dps );
+< unsigned char get_parity_from_dps( unsigned char parity_dps );
+< unsigned char get_stop_from_dps( unsigned char stop_dps );
+68c65
+<     //    char passBuff[12];
+---
+>     char passBuff[12];
+71c68
+<     char type=0;
+---
+>     char type;
+74d70
+<     int ret;
+94,101d89
+<     // TSUM for reboot
+<     if (type != 'l')
+<     {
+< 	   if (CheckLogin() == 0)
+< 		  Error("Please login first !");
+<     }
+< 
+< 
+115c103
+<     strcpy(buff, cfg.svr.username);
+---
+>     strcpy(buff, cfg.svr.user);
+118,129d105
+<     if (cfg.svr.wireless==0)
+<     {
+< 	   listPutf(list,"hideon","<!--");
+< 	   listPutf(list,"hideoff","-->");
+<     }
+<     else
+<     {
+< 	   listPutf(list,"hideon","");
+< 	   listPutf(list,"hideoff","");
+<     }
+< 
+< 
+147,151c123,124
+< 		  ret= set_serial();
+< 		  if (ret==0)
+< 			 strcpy(target_page, "/cgi-bin/getagent.cgi?type=3");
+< 		  else
+< 			 strcpy(target_page, "/cgi-bin/getagent.cgi?type=b");
+---
+> 		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=3");
+> 		  set_serial();
+154c127
+< 	   case '3':	// wireless
+---
+> 	   case '3':	// gpio
+156c129
+< 		  set_wireless();
+---
+> 		  set_gpio();
+178c151
+< 		  system("/sbin/set factory");
+---
+> 		  system("/sbin/set default");
+186,187c159,160
+< 		  system("/sbin/set reboot");
+< 		  return 0;	// return directly
+---
+> 		  system("/sbin/reboot");
+> 		  return;	// return directly
+190c163
+< 		  //set_test();
+---
+> 		  set_test();
+241,242c214,215
+<     //char buff2[16];
+<     //char temp[256];
+---
+>     char buff2[16];
+>     char temp[256];
+286c259
+<     int value2=0;
+---
+>     int value2;
+298c271
+< 	   system("/sbin/set nw mode static");
+---
+> 	   system("/sbin/set line ip");
+306c279
+< 		  sprintf(cmd, "/sbin/set nw ip %d.%d.%d.%d",
+---
+> 		  sprintf(cmd, "/sbin/set ip %d.%d.%d.%d",
+312c285
+< 		  sprintf(cmd, "/sbin/set nw ip %s", buff);
+---
+> 		  sprintf(cmd, "/sbin/set ip %s", buff);
+322c295
+< 		  sprintf(cmd, "/sbin/set nw subnet %d.%d.%d.%d",
+---
+> 		  sprintf(cmd, "/sbin/set mask %d.%d.%d.%d",
+328c301
+< 		  sprintf(cmd, "/sbin/set nw subnet %s", buff);
+---
+> 		  sprintf(cmd, "/sbin/set mask %s", buff);
+338c311
+< 		  sprintf(cmd, "/sbin/set nw gateway %d.%d.%d.%d",
+---
+> 		  sprintf(cmd, "/sbin/set gateway %d.%d.%d.%d",
+344,359c317
+< 		  sprintf(cmd, "/sbin/set nw gateway %s", buff);
+< 		  system(cmd);
+< 	   }
+< 	   // DNS
+< 	   value2 = cgiFormStringNoNewlines("N_DNS", buff, 16);
+< 	   if (value2 == cgiFormNotFound)
+< 		  Error("Enter the DNS");
+< 	   else if (value2 == cgiFormEmpty)
+< 	   {	
+< 		  sprintf(cmd, "/sbin/set nw dns %d.%d.%d.%d",
+< 				cfg.svr.dnsip[0], cfg.svr.dnsip[1],cfg.svr.dnsip[2],cfg.svr.dnsip[3]);
+< 		  system(cmd);
+< 	   }
+< 	   else
+< 	   {
+< 		  sprintf(cmd, "/sbin/set nw dns %s", buff);
+---
+> 		  sprintf(cmd, "/sbin/set gateway %s", buff);
+366c324
+< 	   system("/sbin/set nw mode dhcp");
+---
+> 	   system("/sbin/set line dhcp");
+370,382c328
+< 	   system("/sbin/set nw mode static");
+<     }
+< 
+< 
+< 
+< #if 0
+<     if (cfg.svr.wireless)
+<     {
+< 	   cgiFormInteger("N_BR", &value, cfg.svr.br);
+< 	   if (value == 1)
+< 		  system("/sbin/set br 1");
+< 	   else	
+< 		  system("/sbin/set br 0");
+---
+> 	   system("/sbin/set line ip");
+384,440d329
+< #endif
+< 
+<     //LAN IP
+< 
+<     if (/*value == 0 && nat set bug*/ cfg.svr.wireless ==1)
+<     {
+< 	   value2 = cgiFormStringNoNewlines("N_LIP", buff, 16);
+< 	   if (value2 == cgiFormNotFound)
+< 		  Error("Enter the NAT IP address");
+< 	   else if (value2 == cgiFormEmpty)
+< 	   {
+< 		  sprintf(cmd, "/sbin/set nw nat ip %d.%d.%d.%d",
+< 				cfg.svr.lanip[0], cfg.svr.lanip[1],cfg.svr.lanip[2],cfg.svr.lanip[3]);
+< 		  system(cmd);
+< 	   }
+< 	   else
+< 	   {
+< 		  sprintf(cmd, "/sbin/set nw nat ip %s", buff);
+< 		  system(cmd);
+< 	   }
+< 
+< 	   // Subnet
+< 	   value2 = cgiFormStringNoNewlines("N_LMASK", buff, 16);
+< 	   if (value2 == cgiFormNotFound)
+< 		  Error("Enter the NAT subnet mask");
+< 	   else if (value2 == cgiFormEmpty)
+< 	   {	
+< 		  sprintf(cmd, "/sbin/set nw nat subnet %d.%d.%d.%d",
+< 				cfg.svr.lanmask[0], cfg.svr.lanmask[1],cfg.svr.lanmask[2],cfg.svr.lanmask[3]);
+< 		  system(cmd);
+< 	   }
+< 	   else
+< 	   {
+< 		  sprintf(cmd, "/sbin/set nw nat subnet %s", buff);
+< 		  system(cmd);
+< 	   }
+< 
+< 	   cgiFormInteger("N_DHCPS", &value, cfg.svr.dhcpuse);
+< 	   if (value == 1)
+< 	   {
+< 		  system("/sbin/set nw nat dhcps enable");
+< 		  value2 = cgiFormStringNoNewlines("N_SADDR", buff, 16);
+< 		  if (value2 == cgiFormNotFound)
+< 			 Error("Enter the Start Address");
+< 		  else 
+< 		  {	
+< 			 sprintf(cmd, "/sbin/set nw nat saddr %s", buff);
+< 			 system(cmd);
+< 		  }
+< 		  value2 = cgiFormStringNoNewlines("N_EADDR", buff, 16);
+< 		  if (value2 == cgiFormNotFound)
+< 			 Error("Enter the End Address");
+< 		  else 
+< 		  {	
+< 			 sprintf(cmd, "/sbin/set nw nat eaddr %s", buff);
+< 			 system(cmd);
+< 		  }
+442,445d330
+< 	   }
+< 	   else	
+< 		  system("/sbin/set nw nat dhcps disable");
+<     }
+450c335
+< 	   system("/sbin/set nw nms snmp enable");
+---
+> 	   system("/sbin/set snmp enable");
+452,466c337
+< 	   system("/sbin/set nw nms snmp disable");
+< 
+<     // TSUM 6621 PORTVIEW
+<     if (cfg.svr.nip[0]==0)
+< 	   value2=0;
+<     else
+< 	   value2 =1;
+<     cgiFormInteger("N_PORTVIEW", &value, value2);
+< 
+<     if (value==0)
+<     {
+< 	   sprintf(cmd, "/sbin/set nw nms portview ip 0.0.0.0");
+< 	   system(cmd);
+< 	   return;
+<     }
+---
+> 	   system("/sbin/set snmp disable");
+471c342
+< 	   Error("Enter Portview's IP");
+---
+> 	   Error("Enter NMS IP");
+474c345
+< 	   sprintf(cmd, "/sbin/set nw nms portview ip %d.%d.%d.%d",
+---
+> 	   sprintf(cmd, "/sbin/set nms %d.%d.%d.%d",
+480c351
+< 	   sprintf(cmd, "/sbin/set nw nms portview ip %s", buff);
+---
+> 	   sprintf(cmd, "/sbin/set nms %s", buff);
+485c356
+<     value = cgiFormStringNoNewlines("N_NPORT", buff, 6);
+---
+>     value = cgiFormStringNoNewlines("N_NPORT", buff, 5);
+487c358
+< 	   Error ("Enter Portview's Port");
+---
+> 	   Error ("Enter NMS Port");
+490c361
+< 	   sprintf(cmd, "/sbin/set nw nms portview port %d", cfg.svr.nport);
+---
+> 	   sprintf(cmd, "/sbin/set nport %d", cfg.svr.nport);
+495c366
+< 	   sprintf(cmd, "/sbin/set nw nms portview port %d", atoi(buff));
+---
+> 	   sprintf(cmd, "/sbin/set nport %d", atoi(buff));
+500,514c371,384
+<     /*
+< 	  value = cgiFormStringNoNewlines("N_DNAME", buff, 32);
+< 	  if (value == cgiFormNotFound)
+< 	  Error ("Enter Device Name");
+< 	  else if (value == cgiFormEmpty)
+< 	  {
+< 	  sprintf(cmd, "/sbin/set admin name %s", cfg.svr.name);
+< 	  system(cmd);
+< 	  }
+< 	  else
+< 	  {
+< 	  sprintf(cmd, "/sbin/set admin name %s", buff);
+< 	  system(cmd);
+< 	  }
+< 	*/	
+---
+>     value = cgiFormStringNoNewlines("N_DNAME", buff, 32);
+>     if (value == cgiFormNotFound)
+> 	   Error ("Enter Device Name");
+>     else if (value == cgiFormEmpty)
+>     {
+> 	   sprintf(cmd, "/sbin/set name %s", cfg.svr.name);
+> 	   system(cmd);
+>     }
+>     else
+>     {
+> 	   sprintf(cmd, "/sbin/set name %s", buff);
+> 	   system(cmd);
+>     }
+> 
+518c388
+< 	   Error ("Enter Group Name for Portview");
+---
+> 	   Error ("Enter Group Name for NMS");
+521c391
+< 	   sprintf(cmd, "/sbin/set nw nms portview group %s", cfg.svr.group);
+---
+> 	   sprintf(cmd, "/sbin/set group %s", cfg.svr.group);
+526c396
+< 	   sprintf(cmd, "/sbin/set nw nms portview group %s", buff);
+---
+> 	   sprintf(cmd, "/sbin/set group %s", buff);
+536c406
+< 	   sprintf(cmd, "/sbin/set nw nms portview location %s", cfg.svr.location);
+---
+> 	   sprintf(cmd, "/sbin/set location %s", cfg.svr.location);
+541c411
+< 	   sprintf(cmd, "/sbin/set nw nms portview location %s", buff);
+---
+> 	   sprintf(cmd, "/sbin/set location %s", buff);
+547c417
+< int set_serial()
+---
+> void set_serial()
+551a422
+>     int iftype;
+555,558d425
+<     int portno;
+< 
+<     if ( cgiFormInteger("PAGENUM", &portno, 0) != cgiFormSuccess )
+< 	   Error("Where are your from?");
+560d426
+<     portno -=1;
+562c428
+<     value2 = cfg.port[portno].status;
+---
+>     value2 = cfg.port[0].status;
+563a430
+> 
+565c432
+< 	   sprintf(cmd,"/sbin/set serial %d status disable",portno+1);
+---
+> 	   system("/sbin/set port 1 status disable");
+567,571c434,452
+< 	   sprintf(cmd,"/sbin/set serial %d status enable",portno+1);
+<     system(cmd);
+< 
+<     if (value==0)
+< 	   return portno;
+---
+> 	   system("/sbin/set port 1 status enable");
+>     //=========== shlee=========
+>     // serial interface   
+>     cgiFormInteger("IFTYPE", &iftype, cfg.port[0].dum[0]);
+>     switch(iftype)
+>     {
+> 	   case 0:
+> 		  system("/sbin/set port 1 if_type RS232");
+> 		  break;
+> 	   case 1:
+> 		  system("/sbin/set port 1 if_type RS422");
+> 		  break;
+> 	   case 2:
+> 		  system("/sbin/set port 1 if_type RS485");
+> 		  break;
+> 	   default:
+> 		  system("/sbin/set port 1 if_type RS232");
+> 		  break;
+>     }
+573,579d453
+<     // serial interface
+<     cgiFormInteger("INTERFACE", &value, cfg.port[portno].iType);
+<     sprintf(cmd,"/sbin/set serial %d interface %s",portno+1,char_serial_interface[value]);
+<     system(cmd);
+<     cgiFormInteger("TERMINATION", &value, cfg.port[portno].tr);
+<     sprintf(cmd,"/sbin/set serial %d tr %s",portno+1,char_status[value]);
+<     system(cmd);
+583,585c457,484
+<     cgiFormInteger("OPMODE", &mode, cfg.port[portno].protocol);
+<     sprintf(cmd,"/sbin/set serial %d mode %s",portno+1,char_serial_mode[mode]);
+<     system(cmd);
+---
+>     cgiFormInteger("OPMODE", &mode, cfg.port[0].protocol);
+>     switch(mode)
+>     {
+> 	   case 0:
+> 		  system("/sbin/set port 1 protocol com2kxp");
+> 		  break;
+> 	   case 1:
+> 		  system("/sbin/set port 1 protocol com98");
+> 		  break;
+> 	   case 2:
+> 		  system("/sbin/set port 1 protocol tcp_server");
+> 		  break;
+> 	   case 3:
+> 		  system("/sbin/set port 1 protocol tcp_client");
+> 		  break;
+> 	   case 4:
+> 		  system("/sbin/set port 1 protocol tcp_mserver");
+> 		  break;
+> 	   case 5:
+> 		  system("/sbin/set port 1 protocol udp_server");
+> 		  break;
+> 	   case 6:
+> 		  system("/sbin/set port 1 protocol udp_client");
+> 		  break;
+> 	   default:
+> 		  system("/sbin/set port 1 protocol com2kxp");
+> 		  break;
+>     }
+588c487
+<     value = cgiFormStringNoNewlines("LOCAL_PORT", buff, 6);
+---
+>     value = cgiFormStringNoNewlines("LOCAL_PORT", buff, 5);
+593c492
+< 	   sprintf(cmd, "/sbin/set serial %d port %d",portno+1, cfg.port[portno].sockno);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 port %d", cfg.port[0].sockno);
+598c497
+< 	   sprintf(cmd, "/sbin/set serial %d port %d",portno+1, atoi(buff));
+---
+> 	   sprintf(cmd, "/sbin/set port 1 port %d", atoi(buff));
+608c507
+< 	   sprintf(cmd, "/sbin/set serial %d name %s",portno+1, cfg.port[portno].pname);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 name %s", cfg.port[0].pname);
+613c512
+< 	   sprintf(cmd, "/sbin/set serial %d name %s",portno+1, buff);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 name %s", buff);
+618,621c517,564
+<     cgiFormInteger("BAUDRATE", &value, cfg.port[portno].speed);
+<     sprintf(cmd,"/sbin/set serial %d speed %s",portno+1,char_serial_speed[value]);
+<     system(cmd);
+<     /////////////////////// TSUM TSUM 
+---
+>     cgiFormInteger("BAUDRATE", &value, cfg.port[0].speed);
+>     switch (value)
+>     {
+> 	   case 0:
+> 		  system("/sbin/set port 1 speed 150");
+> 		  break;
+> 	   case 1:
+> 		  system("/sbin/set port 1 speed 300");
+> 		  break;
+> 	   case 2:
+> 		  system("/sbin/set port 1 speed 600");
+> 		  break;
+> 	   case 3:
+> 		  system("/sbin/set port 1 speed 1200");
+> 		  break;
+> 	   case 4:
+> 		  system("/sbin/set port 1 speed 2400");
+> 		  break;
+> 	   case 5:
+> 		  system("/sbin/set port 1 speed 4800");
+> 		  break;
+> 	   case 6:
+> 		  system("/sbin/set port 1 speed 9600");
+> 		  break;
+> 	   case 7:
+> 		  system("/sbin/set port 1 speed 19200");
+> 		  break;
+> 	   case 8:
+> 		  system("/sbin/set port 1 speed 38400");
+> 		  break;
+> 	   case 9:
+> 		  system("/sbin/set port 1 speed 57600");
+> 		  break;
+> 	   case 10:
+> 		  system("/sbin/set port 1 speed 115200");
+> 		  break;
+> 	   case 11:
+> 		  system("/sbin/set port 1 speed 230400");
+> 		  break;
+> 	   case 12:
+> 		  system("/sbin/set port 1 speed 460800");
+> 		  break;
+> 	   case 13:
+> 		  system("/sbin/set port 1 speed 921600");
+> 		  break;
+> 	   default:
+> 		  system("/sbin/set port 1 speed 9600");
+>     }
+624c567
+<     charval = get_char_from_dps(cfg.port[portno].dps);
+---
+>     charval = get_char_from_dps(cfg.port[0].dps);
+632a576
+> 
+634,635c578,585
+<     sprintf(cmd,"/sbin/set serial %d data %s",portno+1,char_serial_data[value]);
+<     system(cmd);
+---
+>     if (value == 0)
+> 	   system("/sbin/set port 1 data 5");
+>     else if (value == 1)
+> 	   system("/sbin/set port 1 data 6");
+>     else if (value == 2)
+> 	   system("/sbin/set port 1 data 7");
+>     else if (value == 3)
+> 	   system("/sbin/set port 1 data 8");
+638c588
+<     charval = get_stop_from_dps(cfg.port[portno].dps);
+---
+>     charval = get_stop_from_dps(cfg.port[0].dps);
+642a593
+> 
+644,645c595,598
+<     sprintf(cmd,"/sbin/set serial %d stop %s",portno+1,char_serial_stop[value]);
+<     system(cmd);
+---
+>     if (value == 0)
+> 	   system("/sbin/set port 1 stop 1");
+>     else if (value == 1)
+> 	   system("/sbin/set port 1 stop 2");
+648c601
+<     charval = get_parity_from_dps(cfg.port[portno].dps);
+---
+>     charval = get_parity_from_dps(cfg.port[0].dps);
+654a608
+> 
+656,657c610,615
+<     sprintf(cmd,"/sbin/set serial %d parity %s",portno+1,char_serial_parity[value]);
+<     system(cmd);
+---
+>     if (value == 0)
+> 	   system("/sbin/set port 1 parity none");
+>     else if (value == 1)
+> 	   system("/sbin/set port 1 parity odd");
+>     else if (value == 2)
+> 	   system("/sbin/set port 1 parity even");
+660c618
+<     value2 = cfg.port[portno].flow;
+---
+>     value2 = cfg.port[0].flow;
+662,663c620,625
+<     sprintf(cmd,"/sbin/set serial %d flow %s",portno+1,char_serial_flow[value]);
+<     system(cmd);
+---
+>     if (value == 0)
+> 	   system("/sbin/set port 1 flow none");
+>     else if (value == 1)
+> 	   system("/sbin/set port 1 flow xon");
+>     else if (value == 2)
+> 	   system("/sbin/set port 1 flow rts");
+666c628
+<     value2 = cfg.port[portno].signal;
+---
+>     value2 = cfg.port[0].signal;
+668,669c630,634
+<     sprintf(cmd,"/sbin/set serial %d signal %s",portno+1,char_serial_signal[value]);
+<     system(cmd);
+---
+> 
+>     if (value == 0)
+> 	   system("/sbin/set port 1 signal data");
+>     else if (value == 1)
+> 	   system("/sbin/set port 1 signal modem");
+677,678c642,643
+< 	   sprintf(cmd, "/sbin/set serial %d rip %d.%d.%d.%d",portno+1,
+< 			 cfg.port[portno].rip[0], cfg.port[portno].rip[1],cfg.port[portno].rip[2],cfg.port[portno].rip[3]);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 remote %d.%d.%d.%d",
+> 			 cfg.port[0].rip[0], cfg.port[0].rip[1],cfg.port[0].rip[2],cfg.port[0].rip[3]);
+683c648
+< 	   sprintf(cmd, "/sbin/set serial %d rip %s",portno+1, buff);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 remote %s", buff);
+687c652
+<     value = cgiFormStringNoNewlines("SERVER_PORT", buff, 6);
+---
+>     value = cgiFormStringNoNewlines("SERVER_PORT", buff, 5);
+692c657
+< 	   sprintf(cmd, "/sbin/set serial %d rport %d",portno+1, cfg.port[portno].rport);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 rport %d", cfg.port[0].rport);
+697c662
+< 	   sprintf(cmd, "/sbin/set serial %d rport %d",portno+1, atoi(buff));
+---
+> 	   sprintf(cmd, "/sbin/set port 1 rport %d", atoi(buff));
+707c672
+< 	   sprintf(cmd, "/sbin/set serial %d alive %d",portno+1, cfg.port[portno].alive_min);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 keepalive %d", cfg.port[0].alive_min);
+712c677
+< 	   sprintf(cmd, "/sbin/set serial %d alive %d",portno+1, atoi(buff));
+---
+> 	   sprintf(cmd, "/sbin/set port 1 keepalive %d", atoi(buff));
+722c687
+< 	   sprintf(cmd, "/sbin/set serial %d mtu %d",portno+1, cfg.port[portno].mtu);
+---
+> 	   sprintf(cmd, "/sbin/set port 1 mtu %d", cfg.port[0].mtu);
+727c692
+< 	   sprintf(cmd, "/sbin/set serial %d mtu %d",portno+1, atoi(buff));
+---
+> 	   sprintf(cmd, "/sbin/set port 1 mtu %d", atoi(buff));
+732c697
+<     value2 = cfg.port[portno].plogin;
+---
+>     value2 = cfg.port[0].plogin;
+734,735d698
+< 
+< 
+737,740c700
+<     {
+< 	   sprintf(cmd,"/sbin/set serial %d login disable",portno+1);
+< 	   system(cmd);
+<     }
+---
+> 	   system("/sbin/set port 1 uselogin 0");
+743,744c703
+< 	   sprintf(cmd,"/sbin/set serial %d login enable",portno+1);
+< 	   system(cmd);
+---
+> 	   system("/sbin/set port 1 uselogin 1");
+751c710
+< 		  sprintf(cmd, "/sbin/set serial %d username %s",portno+1, cfg.port[portno].username);
+---
+> 		  sprintf(cmd, "/sbin/set port 1 conusername %s", cfg.port[0].username);
+756c715
+< 		  sprintf(cmd, "/sbin/set serial %d username %s",portno+1, buff);
+---
+> 		  sprintf(cmd, "/sbin/set port 1 conusername %s", buff);
+767c726
+< 		  sprintf(cmd, "/sbin/set serial %d password %s",portno+1, cfg.port[portno].password);
+---
+> 		  sprintf(cmd, "/sbin/set port 1 conpassword %s", cfg.port[0].password);
+772c731
+< 		  sprintf(cmd, "/sbin/set serial %d password %s",portno+1, buff);
+---
+> 		  sprintf(cmd, "/sbin/set port 1 conpassword %s", buff);
+777,783c736
+<     // RESET PORT
+<     if ( cgiFormStringNoNewlines("RESETPORT",buff,5) == cgiFormNotFound ) {
+<     }
+<     else {
+< 	   sprintf(cmd,"/var/run/resetport%d",portno+1);
+< 	   close(open(cmd,O_RDWR|O_CREAT));
+<     }
+---
+> }
+785c738,797
+<     return portno;
+---
+> void set_gpio()
+> {
+>     int value;
+> 
+>     // Pin 0 mode
+>     cgiFormInteger("G0_MODE", &value, cfg.gpio[0].mode);
+>     if (value == 0)	// input
+> 	   system ("/sbin/set gpio 0 mode in");
+>     else	// output
+> 	   system ("/sbin/set gpio 0 mode out");
+> 
+> 
+>     // Pin 0 value
+>     cgiFormInteger("G0_VALUE", &value, cfg.gpio[0].value);
+>     if (value == 0)	// low
+> 	   system ("/sbin/set gpio 0 value low");
+>     else	// high
+> 	   system ("/sbin/set gpio 0 value high");
+> 
+>     // Pin 1 mode
+>     cgiFormInteger("G1_MODE", &value, cfg.gpio[1].mode);
+>     if (value == 0)	// input
+> 	   system ("/sbin/set gpio 1 mode in");
+>     else	// output
+> 	   system ("/sbin/set gpio 1 mode out");
+> 
+>     // Pin 1 value
+>     cgiFormInteger("G1_VALUE", &value, cfg.gpio[1].value);
+>     if (value == 0)	// low
+> 	   system ("/sbin/set gpio 1 value low");
+>     else	// high
+> 	   system ("/sbin/set gpio 1 value high");
+> 
+>     // Pin 2 mode
+>     cgiFormInteger("G2_MODE", &value, cfg.gpio[2].mode);
+>     if (value == 0)	// input
+> 	   system ("/sbin/set gpio 2 mode in");
+>     else	// output
+> 	   system ("/sbin/set gpio 2 mode out");
+> 
+>     // Pin 2 value
+>     cgiFormInteger("G2_VALUE", &value, cfg.gpio[2].value);
+>     if (value == 0)	// low
+> 	   system ("/sbin/set gpio 2 value low");
+>     else	// high
+> 	   system ("/sbin/set gpio 2 value high");
+> 
+>     // Pin 3 mode
+>     cgiFormInteger("G3_MODE", &value, cfg.gpio[3].mode);
+>     if (value == 0)	// input
+> 	   system ("/sbin/set gpio 3 mode in");
+>     else	// output
+> 	   system ("/sbin/set gpio 3 mode out");
+> 
+>     // Pin 3 value
+>     cgiFormInteger("G3_VALUE", &value, cfg.gpio[3].value);
+>     if (value == 0)	// low
+> 	   system ("/sbin/set gpio 3 value low");
+>     else	// high
+> 	   system ("/sbin/set gpio 3 value high");
+801c813
+< 	   sprintf(cmd, "/sbin/set admin name %s", cfg.svr.name);
+---
+> 	   sprintf(cmd, "/sbin/set name %s", cfg.svr.name);
+806c818
+< 	   sprintf(cmd, "/sbin/set admin name %s", buff);
+---
+> 	   sprintf(cmd, "/sbin/set name %s", buff);
+817c829
+< 	   sprintf(cmd, "/sbin/set admin website %s", cfg.support.website);
+---
+> 	   sprintf(cmd, "/sbin/set support website %s", cfg.support.website);
+822c834
+< 	   sprintf(cmd, "/sbin/set admin website %s", buff);
+---
+> 	   sprintf(cmd, "/sbin/set support website %s", buff);
+833c845
+< 	   sprintf(cmd, "/sbin/set admin contact %s", cfg.support.contact);
+---
+> 	   sprintf(cmd, "/sbin/set support contact %s", cfg.support.contact);
+838c850
+< 	   sprintf(cmd, "/sbin/set admin contact %s", buff);
+---
+> 	   sprintf(cmd, "/sbin/set support contact %s", buff);
+850c862
+<     //int fd;
+---
+>     int fd;
+852d863
+< #if 0
+880c891
+< #endif
+---
+> 
+915c926
+< 	   sprintf(cmd, "/sbin/set passwd -systemadmin %s", buff);
+---
+> 	   sprintf(cmd, "/sbin/set pass %s", buff);
+922c933
+<     /*
+---
+>     /* mcpanic original		
+935,949c946,962
+< 	  return;
+< 	  }
+< 	  cgiFormFileSize("filename", &size);
+< 	  cgiFormFileContentType("filename", contentType, sizeof(contentType));
+< 	  if (cgiFormFileOpen("filename", &file) != cgiFormSuccess) {
+< 	  Error("File Open Error");
+< 	  return;
+< 	  }
+< 	  fd = open(UPLOAD_FILE_NAME,O_RDWR|O_CREAT,0666);
+< 	  while (cgiFormFileRead(file, buffer, sizeof(buffer), &got) == cgiFormSuccess)
+< 	  {
+< 	  write(fd,buffer,got);
+< 	  }
+< 	  cgiFormFileClose(file);
+< 	  close(fd);
+---
+> //        return 0;
+> return;
+> }
+> cgiFormFileSize("filename", &size);
+> cgiFormFileContentType("filename", contentType, sizeof(contentType));
+> if (cgiFormFileOpen("filename", &file) != cgiFormSuccess) {
+> Error("File Open Error");
+> //        return 0;
+> return;
+> }
+> fd = open(UPLOAD_FILE_NAME,O_RDWR|O_CREAT,0666);
+> while (cgiFormFileRead(file, buffer, sizeof(buffer), &got) == cgiFormSuccess)
+> {
+> write(fd,buffer,got);
+> }
+> cgiFormFileClose(file);
+> close(fd);
+951,958c964,973
+<     char name[1024];
+<     char buffer[1024];
+< 
+<     if (cgiFormtFileName("filename", name, sizeof(name)) != cgiFormSuccess) 
+< 	   Error("Component Not Found!");
+< 
+<     sprintf(buffer,"mv %s %s", name, UPLOAD_FILE_NAME);
+<     system(buffer);
+---
+> // mcpanic 6608
+> char name[1024];
+> char buffer[1024];
+> 
+> if (cgiFormtFileName("filename", name, sizeof(name)) != cgiFormSuccess) 
+> Error("Component Not Found!");
+> 
+> sprintf(buffer,"mv %s %s", name, UPLOAD_FILE_NAME);
+> //	Error(buffer);
+> system(buffer);
+982,986c997,1002
+< 	   sleep(1);
+< 	   system("eraseall /dev/mtd2");
+< 	   sleep(1);
+< 	   system("fcp /var/tmp/Image.bin /dev/mtd2");
+< 	   sleep(1);
+---
+> 	   fcp(2);
+> 	   //		sleep(2);
+> 	   //		system("eraseall /dev/mtd2");
+> 	   //		sleep(2);
+> 	   //		system("/var/fcp /var/tmp/Image.bin /dev/mtd2");
+> 	   //		sleep(5);
+990,994c1006,1011
+< 	   sleep(1);
+< 	   system("eraseall /dev/mtd3");
+< 	   sleep(1);
+< 	   system("fcp /var/tmp/Image.bin /dev/mtd3");
+< 	   sleep(1);
+---
+> 	   fcp(3);
+> 	   //		sleep(2);
+> 	   //		system("eraseall /dev/mtd3");
+> 	   //		sleep(2);
+> 	   //		system("/var/fcp /var/tmp/Image.bin /dev/mtd3");
+> 	   //		sleep(5);
+998,1002c1015,1020
+< 	   sleep(1);
+< 	   system("eraseall /dev/mtd4");
+< 	   sleep(1);
+< 	   system("/var/fcp /var/tmp/Image.bin /dev/mtd4");
+< 	   sleep(1);
+---
+> 	   fcp(4);
+> 	   //		sleep(2);
+> 	   //		system("eraseall /dev/mtd4");
+> 	   //		sleep(2);
+> 	   //		system("/var/fcp /var/tmp/Image.bin /dev/mtd4");
+> 	   //		sleep(5);
+1032a1051,1063
+> 
+> 
+> 
+> 
+> void set_test()
+> {
+>     sleep(2);
+>     fcp(4);
+>     sleep(5);
+>     //unlink(UPLOAD_FILE_NAME);
+>     //sleep(5);
+> }
+> 
+1044a1076,1105
+> static int safe_open (const char *pathname,int flags)
+> {
+>     int fd;
+> 
+>     fd = open (pathname,flags);
+>     if (fd < 0)
+>     {
+> 	   /*		log_printf (LOG_ERROR,"While trying to open %s",pathname);
+> 				if (flags & O_RDWR)
+> 				log_printf (LOG_ERROR," for read/write access");
+> 				else if (flags & O_RDONLY)
+> 				log_printf (LOG_ERROR," for read access");
+> 				else if (flags & O_WRONLY)
+> 				log_printf (LOG_ERROR," for write access");
+> 				log_printf (LOG_ERROR,": %m\n");
+> 				exit (EXIT_FAILURE);
+> 	    */
+> 	   Error("Open error!");
+>     }
+> 
+>     return (fd);
+> }
+> 
+> static void safe_read (int fd,const char *filename,void *buf,size_t count)
+> {
+>     ssize_t result;
+> 
+>     // mcpanic
+>     //   result = read (fd,buf,count);
+>     result = mcpanic_read (fd,buf,count);
+1046,1049c1107,1119
+< char * a_data		[MAX_DATA]	= { "5", "6", "7", "8" };
+< char * a_stop		[MAX_STOP]	= { "1", "2" };
+< char * a_parity		[MAX_PARITY]	= { "None", "Odd", "Even" };
+< char * a_flow		[MAX_FLOW]	= { "None", "Xon", "Rts" };
+---
+>     if (count != result)
+>     {
+> 	   if (result < 0)
+> 	   {
+> 		  Error("Read error!");
+> 		  //			 log_printf (LOG_ERROR,"While reading data from %s: %m\n",filename);
+> 		  //			 exit (EXIT_FAILURE);
+> 	   }
+> 	   Error("Read error!");
+> 	   //		log_printf (LOG_ERROR,"Short read count returned while reading from %s\n",filename);
+> 	   //		exit (EXIT_FAILURE);
+>     }
+> }
+1051,1052c1121
+< //=============================================================
+< unsigned char get_char_from_dps( unsigned char char_dps )
+---
+> static void safe_rewind (int fd,const char *filename)
+1054,1056c1123,1128
+<     unsigned char bit_mask = 3;
+<     char_dps &= bit_mask;
+<     return a_data[char_dps][0];
+---
+>     if (lseek (fd,0L,SEEK_SET) < 0)
+>     {
+> 	   Error("File seek error!");
+> 	   //		log_printf (LOG_ERROR,"While seeking to start of %s: %m\n",filename);
+> 	   //		exit (EXIT_FAILURE);
+>     }
+1059,1060c1131,1133
+< //=============================================================
+< unsigned char get_parity_from_dps( unsigned char parity_dps )
+---
+> /******************************************************************************/
+> 
+> static void cleanup (void)
+1062,1065c1135,1138
+<     unsigned char bit_mask = 3;
+<     parity_dps >>= 3;
+<     parity_dps &= bit_mask;
+<     return a_parity[ parity_dps ][0] ;
+---
+>     if (dev_fd > 0)
+> 	   close (dev_fd);
+>     if (fil_fd > 0) 
+> 	   close (fil_fd);
+1068,1069c1141
+< //=============================================================
+< unsigned char get_stop_from_dps( unsigned char stop_dps )
+---
+> ssize_t mcpanic_read(int fd, void *buf, size_t count)
+1071,1074c1143,1294
+<     unsigned char bit_mask = 1;
+<     stop_dps >>= 2;
+<     stop_dps &= bit_mask;
+<     return a_stop[ stop_dps ][0];
+---
+>     ssize_t n;
+>     do {
+> 	   n = read (fd, buf, count);
+>     } while (n<0 && errno==EINTR);
+>     return n;
+> }
+> 
+> int fcp (int mtd_no)
+> {
+> 
+>     //   const char *progname,*filename = NULL,*device = NULL;
+>     char filename[256];
+>     char device[256];
+>     int i;
+>     size_t result,size,written;
+>     struct mtd_info_user mtd;
+>     struct erase_info_user erase;
+>     struct stat filestat;
+>     unsigned char src[BUFFERSIZE],dest[BUFFERSIZE];
+>     // int k=0;
+> 
+>     memset(filename,0,sizeof(filename));
+>     memset(device,0,sizeof(device));
+>     sprintf(filename, "%s", UPLOAD_FILE_NAME);
+>     sprintf(device, "/dev/mtd%d", mtd_no);
+>     //	log_printf (LOG_NORMAL,"filename %s %d device %s %d\n", filename, strlen(filename), device, strlen(device));
+> 
+>     atexit (cleanup);
+> 
+>     // get some info about the flash device
+>     dev_fd = safe_open (device,O_SYNC | O_RDWR);
+>     if (ioctl (dev_fd,MEMGETINFO,&mtd) < 0)
+>     {
+> 	   Error("Not a valid MTD flash device!");
+> 	   //		log_printf (LOG_ERROR,"This doesn't seem to be a valid MTD flash device!\n");
+> 	   //		exit (EXIT_FAILURE);
+>     }
+> 
+>     // get some info about the file we want to copy 
+>     fil_fd = safe_open (filename,O_RDONLY);
+>     if (fstat (fil_fd,&filestat) < 0)
+>     {
+> 	   Error("File stat error!");
+> 	   //		log_printf (LOG_ERROR,"While trying to get the file status of %s: %m\n",filename);
+> 	   //		exit (EXIT_FAILURE);
+>     }
+> 
+>     // does it fit into the device/partition? 
+>     if (filestat.st_size > mtd.size)
+>     {
+> 	   Error("Not enough disk space!");
+> 	   //		log_printf (LOG_ERROR,"%s won't fit into %s!\n",filename,device);
+> 	   //		exit (EXIT_FAILURE);
+>     }
+> 
+>     //	erase enough blocks so that we can write the file 
+> 
+>     // warning "Check for smaller erase regions"
+> 
+>     erase.start = 0;
+>     erase.length = filestat.st_size & ~(mtd.erasesize - 1);
+>     if (filestat.st_size % mtd.erasesize) 
+> 	   erase.length += mtd.erasesize;
+>     // erase the whole chunk in one shot 
+>     if (ioctl (dev_fd,MEMERASE,&erase) < 0)
+>     {
+> 	   Error("Block erase error!");
+> 	   /*		log_printf (LOG_ERROR,
+> 				"While erasing blocks from 0x%.8x-0x%.8x on %s: %m\n",
+> 				(unsigned int) erase.start,(unsigned int) (erase.start + erase.length),device);
+> 				exit (EXIT_FAILURE);
+> 	    */
+>     }
+>     // mcpanic DEBUG->log_printf
+>     //   log_printf(LOG_NORMAL, "Erased %u / %lu bytes\n",erase.length,filestat.st_size);
+> 
+>     // write the entire file to flash
+> 
+>     size = filestat.st_size;
+>     //mcpanic BUFSIZE->1024
+>     i = 1024;
+>     written = 0;
+>     while (size)
+>     {
+> 	   //mcpanic BUFSIZE->1024 
+> 	   if (size < 1024) 
+> 		  i = size;
+> 
+> 	   // read from filename 
+> 	   // mcpanic!! which line??
+> 	   safe_read (fil_fd,filename,src,i);
+> 	   //		read (fil_fd,src,sizeof(src));
+> 
+> 
+> 	   // write to device 
+> 	   result = write (dev_fd,src,i);
+> 	   if (i != result)
+> 	   {
+> 		  if (result < 0)
+> 		  {
+> 			 Error("Write error!");
+> 			 //				  log_printf (LOG_ERROR, "While writing data to 0x%.8x-0x%.8x on %s: %m\n", written,written + i,device);
+> 			 //				  exit (EXIT_FAILURE);
+> 		  }
+> 		  Error("Write error!");
+> 		  //			 log_printf (LOG_ERROR, "Short write count returned while writing to x%.8x-0x%.8x on %s: %d/%lu bytes written to flash\n", written,written + i,device,written + result,filestat.st_size);
+> 		  //			 exit (EXIT_FAILURE);
+> 	   }
+> 
+> 	   written += i;
+> 	   size -= i;
+>     }
+>     //   log_printf(LOG_NORMAL, "Wrote %d / %lu bytes\n",written,filestat.st_size);
+> 
+>     // verify that flash == file data 
+> 
+>     safe_rewind (fil_fd,filename);
+>     safe_rewind (dev_fd,device);
+>     size = filestat.st_size;
+>     // mcpanic BUFSIZE->1024
+>     i = 1024;
+>     written = 0;
+>     while (size)
+>     {
+> 	   //mcpanic BUFSIZE->1024
+> 	   if (size < 1024) 
+> 		  i = size;
+> 
+> 	   // read from filename
+> 	   // mcpanic
+> 	   //		read (fil_fd,src,sizeof(src));
+> 	   safe_read (fil_fd,filename,src,i);
+> 
+> 	   // read from device 
+> 	   safe_read (dev_fd,device,dest,i);
+> 
+> 	   // compare buffers 
+> 	   if (memcmp (src,dest,i))
+> 	   {
+> 		  Error("Verification error!");
+> 		  //			 log_printf (LOG_ERROR, "File does not seem to match flash data. First mismatch at 0x%.8x-0x%.8x\n", written,written + i);
+> 		  //			 exit (EXIT_FAILURE);
+> 	   }
+> 
+> 	   written += i;
+> 	   size -= i;
+>     }
+>     // mcpanic DEBUG->log_printf
+>     //   log_printf(LOG_NORMAL, "Verified %d / %lu bytes\n",written,filestat.st_size);
+> 
+>     //   exit (EXIT_SUCCESS);
+>     return 1;

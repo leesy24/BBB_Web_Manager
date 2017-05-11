@@ -1,0 +1,381 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>[v, device_name] Web Manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+<script Language="JavaScript" src="/utility.js">
+</script>
+<script Language="JavaScript">
+<!--
+function submit()
+{
+    if( Validator(document.f1) )
+    {
+    	document.f1.submit();
+    }
+}
+	
+	function changeType()
+	{
+		document.f1.action="/cgi-bin/getagent.cgi?type=2";
+		document.f1.submit();
+	}
+	
+function Validator(theForm)
+{
+  if (!isValidIP(theForm.N_IP.value))
+  {
+    alert("IP Address is invalid!");
+    theForm.N_IP.focus();
+    return (false);
+  }
+
+  if (!isValidMask(theForm.N_MASK.value))
+  {
+    alert("Subnet Mask is invalid!");
+    theForm.N_MASK.focus();
+    return (false);
+  }
+
+  if (!isValidIP(theForm.N_GW.value))
+  {
+    alert("Default Gateway is invalid");
+	theForm.N_GW.focus();
+    return (false);
+  }
+
+  if (!isValidIP(theForm.N_NIP.value))
+  {
+    alert("NMS server's IP address is invalid");
+    theForm.N_NIP.focus();
+    return (false);
+  }
+
+  if (!isValidRange(theForm.N_NPORT.value, 0, 65535))
+  {
+    alert("NMS server's port number is invalid");
+	theForm.N_NPORT.focus();
+    return (false);
+  }
+
+  return (true);
+}
+-->
+</script>
+
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+
+<tr valign="top"> 
+<td width="158" height="121" bgcolor="#000000" valign="top">
+<img src="/images/LOGO.jpg" width="158" height="72"> 
+	<TABLE height=26 cellSpacing=0 cellPadding=0 border=0>
+		<TR> 
+		<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+		<!-- background=images/left_top.gif -->
+		<font color="white">Setup Menu</font>
+		</TD>
+	    </TR>
+		</TABLE>
+		
+	<TABLE  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+	<TR vAlign=top> 
+	<TD vAlign=top align=right class="menu">
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</A><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+[v,S4M_START]		
+	<A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+[v,S4M_END]		
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+	<BR>
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font><font color="white"><BR>
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font><font color="white"><BR>
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
+	<BR>
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+	<A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font><font color="white"><BR> 
+	<IMG src="/images/menu_div.gif" width="158" height=5 border=0></font></font></font></font></font></font></font></font></font></font> 
+	</TD>
+	</TR>
+	</TABLE>
+</td>
+      
+	<td valign="top" height="68">
+	<td colspan="3" rowspan="2" valign="top" height="68">
+	  <table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td height="72" bgcolor="6B0808">
+			<div align="right">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+						<td width="530" rowspan=3 class="pagetitle"><font color="white">[Network Settings]</td>
+                    <td width="252"><div align="center"><font color="#FFFFFF">
+						Device Name: [v, device_name]</font></div></td>
+                </tr>
+				<tr>
+						<td><div align="center"><font color="#FFFFFF">
+						Logged in as [v, username]</font></div></td>
+                </tr>
+                <tr> 
+                  <td><div align="center"><font color="#FFFFFF">
+				  <a href="/cgi-bin/setagent.cgi?type=o"><font color="red">Logout</a></font></div></td>
+                </tr>
+              </table>
+			</div>
+	      </td>
+        </tr>
+      </table>
+
+	<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=1" onSubmit="return Validator(this)">
+    <table width="805" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+    <td>
+	<table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+              <tr bgcolor="#393C39"> 
+				  <td height="24" colspan="2" class="title"><font color=white>WAN Configuration</td>
+              </tr>
+              <tr bgcolor="#FFFFFF"> 
+				  <td width="250" class="content">Line Type</td>
+				  <td class="content">
+				  <select name="N_LINE" onchange="changeType()">
+					  <option [v, n_lines] value="0">Static IP</option>
+					  <option [v, n_lined] value="1">DHCP</option>
+				  </select>
+&nbsp;&nbsp;<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+IP obtaining method for Eddy’s network connection
+</div></div>
+			  </td></tr>	
+              </tr>
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">IP Address</td>
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_IP" value="[v,n_ip]" [v,n_option1] /> 
+&nbsp;&nbsp;<a href=#option2 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current IP address Eddy is assigned to.<br>
+		When line type is Static IP, manually enter an appropriate IP address.<br>
+		When line type is DHCP, current IP is displayed, but it is not editable.<br>
+</div></div>
+			  </td></tr>
+              <tr bgcolor="#FFFFFF">
+				  <td class="content">Subnet Mask</td>
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_MASK" value="[v,n_mask]" [v,n_option1]/> 
+&nbsp;&nbsp;<a href=#option3 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current subnet mask Eddy is assigned to.<br>
+		When line type is Static IP, manually enter an appropriate subnet mask.<br>
+		When line type is DHCP, current subnet mask is displayed, but it is not editable.<br>
+</div></div>
+			  </td></tr>
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">Gateway</td>
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_GW" value="[v,n_gw]" [v,n_option1]/> 
+&nbsp;&nbsp;<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current default gateway Eddy is assigned to.<br>
+		When line type is Static IP, manually enter an appropriate default gateway.<br>
+		When line type is DHCP, current default gateway is displayed, but it is not editable.<br>
+</div></div>
+			  </td></tr>
+
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">DNS</td>
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_DNS" value="[v,n_dns]" [v,n_option1]/> 
+&nbsp;&nbsp;<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Current default DNS Address is assigned to.<br>
+</div></div>
+			  </td></tr>
+            </table>
+</br>
+
+[v, S4M_START]
+			<table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+              <tr bgcolor="#393C39"> 
+				  <td height="24" colspan="2" class="title"><font color=white>LAN Configuration</td>
+              </tr>
+
+              <tr bgcolor="#FFFFFF"> 
+				  <td width="250" class="content">DHCP Server</td>
+				  <td class="content">
+				  <select name="N_DHCPENABLE"  [v, n_langpio] onchange="changeType()">
+					  <option [v, n_dhcpdisable] value="0">Disable</option>
+					  <option [v, n_dhcpenable] value="1">Enable</option>
+				  </select>
+&nbsp;&nbsp;<a href=#option1 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/><div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+Enable or Disable DHCP server
+</div></div>
+			  </td></tr>	
+              </tr>
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">IP Address</td>
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_LANIP" value="[v,n_lanip]" [v, n_langpio]/> 
+			  </td></tr>
+
+              <tr bgcolor="#FFFFFF">
+				  <td class="content">Subnet Mask</td>
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_LANMASK" value="[v,n_lanmask]" [v, n_langpio]/> 
+			  </td></tr>
+
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">Lease Start Address</td>
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_STARTIP" value="[v,n_startip]" [v,n_option2] [v, n_langpio]/> 
+			  </td></tr>
+
+      <tr bgcolor="#FFFFFF"> 
+	  <td class="content">Lease End Address</td>
+	  <td class="content"><input type="text" size="16" maxlength="16" name="N_ENDIP" value="[v,n_endip]" [v,n_option2] [v, n_langpio]/> 
+		</td></tr>
+        
+      <tr bgcolor="#FFFFFF"> 
+	  <td class="content">Lease Time</td>
+	  <td class="content"><input type="text" size="5" maxlength="5" name="N_LEASETIME" value="[v,n_leasetime]" [v,n_option2] [v, n_langpio]/> &nbsp;min
+		</td></tr>
+        
+            </table>
+        </br>
+
+[v, S4M_END]
+
+            <table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+
+              <tr bgcolor="393C39"> 
+                <td height="24" colspan="2" class="title"><font color=white>Network Sevice Configuration</td>
+              </tr>
+
+              <tr bgcolor="#FFFFFF"> 
+			    <td class="content">Device Name</td>
+				<td class="content"><input type="text" size="32" maxlength="32" name="N_DNAME" value="[v,n_dname]" /> 
+				&nbsp;&nbsp;<a href=#option7 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				Set the device name for management. 32 Characters at maximum.
+				</div></div>
+			  	</td></tr>
+
+              <tr bgcolor="#FFFFFF"> 
+					  <td width="250" class="content">PortView IP&nbsp;/&nbsp;Port</td>
+				<td class="content"><input type="text" size="16" maxlength="16" name="N_NIP" value="[v,n_nip]" /> 
+				&nbsp;/&nbsp; <input type="text" size="5" maxlength="5" name="N_NPORT" value="[v,n_nport]" />
+			&nbsp;&nbsp;<a href=#option6 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+			<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Set the IP address and the port number of the PC where Portview in installed. For more information on Portview, please refer to the Portview User Manual.<br>
+		If IP is set to 0.0.0.0, NMS feature is disabled.
+</div></div>
+			  </td></tr>
+
+
+              <tr bgcolor="#FFFFFF"> 
+					  <td width="250" class="content">DDNS&nbsp;/&nbsp;(Username/Password)</td>
+				<td class="content"><input type="text" size="16" maxlength="16" name="N_DDNS" value="[v,n_ddns]" /> 
+				&nbsp;/&nbsp; <input type="text" size="16" maxlength="16" name="N_DDNSUSER" value="[v,n_ddnsuser]" />
+				&nbsp;<input type="text" size="16" maxlength="16" name="N_DDNSPASS" value="[v,n_ddnspass]" />
+			&nbsp;&nbsp;<a href=#option6 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+			<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Set the IP address and Login username & password of the DDNS Server. For more information on DDNS Service, please refer to the Eddy User Manual.<br>
+		If IP is set to 0.0.0.0, DDNS feature is disabled.
+</div></div>
+			  </td></tr>
+
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">Telnet Service</td>
+				  <td class="content"><select name="N_TELNET">
+					  <option [v, n_telnet_di] value="0">Disable</option>
+					  <option [v, n_telnet_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				Enable or disable Telnet Login support.<br>
+				</div></div>
+			  </td></tr>
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">FTP    Service</td>
+				  <td class="content"><select name="N_FTP">
+					  <option [v, n_ftp_di] value="0">Disable</option>
+					  <option [v, n_ftp_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				Enable or disable FTP Login support.<br>
+				</div></div>
+			  </td></tr>
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">WEB    Service</td>
+				  <td class="content"><select name="N_WEB">
+					  <option [v, n_web_di] value="0">Disable</option>
+					  <option [v, n_web_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				Enable or disable WEB Login support.<br>
+				</div></div>
+			  </td></tr>
+
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">SSH  Service</td>
+				  <td class="content"><select name="N_SSH">
+					  <option [v, n_ssh_di] value="0">Disable</option>
+					  <option [v, n_ssh_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+				Enable or disable SSH Login support.<br>
+				</div></div>
+			  </td></tr>
+
+
+
+              <tr bgcolor="#FFFFFF"> 
+				  <td class="content">LemonIDE Target Agent</td>
+				  <td class="content"><select name="N_IDE">
+					  <option [v, n_ide_di] value="0">Disable</option>
+					  <option [v, n_ide_en] value="1">Enable</option>
+				  </select>
+				&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
+				<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+		Enable or Disable Systembase IDE(LEmonIDE) Real-Time Taget Monitoring Agent Service. please refer to the LemonIDE User Manual.<br>
+				</div></div>
+			  </td></tr>
+            </table>
+          </td>
+        </tr>
+		<tr>
+		  <td>&nbsp; <div align="left"> 
+            <input type="button" value="Submit" onClick="submit()" />
+			&nbsp;&nbsp;&nbsp;
+			<input type="reset" value="Cancel" />
+			</div></td>
+		</tr>
+	  </table>
+	  
+	  
+</form> 
+	</td>
+  </tr>
+  <tr valign="top"> 
+		  <!--	  <td height="322" valign="top" bgcolor="393C39"> <img src="images/right.jpg" width="158" height="33"></td> -->
+		  <td height="500" align="right" bgcolor="393C39"><font color="white"><br />Copyright 2014&nbsp;&nbsp;<br>DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>All rights reserved.&nbsp;&nbsp;</font></td> 
+  </tr>
+</table>
+<br>
+</body>
+</html>
+
