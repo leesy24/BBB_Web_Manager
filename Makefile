@@ -17,7 +17,12 @@ EXEC 	= setagent getagent
 #export FLTFLAGS = -z -s 4096
 IFLAGS = -I./SB_APIs/include
 
-all: libcgic.a $(EXEC)
+all: libsb.a libcgic.a $(EXEC)
+
+libsb.a: ./SB_APIs/SB_Network.o ./SB_APIs/SB_System.o
+	rm -f libsb.a
+	$(AR) rc libsb.a ./SB_APIs/SB_Network.o ./SB_APIs/SB_System.o
+	$(RANLIB) libsb.a
 
 libcgic.a: ./cgic205/cgic.o ./cgic205/cgic.h
 	rm -f libcgic.a
@@ -25,15 +30,17 @@ libcgic.a: ./cgic205/cgic.o ./cgic205/cgic.h
 	$(RANLIB) libcgic.a
 
 #getagent: getagent.c iDisplayHtml.o agent.o ./SB_APIs/SB_APIs.a libcgic.a
-getagent: getagent.c iDisplayHtml.o agent.o libcgic.a
+getagent: getagent.c iDisplayHtml.o agent.o libsb.a libcgic.a
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) $(IFLAGS) -o getagent.cgi ${LIBS}
 	$(STRIP) getagent.cgi
 
 #setagent: setagent.c iDisplayHtml.o agent.o ./SB_APIs/SB_APIs.a libcgic.a 
-setagent: setagent.c iDisplayHtml.o agent.o libcgic.a 
+setagent: setagent.c iDisplayHtml.o agent.o libsb.a libcgic.a 
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) $(IFLAGS) -o setagent.cgi ${LIBS}
 	$(STRIP) setagent.cgi
 
 
 clean: 
 	rm -f *.o *.cgi *.cgi.elf *.a
+	rm -f SB_APIs/*.o
+	rm -f cgic205/*.o
