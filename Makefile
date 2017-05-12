@@ -1,4 +1,4 @@
-CROSS	= /opt/lemonix/cdt/bin/arm-linux-
+CROSS	= arm-linux-gnueabihf-
 CC		= $(CROSS)gcc 
 STRIP	= $(CROSS)strip
 AR		= $(CROSS)ar
