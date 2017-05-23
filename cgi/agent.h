@@ -10,8 +10,7 @@
 //#include "include/config.h"
 //#include "include/default.h"
 
-#include "cgic205/cgic.h"
-//#include "cgic.h"
+#include "cgic.h"
 
 #define HTMLPATH        "/usr/local/www"
 #define IMAGEPATH       "/usr/local/www/images"
