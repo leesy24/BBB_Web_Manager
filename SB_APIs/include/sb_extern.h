@@ -1,5 +1,6 @@
 //---------------- Serial APIs -----------------------------------------------------------
 int  SB_OpenSerial  (int port_no);
+void SB_CloseSerial (int sfd);
 void SB_InitSerial  (int sfd, char speed, char dps, char flow);
 void SB_SendSerial    (int fd, char *buff, int len);
 int  SB_ReadSerial  (int fd, char *buff, int buffer_limit, int wait_msec);

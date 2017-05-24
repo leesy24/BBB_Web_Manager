@@ -28,7 +28,7 @@ int fd, i;
 		if (buff[i] >= 0x30 && buff[i] <= 0x39) break;
 		}
 	if (i==0x20) return;
-	memset (ver, 0x00, sizeof(ver));
+	memset (ver, 0x00, strlen(ver)+1);
 	if (buff[i+7] == '.')
 		memcpy (ver, &buff[i], 7);
 	else

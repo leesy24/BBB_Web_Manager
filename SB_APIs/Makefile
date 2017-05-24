@@ -7,13 +7,13 @@ RANLIB  =$(CROSS)ranlib
 
 LIBS	= -D__PIC__
 
-IFLAGS = -I./SB_APIs/include
+CFLAGS += -I./include
 
 all: libsb.a
 
-libsb.a: SB_Network.o SB_System.o
+libsb.a: SB_Network.o SB_System.o SB_Serial.o
 	$(AR) rc $@ $^
 	$(RANLIB) $@
 
 clean: 
-	rm -f SB_Network.o SB_System.o libsb.a
+	rm -f *.o *.a
