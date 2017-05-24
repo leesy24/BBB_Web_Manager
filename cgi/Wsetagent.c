@@ -3,7 +3,7 @@
 #include "../../src/include/p_default.h"
 //#include "../../src/include/p_flash.h"
 #include "../../src/set/func.h"
-#include "include/default.h"
+#include "default.h"
 #define HEADER_FROM_CGI 1
 #include "../../src/set/set.h"
 

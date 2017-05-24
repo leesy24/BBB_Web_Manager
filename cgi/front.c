@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 
 #include "icat.h"
-#include "include/default.h"
+#include "default.h"
 
 struct ABOUT about;
 struct WAN wan;

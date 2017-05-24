@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include "iDisplayHtml.h"
-//#include "include/define.h"
-//#include "include/config.h"
-//#include "include/default.h"
+//#include "define.h"
+//#include "config.h"
+//#include "default.h"
 
 #include "cgic.h"
 
