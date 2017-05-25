@@ -43,7 +43,8 @@ int ret;
 	//---------------------------------------------------------------------- WAN ---------
 	make_env();
 
-#if 0 // TODO: Config WAN.
+#if 1
+#if 0 // TODO: Set MAC.
 	sprintf(cmd, "ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
 				SB_WAN_ETH_NAME,
 				CFG.mac[0],
@@ -53,6 +54,7 @@ int ret;
 				CFG.mac[4],
 				CFG.mac[5]);
 	system(cmd);
+#endif
 	sprintf (cmd, "/sbin/ifup -a");				// start network 
 	system (cmd);
 #endif
@@ -197,18 +199,30 @@ char cmd[100];
 		chmod ("/var/tmp/login.pw", S_IWUSR|S_IRUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
 		}
 
-#if 0 // TODO:
+#if 1
 	if ((fp = fopen("/etc/network/interfaces", "w")) != NULL)
-		{
-		fprintf(fp, "auto lo %s\n", SB_WAN_ETH_NAME);
+	{
+		fprintf(fp, "auto lo\n");
 		fprintf(fp, "iface lo inet loopback\n");
-		fprintf(fp, "iface %s inet static\n", SB_WAN_ETH_NAME);
-		fprintf(fp, "\taddress %s\n", IPADDRESS);
-		fprintf(fp, "\tnetmask %s\n", SUBNETMASK);
-		fprintf(fp, "\tgateway %s\n", GATEWAY);
-		fclose(fp);
+		fprintf(fp, "\n");
+		fprintf(fp, "auto %s\n", SB_WAN_ETH_NAME);
+		if(CFG.line == 'I') // Static IP
+		{
+			fprintf(fp, "iface %s inet static\n", SB_WAN_ETH_NAME);
+			fprintf(fp, "\taddress %s\n", IPADDRESS);
+			fprintf(fp, "\tnetmask %s\n", SUBNETMASK);
+			fprintf(fp, "\tgateway %s\n", GATEWAY);
 		}
-	
+		else if(CFG.line == 'D') // DHCP
+		{
+			fprintf(fp, "iface %s inet dhcp\n", SB_WAN_ETH_NAME);
+		}
+		fprintf(fp, "\n");
+		fclose(fp);
+	}
+#endif
+
+#if 0 // TODO:
 	sprintf (cmd, "/bin/chmod 644 /usr/local/www/*.html");
 	system(cmd);
 	sprintf (cmd, "/bin/chmod 644 /usr/local/www/*.htm");
