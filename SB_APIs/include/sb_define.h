@@ -4,13 +4,21 @@
 //========================================< Odd Defile >
 
 
-
+#if 0
 #define CFGFILE_FLASH_SYSTEM	"/flash/eddy_system.cfg"
 #define CFGFILE_FLASH_SIO		"/flash/eddy_sio.cfg"
 #define CFGFILE_FLASH_SNMP		"/flash/eddy_snmp.cfg"
 #define CFGFILE_FLASH_GPIO		"/flash/eddy_gpio.cfg"
 #define CFGFILE_FLASH_DIO		"/flash/eddy_dio.cfg"
 #define CFGFILE_FLASH_WIFI		"/flash/eddy_wifi.cfg"
+#else
+#define CFGFILE_FLASH_SYSTEM	"/etc/.eddy_system.cfg"
+#define CFGFILE_FLASH_SIO		"/etc/.eddy_sio.cfg"
+#define CFGFILE_FLASH_SNMP		"/etc/.eddy_snmp.cfg"
+#define CFGFILE_FLASH_GPIO		"/etc/.eddy_gpio.cfg"
+#define CFGFILE_FLASH_DIO		"/etc/.eddy_dio.cfg"
+#define CFGFILE_FLASH_WIFI		"/etc/.eddy_wifi.cfg"
+#endif
 
 #define CFGFILE_ETC_SYSTEM		"/etc/eddy_system.cfg"
 #define CFGFILE_ETC_SIO			"/etc/eddy_sio.cfg"

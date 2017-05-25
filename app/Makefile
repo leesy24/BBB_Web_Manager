@@ -2,8 +2,7 @@ CROSS	= arm-linux-gnueabihf-
 #LDFLAGS 	+= -L/opt/lemonix/cdt/lib -L/opt/lemonix/cdt/bin
 #IFLAGS += -I/opt/lemonix/cdt/include  -I./include
 IFLAGS = -I../SB_APIs/include
-#CFLAGS =	-O2 -g  -Wall -Wno-nonnull -Wunused-label $(IFLAGS)
-CFLAGS =	-O2 -g  -Wall -Wno-unused-label -Wno-unused-variable -Wno-unused-but-set-variable $(IFLAGS)
+CFLAGS =	-O2 -g  -Wall $(IFLAGS)
 #DEST		= ../../ramdisk/root/sbin	
 #DEST_ETC	= ../../ramdisk/root/etc
 
@@ -42,12 +41,13 @@ LIBS		=   -lrt ../SB_APIs/libsb.a
 
 all: $(TARGET_BIN)
 
-$(TARGET_BIN): $(TARGET_OBJ) 
+bin/%: %.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@  $<  $(LIBS) 
 	$(STRIP) $@
 
 clean: 
-	rm -f *.o $(TARGET_BIN) $(TARGET_OBJ)
+	rm -f $(TARGET_BIN) $(TARGET_OBJ)
+	@echo "TARGET_OBJ=" $(TARGET_OBJ)
 
 #release:
 #	cp  -f $(TARGET) $(DEST)

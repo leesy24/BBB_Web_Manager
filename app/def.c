@@ -168,6 +168,7 @@ int Product_ID;
 int main (int argc, char *argv[])
 {
 int i;
+	printf ("%s:%s\n", argv[0], argv[1]);
 
 	Product_ID = SB_GetModel ();
     if (argc < 2)
@@ -322,32 +323,37 @@ void factory_default (char *MAC)
 int no;
 
 	memcpy  (CFG_SYS.mac,		MAC, 			6);
+/*
 	sprintf (CFG_SYS.ip,		"%c%c%c%c",     192,168,0,223);
 	sprintf (CFG_SYS.mask,		"%c%c%c%c",     255,255,255,0);
 	sprintf (CFG_SYS.gateway,	"%c%c%c%c",     192,168,0,254);
 	sprintf (CFG_SYS.dns,		"%c%c%c%c",     168,126,63,1);
-	CFG_SYS.line 				= 'I';
-		
-	CFG_SYS.dhcpenable			= 1;
+	CFG_SYS.line 				= 'I'; // Static IP
+*/
+	CFG_SYS.line 				= 'D'; // DHCP
+
+	CFG_SYS.dhcpenable			= 0;
 	sprintf (CFG_SYS.lanip,			"%c%c%c%c",     10,10,1,1);
 	sprintf (CFG_SYS.lanmask,		"%c%c%c%c",     255,255,255,0);
 	sprintf (CFG_SYS.dhcpstartIP,	"%c%c%c%c",     10,10,1,2);
 	sprintf (CFG_SYS.dhcpendIP,		"%c%c%c%c",     10,10,1,30);		
 	CFG_SYS.lease_time			= 180;
 		
+/*
 	sprintf (CFG_SYS.ddns,		"%c%c%c%c",     203,32,117,1);
 	sprintf (CFG_SYS.portview,	"%c%c%c%c",     0,0,0,0);
+*/
 	sprintf (CFG_SYS.device_name,"Eddy");
 	sprintf (CFG_SYS.username,	"eddy");
 	sprintf (CFG_SYS.password,	"99999999");
 	CFG_SYS.portview_port_no		= 4000;
-	CFG_SYS.telnet_server		= SB_ENABLE;
-	CFG_SYS.ftp_server			= SB_ENABLE;
-	CFG_SYS.web_server			= SB_ENABLE;
+	CFG_SYS.telnet_server		= SB_DISABLE;
+	CFG_SYS.ftp_server			= SB_DISABLE;
+	CFG_SYS.web_server			= SB_DISABLE;
 	CFG_SYS.ssh_server			= SB_DISABLE;
 	CFG_SYS.target_agent			= SB_DISABLE;
-	sprintf (CFG_SYS.website,	"http://www.sysbas.com");
-	sprintf (CFG_SYS.contact,	"tech@sysbas.com");
+	sprintf (CFG_SYS.website,	"http://www.dsintek.com");
+	sprintf (CFG_SYS.contact,	"jsLee@DSI");
 	sprintf (CFG_SYS.ddnsuser,	"eddy");
 	sprintf (CFG_SYS.ddnspass,	"99999999");
 	sprintf (CFG_SYS.id,		"%s",			SB_DEVICE_ID);		
@@ -379,14 +385,14 @@ int no;
 	SB_WriteConfig (CFGFILE_FLASH_SIO, (char *)&CFG_SIO[0],  sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
 	SB_WriteConfig (CFGFILE_ETC_SIO,   (char *)&CFG_SIO[0],  sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
 
-	CFG_GPIO.serial_1			=	SB_ENABLE;
-	CFG_GPIO.serial_2			=	SB_ENABLE;
-	CFG_GPIO.serial_3			=	SB_ENABLE;
-	CFG_GPIO.serial_4			=	SB_ENABLE;
+	CFG_GPIO.serial_1			=	SB_DISABLE;
+	CFG_GPIO.serial_2			=	SB_DISABLE;
+	CFG_GPIO.serial_3			=	SB_DISABLE;
+	CFG_GPIO.serial_4			=	SB_DISABLE;
 	CFG_GPIO.debugport			=	SB_ENABLE;
 	CFG_GPIO.lan				=	SB_DISABLE;
 	CFG_GPIO.adc				=	SB_DISABLE;
-	CFG_GPIO.reset				=	SB_ENABLE;
+	CFG_GPIO.reset				=	SB_DISABLE;
 	CFG_GPIO.rdy_led			=	SB_ENABLE;
 	CFG_GPIO.spi_eeprom			=	SB_DISABLE;
 	CFG_GPIO.nandflash			=	SB_DISABLE;

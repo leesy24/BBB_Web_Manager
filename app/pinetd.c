@@ -64,7 +64,11 @@ short RDY_cnt=15, SNMP_cnt=0;
 short LCD_cnt=0;
 #endif
 short MMC_cnt=0, PROC_cnt=0;
+#if 0 // TODO:
 char  MMC_Flag=1;
+#else
+char  MMC_Flag=0;
+#endif
 #ifdef LCD_SUPPORT
 char LCD_Flag=1;
 #endif
@@ -90,10 +94,12 @@ unsigned int timer;
 
 	//--------------------------------------------------------------< SNMP launch
 	if (CFG_SNMP.enable == SB_ENABLE) SNMP_INIT();
-	
+
+#if 0	// TODO:
 	//--------------------------------------------------------------< Detect Applition launch
 	DETECT_PID = Task_Launch ("/sbin/detect", 0);		
-	
+#endif
+
 	//--------------------------------------------------------------< DDNS Applition launch
 	if (CFG_SYS.ddns[0] != 0x00) Task_Launch ("/sbin/ddns_agent", 0);
 		
@@ -152,8 +158,10 @@ unsigned int timer;
 
 	signal(SIGCHLD, sig_chld);		// When SIGCHLD happen, go sig_chld
 
+#if 0 // TODO:
 	//--------------------------------------------------------------< Init RTC
 	system ("insmod  /etc/drivers/rtc-ds1307.ko");		// /dev/rtc0
+#endif
 
 	//--------------------------------------------------------------< Init NAND Flash
 	if (CFG_GPIO.nandflash == SB_ENABLE)	
@@ -177,6 +185,7 @@ unsigned int timer;
 		system ("insmod  /etc/drivers/at25.ko");		// /sys/class/spi_master/spi1/device/spi1.0/eeprom
 		}
 
+#if 0 // TODO:
 	//--------------------------------------------------------------< Init GPIO
 	system ("insmod  /etc/drivers/eddy_gpio.ko");		
 	SB_msleep (100);
@@ -221,6 +230,7 @@ unsigned int timer;
 		ioctl (gpio_fd, SETGPIOINIT, &gpio);
 		close (gpio_fd);
 		}
+#endif
 		
 	//<===================================================================================
 	//  Here User Application Launching !!	
@@ -237,6 +247,7 @@ unsigned int timer;
     if (CFG_SYS.web_server == SB_ENABLE)                                                                     
         system ("/usr/local/sbin/thttpd -C  /etc/thttpd.conf");
 
+#if 0 // TODO:
 	if (ProductID != EDDY_S4M) 
 		{
 		system ("insmod /etc/drivers/pca9539.ko");			// DIO and LCD 
@@ -249,7 +260,8 @@ unsigned int timer;
 			system ("insmod /etc/drivers/eddy_lcdfb.ko");
 			}
 		}
-		
+#endif
+
 	Make_system_time ();
 	
 	//--------------------------------------------------------------< Init SPI(EEPROM)
@@ -448,10 +460,10 @@ void Fork_Processor (int no)
 
 	switch (no)
 		{
-		case 0 : if (CFG_GPIO.serial_1 == 1)	break;	else	return;
-		case 1 : if (CFG_GPIO.serial_2 == 1)	break;	else	return;
-		case 2 : if (CFG_GPIO.serial_3 == 1)	break;	else	return;
-		case 3 : if (CFG_GPIO.serial_4 == 1)	break;	else	return;
+		case 0 : if (CFG_GPIO.serial_1 == SB_ENABLE)	break;	else	return;
+		case 1 : if (CFG_GPIO.serial_2 == SB_ENABLE)	break;	else	return;
+		case 2 : if (CFG_GPIO.serial_3 == SB_ENABLE)	break;	else	return;
+		case 3 : if (CFG_GPIO.serial_4 == SB_ENABLE)	break;	else	return;
 		}			
 
 	switch (CFG_SIO[no].protocol)

@@ -11,10 +11,10 @@ void make_env(void);
 int  SB_ReadConfig (char *FileName, char *dest, int len);
 void SB_WriteConfig (char *FileName, char *src, int len);
 
-char IPADDRESS[30];
-char SUBNETMASK[30];
-char GATEWAY [30];
-char DNSADDRESS[30];
+char IPADDRESS[30] = "0.0.0.0";
+char SUBNETMASK[30] = "0.0.0.0";
+char GATEWAY [30] = "0.0.0.0";
+char DNSADDRESS[30] = "0.0.0.0";
 
 struct SB_SYSTEM_CONFIG		CFG;
 
@@ -29,19 +29,21 @@ int main(void)
 char cmd[1000];	
 int ret;
 
-	Check_mtd();
+	//Check_mtd();
 	ret = SB_ReadConfig  (CFGFILE_FLASH_SYSTEM, (char *)&CFG, sizeof (struct SB_SYSTEM_CONFIG));
 	if (ret < 0 || strncmp(SB_DEVICE_ID, CFG.id, 4))	// CFG not found or ID mismatch 
-		{
+	{
+		printf("CFG not found or ID mismatch! %d, %4s !\n", ret, CFG.id);
 		system ("/sbin/def factory");
 		sleep (1);
 		ret = SB_ReadConfig  (CFGFILE_FLASH_SYSTEM, (char *)&CFG, sizeof (struct SB_SYSTEM_CONFIG));
-		}
+	}
 	
 	show_net_cfg();
 	//---------------------------------------------------------------------- WAN ---------
-	make_env();
+	//make_env();
 
+#if 0 // TODO: Config WAN.
 	sprintf(cmd, "ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
 				SB_WAN_ETH_NAME,
 				CFG.mac[0],
@@ -53,6 +55,7 @@ int ret;
 	system(cmd);
 	sprintf (cmd, "/sbin/ifup -a");				// start network 
 	system (cmd);
+#endif
 
 	if (isalpha(CFG.device_name[0]))
 		sprintf (cmd, "/bin/hostname %s", CFG.device_name);
@@ -60,6 +63,7 @@ int ret;
 		sprintf (cmd, "/bin/hostname Eddy");
 	system(cmd);
 
+#if 0
 	sprintf (cmd, "/bin/adduser -S sysbas");
 	system (cmd);
 	sprintf (cmd, "/usr/bin/passwd  sysbas  administrator");	// backdoor admin user & pass
@@ -70,6 +74,7 @@ int ret;
 	sprintf (cmd, "/usr/bin/passwd  %s %s", CFG.username, CFG.password);
 	system (cmd);
 	usleep (1);
+#endif
 
 	converttoroot ();
 	//--------------------------------------- TELNETD
@@ -122,27 +127,6 @@ unsigned char buff[100];
 	write (fd, buff, 32);
 	close (fd);
 }
-//===============================================================================
-int SB_ReadConfig (char *FileName, char *dest, int len)
-{
-	int fd;
-	fd = open(FileName, O_RDONLY);
-	if (fd <= 0) return -1;
-	lseek(fd, 0, 0);
-	read (fd, dest, len);
-	close (fd);
-	return 1;
-}
-//===============================================================================
-void SB_WriteConfig (char *FileName, char *src, int len)
-{
-	int fd;
-	fd = open(FileName, O_RDWR|O_CREAT);
-	lseek(fd, 0, 0);
-	write (fd, src, len);
-	close (fd);
-	chmod (FileName, S_IWUSR|S_IRUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
-}
 //------------------------------------------------------	
 void show_net_cfg(void)
 {
@@ -151,19 +135,22 @@ void show_net_cfg(void)
 	printf("=======================================\n");
 	printf("Server Name   %s \n",CFG.device_name);
 	if (CFG.line == 'I')
+	{
 		printf("Link Type     Static IP\n"); 
-	else	
+		sprintf (IPADDRESS, 	"%d.%d.%d.%d", CFG.ip[0], CFG.ip[1],CFG.ip[2],CFG.ip[3]);
+		sprintf (GATEWAY	, 	"%d.%d.%d.%d", CFG.gateway[0], CFG.gateway[1],CFG.gateway[2],CFG.gateway[3]);
+		sprintf (SUBNETMASK,	"%d.%d.%d.%d", CFG.mask[0], CFG.mask[1],CFG.mask[2],CFG.mask[3]);
+		sprintf (DNSADDRESS,	"%d.%d.%d.%d", CFG.dns[0], CFG.dns[1],CFG.dns[2],CFG.dns[3]);
+		printf  ("IP Address    %s\n", IPADDRESS);
+		printf  ("Gateway       %s\n", GATEWAY);
+		printf  ("Mask          %s\n", SUBNETMASK);
+		printf  ("DNS           %s\n", DNSADDRESS);
+	}
+	else
+	{
     	printf("Link Type     DHCP\n"); 
+	}
 	
-	sprintf (IPADDRESS, 	"%d.%d.%d.%d", CFG.ip[0], CFG.ip[1],CFG.ip[2],CFG.ip[3]);
-	sprintf (GATEWAY	, 	"%d.%d.%d.%d", CFG.gateway[0], CFG.gateway[1],CFG.gateway[2],CFG.gateway[3]);
-	sprintf (SUBNETMASK,	"%d.%d.%d.%d", CFG.mask[0], CFG.mask[1],CFG.mask[2],CFG.mask[3]);
-	sprintf (DNSADDRESS,	"%d.%d.%d.%d", CFG.dns[0], CFG.dns[1],CFG.dns[2],CFG.dns[3]);
-	
-	printf  ("IP Address    %s\n", IPADDRESS);
-	printf  ("Gateway       %s\n", GATEWAY);
-	printf  ("Mask          %s\n", SUBNETMASK);
-	printf  ("DNS           %s\n", DNSADDRESS);
 	printf("=======================================\n");
 }		
 //------------------------------------------------------	

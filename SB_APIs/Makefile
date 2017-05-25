@@ -9,9 +9,12 @@ LIBS	= -D__PIC__
 
 CFLAGS += -I./include
 
+SRC = SB_Network.c SB_System.c SB_Serial.c SB_Environment.c
+OBJ = $(subst .c,.o,$(SRC))
+
 all: libsb.a
 
-libsb.a: SB_Network.o SB_System.o SB_Serial.o
+libsb.a: $(OBJ)
 	$(AR) rc $@ $^
 	$(RANLIB) $@
 
