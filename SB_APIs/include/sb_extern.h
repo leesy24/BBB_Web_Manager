@@ -27,6 +27,8 @@ void SB_SendUdpClient (int fd, char *buff, int len, char *ServerIP, int ServerPo
 unsigned int SB_GetIp (char *eth_name);
 unsigned int SB_GetMask (char *eth_name);
 unsigned int SB_GetGateway ();
+unsigned int SB_GetPrimaryDNS ();
+unsigned int SB_GetSecondaryDNS ();
 int SB_SendTcp    (int fd, char *buff, int len);
 //---------------- Log APIs -----------------------------------------------------------
 void SB_LogMsgSave   (const char *fmt, ...);

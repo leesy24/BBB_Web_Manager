@@ -9,6 +9,7 @@
 #include <net/if.h>
 #include <limits.h>
 #include <errno.h>
+#include <resolv.h>
 
 /* http://www.geekpage.jp/en/programming/linux-network/get-ipaddr.php */
 unsigned int SB_GetIp (char *eth_name)
@@ -110,4 +111,42 @@ unsigned int SB_GetGateway ()
 	}
 	return 0;
 }
+
+/*
+	https://docstore.mik.ua/orelly/networking_2ndEd/dns/ch15_02.htm
+	https://www.cyberciti.biz/faq/how-to-find-out-what-my-dns-servers-address-is/
+	https://linux.die.net/man/3/resolver
+*/
+unsigned int SB_GetPrimaryDNS ()
+{
+	int ret;
+
+	ret = res_init();
+	if(ret < 0)
+		return 0;
+
+	//printf("_res.nscount = %d\n",_res.nscount);
+	if(_res.nscount < 1)
+		return 0;
+	
+	//printf("_res.nsaddr_list[0] = %08x, %s\n", _res.nsaddr_list[0].sin_addr, inet_ntoa(_res.nsaddr_list[0].sin_addr));
+	return _res.nsaddr_list[0].sin_addr.s_addr;
+}
+
+unsigned int SB_GetSecondaryDNS ()
+{
+	int ret;
+
+	ret = res_init();
+	if(ret < 0)
+		return 0;
+
+	//printf("_res.nscount = %d\n",_res.nscount);
+	if(_res.nscount < 2)
+		return 0;
+	
+	//printf("_res.nsaddr_list[1] = %08x, %s\n", _res.nsaddr_list[1].sin_addr, inet_ntoa(_res.nsaddr_list[1].sin_addr));
+	return _res.nsaddr_list[1].sin_addr.s_addr;
+}
+
 

@@ -701,7 +701,7 @@ struct SB_GPIO_CONFIG	gpio;
 		value2 = 1;
 	cgiFormInteger("N_LINE", &value, value2);
 	if (value == 0)		// static
-		{
+	{
 		listPutf(list, "n_lines", "selected");
 
 		if (cgiFormStringNoNewlines("N_IP", buff, 16) == cgiFormNotFound)
@@ -710,25 +710,42 @@ struct SB_GPIO_CONFIG	gpio;
 		listPutf(list, "n_ip", buff);
 
 		if (cgiFormStringNoNewlines("N_MASK", buff, 16) == cgiFormNotFound)
-			{	
+		{	
 			sprintf(buff, "%d.%d.%d.%d",cfg.mask[0], cfg.mask[1],cfg.mask[2],cfg.mask[3]);
 			listPutf(list, "n_mask", buff);
-			}
+		}
 		else
 			listPutf(list, "n_mask", buff);
-		
+
 		if (cgiFormStringNoNewlines("N_GW", buff, 16) == cgiFormNotFound)
-			{	
+		{	
 			sprintf(buff, "%d.%d.%d.%d",cfg.gateway[0], cfg.gateway[1],cfg.gateway[2],cfg.gateway[3]);
 			listPutf(list, "n_gw", buff);
-			}
+		}
 		else
 			listPutf(list, "n_gw", buff);
+
+		if (cgiFormStringNoNewlines("N_DNS", buff, 16) == cgiFormNotFound)
+		{	
+			sprintf(buff, "%d.%d.%d.%d",cfg.dns[0], cfg.dns[1],cfg.dns[2],cfg.dns[3]);
+			listPutf(list, "n_dns", buff);
 		}
-	else
-		{
+		else	
+			listPutf(list, "n_dns", buff);
+
+		if (cgiFormStringNoNewlines("N_DNS_S", buff, 16) == cgiFormNotFound)
+		{	
+			sprintf(buff, "%d.%d.%d.%d",cfg.dns[0], cfg.dns[1],cfg.dns[2],cfg.dns[3]);
+			listPutf(list, "n_dns_s", buff);
+		}
+		else	
+			listPutf(list, "n_dns_s", buff);
+	}
+	else	// DHCP
+	{
 		listPutf(list, "n_lined", "selected");
 		listPutf(list, "n_option1", "disabled");
+
 		addr.s_addr = SB_GetIp (SB_WAN_ETH_NAME);
 		strcpy(buff, inet_ntoa(addr));
 		listPutf(list, "n_ip", buff);
@@ -740,15 +757,15 @@ struct SB_GPIO_CONFIG	gpio;
 		addr.s_addr = SB_GetGateway ();
 		strcpy(buff, inet_ntoa(addr));
 		listPutf(list, "n_gw", buff);
-		}
 
-	if (cgiFormStringNoNewlines("N_DNS", buff, 16) == cgiFormNotFound)
-		{	
-		sprintf(buff, "%d.%d.%d.%d",cfg.dns[0], cfg.dns[1],cfg.dns[2],cfg.dns[3]);
+		addr.s_addr = SB_GetPrimaryDNS();
+		strcpy(buff, inet_ntoa(addr));
 		listPutf(list, "n_dns", buff);
-		}
-	else	
-		listPutf(list, "n_dns", buff);
+
+		addr.s_addr = SB_GetSecondaryDNS();
+		strcpy(buff, inet_ntoa(addr));
+		listPutf(list, "n_dns_s", buff);
+	}
 
 //=================LAN ======================
 	
