@@ -41,7 +41,7 @@ int ret;
 	
 	show_net_cfg();
 	//---------------------------------------------------------------------- WAN ---------
-	//make_env();
+	make_env();
 
 #if 0 // TODO: Config WAN.
 	sprintf(cmd, "ifconfig %s hw ether %02x:%02x:%02x:%02x:%02x:%02x",
@@ -160,7 +160,8 @@ FILE *fp;
 int fd;
 char cmd[100];
 
-	putenv("PATH=/sbin:/bin:/usr/sbin:/usr/bin");
+	//putenv("PATH=/sbin:/bin:/usr/sbin:/usr/bin");
+#if 0 // TODO:
     if ((fp = fopen("/var/etc/hosts", "w")) != NULL)
 		{
 		if (isalpha(CFG.device_name[0]))
@@ -178,6 +179,7 @@ char cmd[100];
 			CFG.dns[0], CFG.dns[1], CFG.dns[2], CFG.dns[3]);
 		fclose(fp);
 		}
+#endif
 
 	fd = open("/var/tmp/login.id", O_WRONLY | O_CREAT);
 	if (fd > 0)
@@ -195,6 +197,7 @@ char cmd[100];
 		chmod ("/var/tmp/login.pw", S_IWUSR|S_IRUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
 		}
 
+#if 0 // TODO:
 	if ((fp = fopen("/etc/network/interfaces", "w")) != NULL)
 		{
 		fprintf(fp, "auto lo %s\n", SB_WAN_ETH_NAME);
@@ -213,6 +216,8 @@ char cmd[100];
 	sprintf (cmd, "/bin/chmod 644 /usr/local/www/images/*");
 	system(cmd);	
 	system ("ln -s /sbin/def /sbin/help");
+#endif
+
 }
 //------------------------------------------------------	
 void converttoroot ()

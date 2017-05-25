@@ -19,6 +19,7 @@
 	and restore CGI environments, which is highly convenient
 	for debugging. */
 
+extern char *cgiDocumentRoot;
 extern char *cgiServerSoftware;
 extern char *cgiServerName;
 extern char *cgiGatewayInterface;

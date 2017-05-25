@@ -45,6 +45,7 @@
 
 #define cgiStrEq(a, b) (!strcmp((a), (b)))
 
+char *cgiDocumentRoot;
 char *cgiServerSoftware;
 char *cgiServerName;
 char *cgiGatewayInterface;
@@ -126,6 +127,7 @@ int main(int argc, char *argv[]) {
 	char *cgiContentLengthString;
 	char *e;
 	cgiSetupConstants();
+	cgiGetenv(&cgiDocumentRoot, "DOCUMENT_ROOT");
 	cgiGetenv(&cgiServerSoftware, "SERVER_SOFTWARE");
 	cgiGetenv(&cgiServerName, "SERVER_NAME");
 	cgiGetenv(&cgiGatewayInterface, "GATEWAY_INTERFACE");
@@ -1206,6 +1208,7 @@ static void cgiFreeResources() {
 	/* If the cgi environment was restored from a saved environment,
 		then these are in allocated space and must also be freed */
 	if (cgiRestored) {
+		free(cgiDocumentRoot);
 		free(cgiServerSoftware);
 		free(cgiServerName);
 		free(cgiGatewayInterface);
@@ -1926,6 +1929,9 @@ cgiEnvironmentResultType cgiWriteEnvironment(char *filename) {
 	if (!cgiWriteString(out, "CGIC2.0")) {
 		goto error;
 	}
+	if (!cgiWriteString(out, cgiDocumentRoot)) {
+		goto error;
+	}
 	if (!cgiWriteString(out, cgiServerSoftware)) {
 		goto error;
 	}
@@ -2088,6 +2094,9 @@ cgiEnvironmentResultType cgiReadEnvironment(char *filename) {
 	}	
 	/* 2.02: Merezko Oleg */
 	free(version);
+	if (!cgiReadString(in, &cgiDocumentRoot)) {
+		goto error;
+	}
 	if (!cgiReadString(in, &cgiServerSoftware)) {
 		goto error;
 	}

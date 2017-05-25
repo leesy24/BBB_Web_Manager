@@ -1853,6 +1853,9 @@ variables. The most important difference is that the cgic
 environment string variables are never null pointers. They will always 
 point to valid C strings of zero or more characters.
 <dl>
+<br><dt><strong><a name="cgiDocumentRoot">char *cgiDocumentRoot</a>
+</strong><br><dd>Points to The directory over which all www document paths
+are resolved by the server, or to an empty string if unknown.
 <br><dt><strong><a name="cgiServerSoftware">char *cgiServerSoftware</a>
 </strong><br><dd>Points to the name of the server software,
 or to an empty string if unknown.
@@ -2104,6 +2107,7 @@ produced by a pre-2.0 version of CGIC was made.
 <a href="#cgiServerPort">cgiServerPort</a> |
 <a href="#cgiServerProtocol">cgiServerProtocol</a> |
 <a href="#cgiServerSoftware">cgiServerSoftware</a> |
+<a href="#cgiDocumentRoot">cgiDocumentRoot</a> |
 <a href="#cgiStringArrayFree">cgiStringArrayFree()</a> |
 <a href="#cgiUserAgent">cgiUserAgent</a> |
 <a href="#cgiWriteEnvironment">cgiWriteEnvironment()</a>

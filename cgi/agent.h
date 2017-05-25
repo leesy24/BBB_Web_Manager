@@ -12,9 +12,9 @@
 
 #include "cgic.h"
 
-#define HTMLPATH        "/usr/local/www"
-#define IMAGEPATH       "/usr/local/www/images"
-#define CGIPATH         "/usr/local/www/cgi"
+#define HTMLPATH        cgiDocumentRoot
+#define IMAGEPATH       "images"
+#define CGIPATH         "cgi-bin"
 
 void Error(char *);
 void DebugMessage(char *);
