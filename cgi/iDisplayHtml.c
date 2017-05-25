@@ -16,7 +16,7 @@
 #include <fcntl.h>
 
 #include "iDisplayHtml.h"
-#include "cgic205/cgic.h"
+#include "cgic.h"
 
 /* Read Status Definition */
 #define RSNORMAL        0
