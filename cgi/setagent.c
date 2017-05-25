@@ -200,118 +200,131 @@ struct	SB_SYSTEM_CONFIG	cfg;
 
 	Product_ID = SB_GetModel ();
 
-    switch (type)
-    {
-	   case 'l':	// login -> main.html
-		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=1");
-		  set_login();
-		  mode = 1;
-		  break;
-	   case 'o':	// logout -> index.html
-		  strcpy(target_page, "logout.html");
-		  set_logout();
-		  break;
-	   case '1':	// network
-		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=2");
-		  set_network();
-		  mode = 1;
-		  break;
-//	   case 'a':	// adc
-//		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=3");
-//		  set_adc();
-//		  mode = 1;
-//		  break;
-	   case 'd':	// DIO
-		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=d");
-		  set_dio();
-		  mode = 1;
-		  break;
+	switch (type)
+	{
+		case 'l':	// login -> main.html
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=1");
+			set_login();
+			mode = 1;
+			break;
+		case 'o':	// logout -> index.html
+			strcpy(target_page, "logout.html");
+			set_logout();
+			break;
+		case '1':	// network
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=2");
+			set_network();
+			mode = 1;
+			break;
+#if 0
+		case 'a':	// adc
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=3");
+			set_adc();
+			mode = 1;
+			break;
+#endif
+		case 'd':	// DIO
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=d");
+			set_dio();
+			mode = 1;
+			break;
 
-	   case '2':	// serial
-		  i = set_serial();
-		  switch (i)
-		  	{	
-			case 0 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=A");  break;
-			case 1 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=B");  break;
-			case 2 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=C");  break;
-			case 3 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=D");  break;
-			case 4 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=E");  break;
-			case 5 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=F");  break;
-			case 6 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=G");  break;																
-			case 7 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=H");  break;
+		case '2':	// serial
+			i = set_serial();
+			switch (i)
+			{	
+				case 0 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=A");  break;
+				case 1 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=B");  break;
+				case 2 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=C");  break;
+				case 3 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=D");  break;
+				case 4 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=E");  break;
+				case 5 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=F");  break;
+				case 6 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=G");  break;																
+				case 7 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=H");  break;
 			}	
-		  mode = 1;
-		  break;
-	   case '3':	// gpio
-		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=4");
-		  set_gpio();
-		  mode = 1;
-		  break;
-	   case '4':	// snmp
-		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=5");
-		  set_snmp();
-		  mode = 1;
-		  break;
-	   case '5':	// password
-		  strcpy(target_page, "afterPassword.html");
-		  set_password();
-		  break;
-	   case '6':	// update
-		  set_update();
-		  strcpy(target_page, "afterUpdate.html");
-		  break;
-	   case '7':	// onlyupdate
-		  set_onlyupdate();
-		  strcpy(target_page, "afterComplete.html");
-		  break;
-	   case '8':	// factory
-		  listPutf(list, "ip", "192.168.0.223");
-		  system("/sbin/def factory");
-		  strcpy(target_page, "afterFactory.html");
-		  break;
-	   case '9':	// save & reboot
-		  set_reboot();
-		  strcpy(target_page, "afterReboot.html");
-		  break;
-	   case '0':	// onlyreboot
-		  system("/sbin/reboot");
-		  return;	// return directly
-	   case 'J':	// wireless
-		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=J");
-		  set_wireless();
-		  mode = 1;
-		  break;
-	   default:
-		  //			DebugMessage("Page doesn't exist!");
-		  set_test();
-		  strcpy(target_page, "/cgi-bin/getagent.cgi?type=1");
-		  mode = 1;
-		  break;
-    }
-    // check login
-    if (type != 'o')
-	    {
-	   if (CheckLogin() == 0)  Error("Please login first!");
-    	}
+			mode = 1;
+			break;
+		case '3':	// gpio
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=4");
+			set_gpio();
+			mode = 1;
+			break;
+		case '4':	// snmp
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=5");
+			set_snmp();
+			mode = 1;
+			break;
+		case '5':	// password
+			strcpy(target_page, "afterPassword.html");
+			set_password();
+			break;
+		case '6':	// update
+			set_update();
+			strcpy(target_page, "afterUpdate.html");
+			break;
+		case '7':	// onlyupdate
+			set_onlyupdate();
+			strcpy(target_page, "afterComplete.html");
+			break;
+		case '8':	// factory
+			listPutf(list, "ip", "192.168.0.223");
+			system("/sbin/def factory");
+			strcpy(target_page, "afterFactory.html");
+			break;
+		case '9':	// save & reboot
+			set_reboot();
+			strcpy(target_page, "afterReboot.html");
+			break;
+		case '0':	// onlyreboot
+			if (CheckLogin() == 1)
+			{
+				set_logout();
+				system("/usr/bin/sudo /sbin/reboot");
+				return;	// return directly
+			}
+			else
+			{
+				strcpy(target_page, "index.html");
+			}
+			break;
+		case 'J':	// wireless
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=J");
+			set_wireless();
+			mode = 1;
+			break;
+		default:
+			//DebugMessage("Page doesn't exist!");
+			set_test();
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=1");
+			mode = 1;
+			break;
+	}
 
-    if (mode == 0)	// HTML
-	    {
+	// check login
+	if (type != 'o' && type != '0')
+	{
+		if (CheckLogin() == 0)  Error("Please login first!");
+	}
+
+	if (mode == 0)	// HTML
+	{
 		sprintf(buff, "%s/%s", HTMLPATH, target_page);
 		listDisplay(list, buff);
-	   fflush(0);
-	   listDelete(list);
-	   if (type == '7')  sleep (2);
-	    }
-    else		// CGI
-    	{
-	   fflush(0);
-	   fprintf(cgiOut, "\n");
-	   fprintf(cgiOut, "<html>\n<head>\n");
-	   fprintf(cgiOut, "<meta http-equiv='refresh' content='0; URL=%s'>\n", target_page);
-	   fprintf(cgiOut, "</head>\n</html>\n");
-	   fflush(0);
-    	}
-    return 0;
+		fflush(0);
+		listDelete(list);
+		if (type == '7')  sleep (2);
+	}
+	else		// CGI
+	{
+		fflush(0);
+		fprintf(cgiOut, "\n");
+		fprintf(cgiOut, "<html>\n<head>\n");
+		fprintf(cgiOut, "<meta http-equiv='refresh' content='0; URL=%s'>\n", target_page);
+		fprintf(cgiOut, "</head>\n</html>\n");
+		fflush(0);
+	}
+
+	return 0;
 }
 //---------------------------------------------------------------------------
 void set_login()
