@@ -37,13 +37,14 @@ TARGET_OBJ = $(addsuffix .o, $(TARGET))
 #LIBS		=   -lrt SB_APIs/SB_APIs.a
 LIBS		=   -lrt ../SB_APIs/libsb.a
 
-.PHONY: all clean
+.PHONY: all clean scp*
 
 all: $(TARGET_BIN)
 
 bin/%: %.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@  $<  $(LIBS) 
 	$(STRIP) $@
+	chmod 755 $@
 
 clean: 
 	rm -f $(TARGET_BIN) $(TARGET_OBJ)
@@ -52,4 +53,8 @@ clean:
 #release:
 #	cp  -f $(TARGET) $(DEST)
 #	cp  -f sb_default_config $(DEST_ETC)
+
+scp19:
+	-scp $(TARGET_BIN) root@192.168.10.19:/sbin/
+	
 

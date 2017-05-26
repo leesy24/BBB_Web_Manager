@@ -10,15 +10,19 @@ EXEC 	= setagent.cgi getagent.cgi
 
 CFLAGS += -I../SB_APIs/include -I../cgic205
 
+.PHONY: all clean scp*
+
 all: ../SB_APIs/libsb.a ../cgic205/libcgic.a $(EXEC)
 
 getagent.cgi: getagent.c iDisplayHtml.o agent.o ../SB_APIs/libsb.a ../cgic205/libcgic.a
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o getagent.cgi ${LIBS}
-	$(STRIP) getagent.cgi
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@ ${LIBS}
+	$(STRIP) $@
+	chmod 755 $@
 
 setagent.cgi: setagent.c iDisplayHtml.o agent.o ../SB_APIs/libsb.a ../cgic205/libcgic.a
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o setagent.cgi ${LIBS}
-	$(STRIP) setagent.cgi
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@ ${LIBS}
+	$(STRIP) $@
+	chmod 755 $@
 
 ../cgic205/libcgic.a:
 	make -C ../cgic205
@@ -29,3 +33,7 @@ setagent.cgi: setagent.c iDisplayHtml.o agent.o ../SB_APIs/libsb.a ../cgic205/li
 clean: 
 	make -C ../cgic205 $@
 	rm -f *.o *.cgi
+
+scp19:
+	-scp $(EXEC) root@192.168.10.19:/var/www/html/cgi-bin/
+

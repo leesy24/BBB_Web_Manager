@@ -12,6 +12,8 @@ CFLAGS += -I./include
 SRC = SB_Network.c SB_System.c SB_Serial.c SB_Environment.c
 OBJ = $(subst .c,.o,$(SRC))
 
+.PHONY: all clean
+
 all: libsb.a
 
 libsb.a: $(OBJ)
@@ -20,3 +22,4 @@ libsb.a: $(OBJ)
 
 clean: 
 	rm -f *.o *.a
+
