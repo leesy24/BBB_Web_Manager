@@ -50,7 +50,8 @@ struct SB_WIFI_CONFIG			CFG_WIFI;						// /flash/eddy_wifi.cfg
 	printf ("ip         :   %d.%d.%d.%d\n", CFG_SYS.ip[0], CFG_SYS.ip[1], CFG_SYS.ip[2], CFG_SYS.ip[3]);
 	printf ("gateway    :   %d.%d.%d.%d\n", CFG_SYS.gateway[0], CFG_SYS.gateway[1], CFG_SYS.gateway[2], CFG_SYS.gateway[3]);
 	printf ("mask       :   %d.%d.%d.%d\n", CFG_SYS.mask[0], CFG_SYS.mask[1], CFG_SYS.mask[2], CFG_SYS.mask[3]);
-	printf ("dns        :   %d.%d.%d.%d\n", CFG_SYS.dns[0], CFG_SYS.dns[1], CFG_SYS.dns[2], CFG_SYS.dns[3]);
+	printf ("primary dns:   %d.%d.%d.%d\n", CFG_SYS.dns[0], CFG_SYS.dns[1], CFG_SYS.dns[2], CFG_SYS.dns[3]);
+	printf ("second dns :   %d.%d.%d.%d\n", CFG_SYS.dns_s[0], CFG_SYS.dns_s[1], CFG_SYS.dns_s[2], CFG_SYS.dns_s[3]);
 	printf ("line       :   %s\n.\n.\n", (CFG_SYS.line == 'I') ? "Static IP" : "DHCP");
 	
 	printf ("(%s)\n", CFGFILE_FLASH_SIO);

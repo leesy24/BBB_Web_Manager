@@ -15,7 +15,8 @@ struct SB_SYSTEM_CONFIG
 	char 			ip		[4];
 	char			mask	[4];
 	char 			gateway	[4];
-	char			dns     [4];			// dns server   0.0.0.0
+	char			dns     [4];			// primary dns server   0.0.0.0
+	char			dns_s   [4];			// secondary dns server   0.0.0.0
 	char			line;					// I = ip, D=DHCP	
 	char			User_Config_Area_1 [64];// User Define Config Area
 	char			dhcpenable;
@@ -202,7 +203,8 @@ struct SB_WIFI_CONFIG
 	char 			ip		[4];	
 	char			mask	[4];
 	char 			gateway	[4];
-	char			dns     [4];			// dns server   0.0.0.0
+	char			dns     [4];			// primary dns server   0.0.0.0
+	char			dns_s   [4];			// secondary dns server   0.0.0.0
 	unsigned char	reserve[20];
 };
 

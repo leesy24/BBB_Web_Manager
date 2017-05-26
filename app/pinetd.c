@@ -597,6 +597,7 @@ char tmp[100][90];
 	memcpy(SSM->system.mask,	CFG_SYS.mask,	sizeof(CFG_SYS.mask));
 	memcpy(SSM->system.gateway,	CFG_SYS.gateway,	sizeof(CFG_SYS.gateway));
 	memcpy(SSM->system.dns,		CFG_SYS.dns,		sizeof(CFG_SYS.dns));
+	memcpy(SSM->system.dns_s,	CFG_SYS.dns_s,		sizeof(CFG_SYS.dns_s));
 	memcpy(SSM->system.ddns,	CFG_SYS.ddns,	sizeof(CFG_SYS.ddns));
 	memcpy(SSM->system.portview,CFG_SYS.portview,sizeof(CFG_SYS.portview));
 	SSM->system.line = CFG_SYS.line; 

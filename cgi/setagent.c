@@ -373,19 +373,23 @@ struct SB_SYSTEM_CONFIG	cfg;
     if (cfg.line == 'I')  value2 = 0; else value2 = 1;
     cgiFormInteger("N_LINE", &value, value2);
 
-    if (value == 0)		// static
-    	{
-	   cfg.line = 'I';
-	   value2 = cgiFormStringNoNewlines("N_IP", buff, 16);
-	   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.ip);
-	   value2 = cgiFormStringNoNewlines("N_MASK", buff, 16);
-	   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.mask);
-	   value2 = cgiFormStringNoNewlines("N_GW", buff, 16);
-	   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.gateway);
-	   value2 = cgiFormStringNoNewlines("N_DNS", buff, 16);
-	   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dns);
-		}
-    else
+	if (value == 0)		// static
+	{
+		cfg.line = 'I';
+		value2 = cgiFormStringNoNewlines("N_IP", buff, 16);
+		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.ip);
+		value2 = cgiFormStringNoNewlines("N_MASK", buff, 16);
+		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.mask);
+		value2 = cgiFormStringNoNewlines("N_GW", buff, 16);
+		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.gateway);
+		value2 = cgiFormStringNoNewlines("N_DNS", buff, 16);
+		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dns);
+		value2 = cgiFormStringNoNewlines("N_DNS", buff, 16);
+		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dns);
+		value2 = cgiFormStringNoNewlines("N_DNS_S", buff, 16);
+		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dns_s);
+	}
+	else
 		cfg.line = 'D';
 
     value = cgiFormStringNoNewlines("N_NIP", buff, 16);
@@ -741,6 +745,10 @@ void set_wireless()
 		memset (buff, 0, 256);
 		value = cgiFormStringNoNewlines("W_DNS", buff, 16);
 		if (value != cgiFormEmpty)  convert_address (buff, cfg.dns);
+
+		memset (buff, 0, 256);
+		value = cgiFormStringNoNewlines("W_DNS_S", buff, 16);
+		if (value != cgiFormEmpty)  convert_address (buff, cfg.dns_s);
 	}
 
 	SB_WriteConfig (CFGFILE_ETC_WIFI, (char *)&cfg, sizeof(struct SB_WIFI_CONFIG));

@@ -67,7 +67,8 @@ struct SB_SNMP_SYSTEM_CONFIG
 	char 			ip	[4];			// Get only,		IP address
 	char			mask	[4];		// Get only,		Subnet mask
 	char 			gateway	[4];		// Get only,		Gateway
-	char			dns     [4];		// Get only,		DNS server   		default=0.0.0.0
+	char			dns     [4];		// Get only,		Primary DNS server   		default=0.0.0.0
+	char			dns_s   [4];		// Get only,		Secondary DNS server   		default=0.0.0.0
 	char			ddns    [4];		// Get only,		DDNS server		default=0.0.0.0
 	char 			portview[4];		// Get only,		Portview IP			default=0.0.0.0
 	char 			ntp[4];				// Get only,		NTP IP			default=0.0.0.0	

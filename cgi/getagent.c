@@ -622,7 +622,7 @@ void get_wireless()
 	listPutf(list, buff, "selected");
 	
 	if (mode == 0)		// DHCP
-		{
+	{
 		memset(buff,0,sizeof(buff));
 		listPutf(list, "w_option1", "disabled");
 		addr.s_addr = SB_GetIp ("wlan0");
@@ -638,9 +638,19 @@ void get_wireless()
 		addr.s_addr = SB_GetGateway ();
 		strcpy(buff, inet_ntoa(addr));
 		listPutf(list, "w_gw", buff);
-		}
+
+		memset(buff,0,sizeof(buff));
+		addr.s_addr = SB_GetPrimaryDNS();
+		strcpy(buff, inet_ntoa(addr));
+		listPutf(list, "w_dns", buff);
+
+		memset(buff,0,sizeof(buff));
+		addr.s_addr = SB_GetSecondaryDNS();
+		strcpy(buff, inet_ntoa(addr));
+		listPutf(list, "w_dns_s", buff);
+	}
 	else
-		{
+	{
 		memset(buff,0,sizeof(buff));
 		if (cgiFormStringNoNewlines("W_IP", buff, 16) == cgiFormNotFound)
 			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.ip[0], wifi_cfg.ip[1],wifi_cfg.ip[2],wifi_cfg.ip[3]);
@@ -648,31 +658,39 @@ void get_wireless()
 	
 		memset(buff,0,sizeof(buff));
 		if (cgiFormStringNoNewlines("W_MASK", buff, 16) == cgiFormNotFound)
-			{	
+		{	
 			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.mask[0], wifi_cfg.mask[1],wifi_cfg.mask[2],wifi_cfg.mask[3]);
 			listPutf(list, "w_mask", buff);
-			}
+		}
 		else
 			listPutf(list, "w_mask", buff);
 	
 		memset(buff,0,sizeof(buff));
 		if (cgiFormStringNoNewlines("W_GW", buff, 16) == cgiFormNotFound)
-			{	
+		{	
 			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.gateway[0],wifi_cfg.gateway[1],wifi_cfg.gateway[2],wifi_cfg.gateway[3]);
 			listPutf(list, "w_gw", buff);
-			}
+		}
 		else
 			listPutf(list, "w_gw", buff);
+
+		memset(buff,0,sizeof(buff));
+		if (cgiFormStringNoNewlines("W_DNS", buff, 16) == cgiFormNotFound)
+		{	
+			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.dns[0],wifi_cfg.dns[1],wifi_cfg.dns[2],wifi_cfg.dns[3]);
+			listPutf(list, "w_dns", buff);
 		}
-	
-	memset(buff,0,sizeof(buff));
-	if (cgiFormStringNoNewlines("W_DNS", buff, 16) == cgiFormNotFound)
-	{	
-		sprintf(buff, "%d.%d.%d.%d",wifi_cfg.dns[0],wifi_cfg.dns[1],wifi_cfg.dns[2],wifi_cfg.dns[3]);
-		listPutf(list, "w_dns", buff);
+		else
+			listPutf(list, "w_dns", buff);
+
+		memset(buff,0,sizeof(buff));
+		if (cgiFormStringNoNewlines("W_DNS_S", buff, 16) == cgiFormNotFound)
+		{	
+		}
+		else
+			listPutf(list, "w_dns_s", buff);
 	}
-	else
-		listPutf(list, "w_dns", buff);
+	
 }
 //---------------------------------------------------------------------------
 void get_network()
@@ -735,7 +753,7 @@ struct SB_GPIO_CONFIG	gpio;
 
 		if (cgiFormStringNoNewlines("N_DNS_S", buff, 16) == cgiFormNotFound)
 		{	
-			sprintf(buff, "%d.%d.%d.%d",cfg.dns[0], cfg.dns[1],cfg.dns[2],cfg.dns[3]);
+			sprintf(buff, "%d.%d.%d.%d",cfg.dns_s[0], cfg.dns_s[1],cfg.dns_s[2],cfg.dns_s[3]);
 			listPutf(list, "n_dns_s", buff);
 		}
 		else	

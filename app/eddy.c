@@ -15,6 +15,7 @@ char IPADDRESS[30] = "0.0.0.0";
 char SUBNETMASK[30] = "0.0.0.0";
 char GATEWAY [30] = "0.0.0.0";
 char DNSADDRESS[30] = "0.0.0.0";
+char DNSADDRESS_S[30] = "0.0.0.0";
 
 struct SB_SYSTEM_CONFIG		CFG;
 
@@ -139,14 +140,16 @@ void show_net_cfg(void)
 	if (CFG.line == 'I')
 	{
 		printf("Link Type     Static IP\n"); 
-		sprintf (IPADDRESS, 	"%d.%d.%d.%d", CFG.ip[0], CFG.ip[1],CFG.ip[2],CFG.ip[3]);
-		sprintf (GATEWAY	, 	"%d.%d.%d.%d", CFG.gateway[0], CFG.gateway[1],CFG.gateway[2],CFG.gateway[3]);
+		sprintf (IPADDRESS,		"%d.%d.%d.%d", CFG.ip[0], CFG.ip[1],CFG.ip[2],CFG.ip[3]);
+		sprintf (GATEWAY,		"%d.%d.%d.%d", CFG.gateway[0], CFG.gateway[1],CFG.gateway[2],CFG.gateway[3]);
 		sprintf (SUBNETMASK,	"%d.%d.%d.%d", CFG.mask[0], CFG.mask[1],CFG.mask[2],CFG.mask[3]);
 		sprintf (DNSADDRESS,	"%d.%d.%d.%d", CFG.dns[0], CFG.dns[1],CFG.dns[2],CFG.dns[3]);
+		sprintf (DNSADDRESS_S,	"%d.%d.%d.%d", CFG.dns_s[0], CFG.dns_s[1],CFG.dns_s[2],CFG.dns_s[3]);
 		printf  ("IP Address    %s\n", IPADDRESS);
 		printf  ("Gateway       %s\n", GATEWAY);
 		printf  ("Mask          %s\n", SUBNETMASK);
-		printf  ("DNS           %s\n", DNSADDRESS);
+		printf  ("Primary DNS   %s\n", DNSADDRESS);
+		printf  ("Secondary DNS %s\n", DNSADDRESS_S);
 	}
 	else
 	{

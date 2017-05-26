@@ -323,14 +323,21 @@ void factory_default (char *MAC)
 int no;
 
 	memcpy  (CFG_SYS.mac,		MAC, 			6);
-/*
+#if 1
 	sprintf (CFG_SYS.ip,		"%c%c%c%c",     192,168,0,223);
 	sprintf (CFG_SYS.mask,		"%c%c%c%c",     255,255,255,0);
-	sprintf (CFG_SYS.gateway,	"%c%c%c%c",     192,168,0,254);
+	sprintf (CFG_SYS.gateway,	"%c%c%c%c",     192,168,0,1);
+#if 1 // Google DNSs
+	sprintf (CFG_SYS.dns,		"%c%c%c%c",     8,8,8,8);
+	sprintf (CFG_SYS.dns_s,		"%c%c%c%c",     8,8,4,4);
+#else // Original from Eddy filesystem
 	sprintf (CFG_SYS.dns,		"%c%c%c%c",     168,126,63,1);
+	sprintf (CFG_SYS.dns_s,		"%c%c%c%c",     0,0,0,0);
+#endif
 	CFG_SYS.line 				= 'I'; // Static IP
-*/
+#else
 	CFG_SYS.line 				= 'D'; // DHCP
+#endif
 
 	CFG_SYS.dhcpenable			= 0;
 	sprintf (CFG_SYS.lanip,			"%c%c%c%c",     10,10,1,1);
@@ -470,6 +477,7 @@ int no;
 	sprintf (CFG_WIFI.mask,		"%c%c%c%c",     255,255,255,0);
 	sprintf (CFG_WIFI.gateway,	"%c%c%c%c",     192,168,1,1);
 	sprintf (CFG_WIFI.dns,		"%c%c%c%c",     168,126,63,1);
+	sprintf (CFG_WIFI.dns_s,	"%c%c%c%c",     0,0,0,0);
 
 	SB_WriteConfig (CFGFILE_FLASH_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
 	SB_WriteConfig (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
@@ -554,6 +562,7 @@ char mac[30],x1,x2;
     if (!strncmp("mask", gv1, 3 ))		return (SB_Ip2Hex (gv2, CFG_SYS.mask));
     if (!strncmp("gateway", gv1, 3)) 	return (SB_Ip2Hex (gv2, CFG_SYS.gateway));
     if (!strncmp("dns", gv1, 3 ))		return (SB_Ip2Hex (gv2, CFG_SYS.dns));
+    if (!strncmp("dns_s", gv1, 3 ))		return (SB_Ip2Hex (gv2, CFG_SYS.dns_s));
     if (!strncmp("ddns", gv1, 3 ))		return (SB_Ip2Hex (gv2, CFG_SYS.ddns));
     if (!strncmp("portview", gv1, 5 ))	return (SB_Ip2Hex (gv2, CFG_SYS.portview));
 	if (!strncmp("trapip", gv1, 5 ))	return (SB_Ip2Hex (gv2, CFG_SNMP.trap_ip));
@@ -1022,6 +1031,7 @@ int i,len;
     if (!strncmp("mask", gv1, 3 ))		return (SB_Ip2Hex (gv2, CFG_WIFI.mask));
     if (!strncmp("gateway", gv1, 3)) 	return (SB_Ip2Hex (gv2, CFG_WIFI.gateway));
     if (!strncmp("dns", gv1, 3 ))		return (SB_Ip2Hex (gv2, CFG_WIFI.dns));
+    if (!strncmp("dns_s", gv1, 3 ))		return (SB_Ip2Hex (gv2, CFG_WIFI.dns_s));
 
 	return 0;
 } 
@@ -1361,7 +1371,8 @@ void help()
 	printf("def ip	          <address>           ; WAN IP address\n");
 	printf("def mask          <submask>           ; WAN Subnet Mask\n");
 	printf("def gateway       <address>           ; WAN GateWay address\n");
-	printf("def dns           <address>           ; WAN DNS address\n");
+	printf("def dns           <address>           ; WAN Primary DNS address\n");
+	printf("def dns_s         <address>           ; WAN Secondary DNS address\n");
 	printf ("Press any key continue...\n");	getchar ();
 	
 	if (Product_ID != EDDY_S4M)
@@ -1452,7 +1463,8 @@ void help()
 	printf("def wifi ip             <IP address>\n" );	
 	printf("def wifi gateway        <Gateway IP address>\n" );	
 	printf("def wifi mask           <Subnet Mask address>\n" );	
-	printf("def wifi dns            <DNS IP address>\n" );	
+	printf("def wifi dns            <Primary DNS IP address>\n" );	
+	printf("def wifi dns_s          <Secondary DNS IP address>\n" );	
 	printf("--------------------------------------------------------------------------\n");	
 }
 
@@ -1490,8 +1502,15 @@ union { char c[4]; unsigned int i; } q;
 	memcpy (q.c, CFG_SYS.gateway, 4);	addr.s_addr   = q.i;
 	printf("(Config = %s)\n", inet_ntoa (addr));
 
+   	addr.s_addr = SB_GetPrimaryDNS();
+	printf("Primary DNS        : %s\n", inet_ntoa (addr));
 	memcpy (q.c, CFG_SYS.dns, 4);	addr.s_addr   = q.i;
-	printf("DNS                : %s\n", inet_ntoa (addr));
+	printf("(Config = %s)\n", inet_ntoa (addr));
+
+   	addr.s_addr = SB_GetSecondaryDNS();
+	printf("Secondary DNS      : %s\n", inet_ntoa (addr));
+	memcpy (q.c, CFG_SYS.dns_s, 4);	addr.s_addr   = q.i;
+	printf("(Config = %s)\n", inet_ntoa (addr));
 }
 //=============================================================
 void view_wifi()
@@ -1576,8 +1595,15 @@ union { char c[4]; unsigned int i; } q;
 	memcpy (q.c, CFG_WIFI.gateway, 4);	addr.s_addr   = q.i;
 	printf("(Config = %s)\n", inet_ntoa (addr));
 
+   	addr.s_addr = SB_GetPrimaryDNS();
+	printf("Primary DNS        : %s\n", inet_ntoa (addr));
 	memcpy (q.c, CFG_WIFI.dns, 4);	addr.s_addr   = q.i;
-	printf("DNS                : %s\n", inet_ntoa (addr));
+	printf("(Config = %s)\n", inet_ntoa (addr));
+
+   	addr.s_addr = SB_GetSecondaryDNS();
+	printf("Secondary DNS      : %s\n", inet_ntoa (addr));
+	memcpy (q.c, CFG_WIFI.dns_s, 4);	addr.s_addr   = q.i;
+	printf("(Config = %s)\n", inet_ntoa (addr));
 }
 //=============================================================
 void view_lan()
