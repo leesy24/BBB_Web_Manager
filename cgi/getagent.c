@@ -686,6 +686,8 @@ void get_wireless()
 		memset(buff,0,sizeof(buff));
 		if (cgiFormStringNoNewlines("W_DNS_S", buff, 16) == cgiFormNotFound)
 		{	
+			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.dns_s[0],wifi_cfg.dns_s[1],wifi_cfg.dns_s[2],wifi_cfg.dns_s[3]);
+			listPutf(list, "w_dns_s", buff);
 		}
 		else
 			listPutf(list, "w_dns_s", buff);
