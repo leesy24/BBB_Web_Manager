@@ -11,8 +11,8 @@ clean:
 	make -C app $@
 
 htdocs:
-	chmod 755 htdocs/images htdocs/cgi-bin
 	chmod -R 644 htdocs/*
+	chmod 755 htdocs/images htdocs/cgi-bin
 
 #-scp -r htdocs/[!.]* root@192.168.10.19:/var/www/html/
 scp19: htdocs
