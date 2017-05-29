@@ -160,7 +160,7 @@ LIST list;
 void read_conf();
 void set_login();
 void set_logout();
-void set_network();
+int set_network(char **error_msg);
 int set_serial();
 void set_gpio();
 void set_password();
@@ -176,13 +176,16 @@ int Product_ID;
 //---------------------------------------------------------------------------
 int cgiMain()
 {
-char passBuff[12];
-char buff[256];
-char target_page[64];
-char type;
-int i;
-int mode=0;	// 0: html, 1: cgi
-struct	SB_SYSTEM_CONFIG	cfg;
+	char passBuff[12];
+	char buff[256];
+	char error_msg[256];
+	char *msg;
+	char target_page[64];
+	char type;
+	int i;
+	int mode=0;	// 0: html, 1: cgi
+	struct	SB_SYSTEM_CONFIG	cfg;
+	int ret;
 
    SB_ReadConfig  (CFGFILE_ETC_SYSTEM,(char *)&cfg, sizeof (struct SB_SYSTEM_CONFIG));
     for (i=0; i<4; i++) buff[i] = cgiQueryString[i];
@@ -213,7 +216,12 @@ struct	SB_SYSTEM_CONFIG	cfg;
 			break;
 		case '1':	// network
 			strcpy(target_page, "/cgi-bin/getagent.cgi?type=2");
-			set_network();
+			ret = set_network(&msg);
+			if(ret)
+			{
+				sprintf(error_msg, "Error: %s", msg);
+				Error(error_msg);
+			}
 			mode = 1;
 			break;
 #if 0
@@ -360,91 +368,130 @@ void set_logout()
     unlink("/var/tmp/login.stat");
 }
 //---------------------------------------------------------------------------
-void set_network()
+static char ERROR_WAN_LINE_TYPE[] = "Check WAN Line Type!";
+static char ERROR_WAN_IP_ADDR[] = "Check WAN IP Address!";
+static char WARNNIG_NOTHING_SUBMIT[] = "There is noting to submit.";
+int set_network(char **error_msg)
 {
     char buff[64];
+    char addr[4];
     char cmd[256];
-    int value;
-    int value2;
-struct SB_SYSTEM_CONFIG	cfg;
+    int new_value;
+    int old_value;
+	cgiFormResultType ret;
+	bool changed;
+	struct SB_SYSTEM_CONFIG	cfg;
 
-	SB_ReadConfig  (CFGFILE_ETC_SYSTEM,     (char *)&cfg,		sizeof(struct SB_SYSTEM_CONFIG));			
-	
-    if (cfg.line == 'I')  value2 = 0; else value2 = 1;
-    cgiFormInteger("N_LINE", &value, value2);
+	SB_ReadConfig(CFGFILE_ETC_SYSTEM, (char *)&cfg, sizeof(struct SB_SYSTEM_CONFIG));			
 
-	if (value == 0)		// static
+	changed = false;
+    if (cfg.line == 'I')  old_value = 0; else old_value = 1;
+    ret = cgiFormInteger("N_LINE", &new_value, old_value);
+	if(ret != cgiFormSuccess)
+	{
+		*error_msg = ERROR_WAN_LINE_TYPE;
+		return -1;
+	}
+
+	if(new_value != old_value) changed = true;
+	if (new_value == 0)		// static
 	{
 		cfg.line = 'I';
-		value2 = cgiFormStringNoNewlines("N_IP", buff, 16);
-		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.ip);
-		value2 = cgiFormStringNoNewlines("N_MASK", buff, 16);
-		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.mask);
-		value2 = cgiFormStringNoNewlines("N_GW", buff, 16);
-		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.gateway);
-		value2 = cgiFormStringNoNewlines("N_DNS", buff, 16);
-		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dns);
-		value2 = cgiFormStringNoNewlines("N_DNS", buff, 16);
-		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dns);
-		value2 = cgiFormStringNoNewlines("N_DNS_S", buff, 16);
-		if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dns_s);
+		ret = cgiFormStringNoNewlines("N_IP", buff, 16);
+		if (ret == cgiFormSuccess)
+		{
+			ret = convert_address(buff, addr);
+			if(ret)
+			{
+				*error_msg = ERROR_WAN_IP_ADDR;
+				return -1;
+			}
+			//fprintf(stderr, "sizeof(cfg.ip) = %d\n", sizeof(cfg.ip));
+			//fprintf(stderr, "cfg.ip = %d%d%d%d\n", cfg.ip[0], cfg.ip[1], cfg.ip[2], cfg.ip[3]);
+			//fprintf(stderr, "addr = %d%d%d%d\n", addr[0], addr[1], addr[2], addr[3]);
+			ret = memcmp(addr, cfg.ip, sizeof(cfg.ip));
+			//fprintf(stderr, "memcmp ret = %d\n", ret);
+			if(ret != 0)
+			{
+				changed = true;
+			}
+			memcpy(cfg.ip, addr, sizeof(cfg.ip));
+		}
+		ret = cgiFormStringNoNewlines("N_MASK", buff, 16);
+		if (ret != cgiFormEmpty)  convert_address (buff, cfg.mask);
+		ret = cgiFormStringNoNewlines("N_GW", buff, 16);
+		if (ret != cgiFormEmpty)  convert_address (buff, cfg.gateway);
+		ret = cgiFormStringNoNewlines("N_DNS", buff, 16);
+		if (ret != cgiFormEmpty)  convert_address (buff, cfg.dns);
+		ret = cgiFormStringNoNewlines("N_DNS", buff, 16);
+		if (ret != cgiFormEmpty)  convert_address (buff, cfg.dns);
+		ret = cgiFormStringNoNewlines("N_DNS_S", buff, 16);
+		if (ret != cgiFormEmpty)  convert_address (buff, cfg.dns_s);
 	}
 	else
+	{
 		cfg.line = 'D';
+	}
 
-    value = cgiFormStringNoNewlines("N_NIP", buff, 16);
-    if (value != cgiFormEmpty)  convert_address (buff, cfg.portview);
-    value = cgiFormStringNoNewlines("N_DDNS", buff, 16);
-    if (value != cgiFormEmpty)  convert_address (buff, cfg.ddns);
-    value = cgiFormStringNoNewlines("N_DDNSUSER", buff, 16);
-    if (value != cgiFormEmpty) sprintf(cfg.ddnsuser, "%s", buff);
-    value = cgiFormStringNoNewlines("N_DDNSPASS", buff, 16);
-    if (value != cgiFormEmpty) sprintf(cfg.ddnspass, "%s", buff);
+    ret = cgiFormStringNoNewlines("N_NIP", buff, 16);
+    if (ret != cgiFormEmpty)  convert_address (buff, cfg.portview);
+    ret = cgiFormStringNoNewlines("N_DDNS", buff, 16);
+    if (ret != cgiFormEmpty)  convert_address (buff, cfg.ddns);
+    ret = cgiFormStringNoNewlines("N_DDNSUSER", buff, 16);
+    if (ret != cgiFormEmpty) sprintf(cfg.ddnsuser, "%s", buff);
+    ret = cgiFormStringNoNewlines("N_DDNSPASS", buff, 16);
+    if (ret != cgiFormEmpty) sprintf(cfg.ddnspass, "%s", buff);
 
-
-    if (cfg.dhcpenable == 0)  value2 = 0; else value2 = 1;
-    cgiFormInteger("N_DHCPENABLE", &value, value2);
-    if (value == 1)		// dhcpd
+    if (cfg.dhcpenable == 0)  old_value = 0; else old_value = 1;
+    cgiFormInteger("N_DHCPENABLE", &new_value, old_value);
+    if (new_value == 1)		// dhcpd
 		cfg.dhcpenable = 1;
     else
 		cfg.dhcpenable = 0;
 
-   value2 = cgiFormStringNoNewlines("N_STARTIP", buff, 16);	   
-   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dhcpstartIP);
-   value2 = cgiFormStringNoNewlines("N_ENDIP", buff, 16);
-   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.dhcpendIP);
+	ret = cgiFormStringNoNewlines("N_STARTIP", buff, 16);	   
+	if (ret != cgiFormEmpty)  convert_address (buff, cfg.dhcpstartIP);
+	ret = cgiFormStringNoNewlines("N_ENDIP", buff, 16);
+	if (ret != cgiFormEmpty)  convert_address (buff, cfg.dhcpendIP);
 
-   value2 = cgiFormStringNoNewlines("N_LANIP", buff, 16);
-   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.lanip);
+	ret = cgiFormStringNoNewlines("N_LANIP", buff, 16);
+	if (ret != cgiFormEmpty)  convert_address (buff, cfg.lanip);
 
-   value2 = cgiFormStringNoNewlines("N_LANMASK", buff, 16);
-   if (value2 != cgiFormEmpty)  convert_address (buff, cfg.lanmask);
+	ret = cgiFormStringNoNewlines("N_LANMASK", buff, 16);
+	if (ret != cgiFormEmpty)  convert_address (buff, cfg.lanmask);
 
-    value = cgiFormStringNoNewlines("N_LEASETIME", buff, 6);
-  	if (value != cgiFormEmpty) cfg.lease_time = atoi (buff);
+	ret = cgiFormStringNoNewlines("N_LEASETIME", buff, 6);
+	if (ret != cgiFormEmpty) cfg.lease_time = atoi (buff);
 	
-    cgiFormInteger("N_IDE", &value, cfg.target_agent);
-    cfg.target_agent = value;
+    cgiFormInteger("N_IDE", &new_value, cfg.target_agent);
+    cfg.target_agent = new_value;
 
-    cgiFormInteger("N_TELNET", &value, cfg.telnet_server);
-    cfg.telnet_server = value;
+    cgiFormInteger("N_TELNET", &new_value, cfg.telnet_server);
+    cfg.telnet_server = new_value;
 
-    cgiFormInteger("N_FTP", &value, cfg.ftp_server);
-	cfg.ftp_server = value;
+    cgiFormInteger("N_FTP", &new_value, cfg.ftp_server);
+	cfg.ftp_server = new_value;
     
-    cgiFormInteger("N_WEB", &value, cfg.web_server);
-	cfg.web_server = value;
+    cgiFormInteger("N_WEB", &new_value, cfg.web_server);
+	cfg.web_server = new_value;
 
-    cgiFormInteger("N_SSH", &value, cfg.ssh_server);
-	cfg.ssh_server = value;
+    cgiFormInteger("N_SSH", &new_value, cfg.ssh_server);
+	cfg.ssh_server = new_value;
 
-    value = cgiFormStringNoNewlines("N_NPORT", buff, 6);
-    if (value != cgiFormEmpty) cfg.portview_port_no = atoi (buff);
+    ret = cgiFormStringNoNewlines("N_NPORT", buff, 6);
+    if (ret != cgiFormEmpty) cfg.portview_port_no = atoi (buff);
 
-    value = cgiFormStringNoNewlines("N_DNAME", buff, 32);
-    if (value != cgiFormEmpty) sprintf(cfg.device_name, "%s", buff);
+    ret = cgiFormStringNoNewlines("N_DNAME", buff, 32);
+    if (ret != cgiFormEmpty) sprintf(cfg.device_name, "%s", buff);
     
-    SB_WriteConfig  (CFGFILE_ETC_SYSTEM,     (char *)&cfg,		sizeof(struct SB_SYSTEM_CONFIG));
+    SB_WriteConfig(CFGFILE_ETC_SYSTEM, (char *)&cfg, sizeof(struct SB_SYSTEM_CONFIG));
+
+	if(changed != true)
+	{
+		*error_msg = WARNNIG_NOTHING_SUBMIT;
+		return -2;
+	}
+	return 0;
 }
 //---------------------------------------------------------------------------
 void set_snmp()
@@ -511,10 +558,10 @@ struct sockaddr_in sock;		// who to ping
 int k,j,i,len,cnt;
 char tmp[10];
 	
-	if ((sock.sin_addr.s_addr = inet_addr(src)) == INADDR_NONE)	return 0;
+	if ((sock.sin_addr.s_addr = inet_addr(src)) == INADDR_NONE)	return -1;
 	len = strlen (src);
 	for (cnt=0,i=0; i<len; i++) if (src[i] == '.') cnt++;
-	if (cnt != 3) return 0;
+	if (cnt != 3) return -1;
 		for (k=0,j=0,i=0; i<=len; i++,src++)
 		{
 		tmp[j++] = *src;
@@ -524,7 +571,7 @@ char tmp[10];
 			*dest++ = atoi (tmp);
 			}
 		}
-	return 1;
+	return 0;
 }
 //---------------------------------------------------------------------------
 int set_serial()
