@@ -370,7 +370,12 @@ void set_logout()
 //---------------------------------------------------------------------------
 static char ERROR_WAN_LINE_TYPE[] = "Check WAN Line Type!";
 static char ERROR_WAN_IP_ADDR[] = "Check WAN IP Address!";
+static char ERROR_WAN_SUBNET_MASK[] = "Check WAN Subnet Mask!";
+static char ERROR_WAN_GATEWAY[] = "Check WAN Gateway!";
+static char ERROR_WAN_PRIMARY_DNS[] = "Check WAN Primary DNS!";
+static char ERROR_WAN_SECONDARY_DNS[] = "Check WAN Secondary DNS!";
 static char WARNNIG_NOTHING_SUBMIT[] = "There is noting to submit.";
+
 int set_network(char **error_msg)
 {
     char buff[64];
@@ -379,13 +384,13 @@ int set_network(char **error_msg)
     int new_value;
     int old_value;
 	cgiFormResultType ret;
-	bool changed;
+	bool changed = false;
+	bool wan_changed = false;
 	struct SB_SYSTEM_CONFIG	cfg;
 
 	SB_ReadConfig(CFGFILE_ETC_SYSTEM, (char *)&cfg, sizeof(struct SB_SYSTEM_CONFIG));			
 
-	changed = false;
-    if (cfg.line == 'I')  old_value = 0; else old_value = 1;
+	if (cfg.line == 'I')  old_value = 0; else old_value = 1;
     ret = cgiFormInteger("N_LINE", &new_value, old_value);
 	if(ret != cgiFormSuccess)
 	{
@@ -393,8 +398,8 @@ int set_network(char **error_msg)
 		return -1;
 	}
 
-	if(new_value != old_value) changed = true;
-	if (new_value == 0)		// static
+	if(new_value != old_value) { changed = true; wan_changed = true; }
+	if (new_value == 0) // Static IP
 	{
 		cfg.line = 'I';
 		ret = cgiFormStringNoNewlines("N_IP", buff, 16);
@@ -406,29 +411,113 @@ int set_network(char **error_msg)
 				*error_msg = ERROR_WAN_IP_ADDR;
 				return -1;
 			}
-			//fprintf(stderr, "sizeof(cfg.ip) = %d\n", sizeof(cfg.ip));
-			//fprintf(stderr, "cfg.ip = %d%d%d%d\n", cfg.ip[0], cfg.ip[1], cfg.ip[2], cfg.ip[3]);
-			//fprintf(stderr, "addr = %d%d%d%d\n", addr[0], addr[1], addr[2], addr[3]);
-			ret = memcmp(addr, cfg.ip, sizeof(cfg.ip));
-			//fprintf(stderr, "memcmp ret = %d\n", ret);
+			ret = memcmp(addr, cfg.ip, sizeof(addr));
 			if(ret != 0)
 			{
 				changed = true;
+				wan_changed = true;
 			}
-			memcpy(cfg.ip, addr, sizeof(cfg.ip));
+			memcpy(cfg.ip, addr, sizeof(addr));
 		}
+		else
+		{
+			*error_msg = ERROR_WAN_IP_ADDR;
+			return -1;
+		}
+
 		ret = cgiFormStringNoNewlines("N_MASK", buff, 16);
-		if (ret != cgiFormEmpty)  convert_address (buff, cfg.mask);
+		if (ret == cgiFormSuccess)
+		{
+			ret = convert_address(buff, addr);
+			if(ret)
+			{
+				*error_msg = ERROR_WAN_SUBNET_MASK;
+				return -1;
+			}
+			ret = memcmp(addr, cfg.mask, sizeof(addr));
+			if(ret != 0)
+			{
+				changed = true;
+				wan_changed = true;
+			}
+			memcpy(cfg.mask, addr, sizeof(addr));
+		}
+		else
+		{
+			*error_msg = ERROR_WAN_SUBNET_MASK;
+			return -1;
+		}
+
 		ret = cgiFormStringNoNewlines("N_GW", buff, 16);
-		if (ret != cgiFormEmpty)  convert_address (buff, cfg.gateway);
+		if (ret == cgiFormSuccess)
+		{
+			ret = convert_address(buff, addr);
+			if(ret)
+			{
+				*error_msg = ERROR_WAN_GATEWAY;
+				return -1;
+			}
+			ret = memcmp(addr, cfg.gateway, sizeof(addr));
+			if(ret != 0)
+			{
+				changed = true;
+				wan_changed = true;
+			}
+			memcpy(cfg.gateway, addr, sizeof(addr));
+		}
+		else
+		{
+			*error_msg = ERROR_WAN_GATEWAY;
+			return -1;
+		}
+
 		ret = cgiFormStringNoNewlines("N_DNS", buff, 16);
-		if (ret != cgiFormEmpty)  convert_address (buff, cfg.dns);
-		ret = cgiFormStringNoNewlines("N_DNS", buff, 16);
-		if (ret != cgiFormEmpty)  convert_address (buff, cfg.dns);
+		if (ret == cgiFormSuccess)
+		{
+			ret = convert_address(buff, addr);
+			if(ret)
+			{
+				*error_msg = ERROR_WAN_PRIMARY_DNS;
+				return -1;
+			}
+			ret = memcmp(addr, cfg.dns, sizeof(addr));
+			if(ret != 0)
+			{
+				changed = true;
+				wan_changed = true;
+			}
+			memcpy(cfg.dns, addr, sizeof(addr));
+		}
+		else
+		{
+			*error_msg = ERROR_WAN_PRIMARY_DNS;
+			return -1;
+		}
+
 		ret = cgiFormStringNoNewlines("N_DNS_S", buff, 16);
-		if (ret != cgiFormEmpty)  convert_address (buff, cfg.dns_s);
+		if (ret == cgiFormSuccess)
+		{
+			ret = convert_address(buff, addr);
+			if(ret)
+			{
+				*error_msg = ERROR_WAN_SECONDARY_DNS;
+				return -1;
+			}
+			ret = memcmp(addr, cfg.dns_s, sizeof(addr));
+			if(ret != 0)
+			{
+				changed = true;
+				wan_changed = true;
+			}
+			memcpy(cfg.dns_s, addr, sizeof(addr));
+		}
+		else
+		{
+			*error_msg = ERROR_WAN_SECONDARY_DNS;
+			return -1;
+		}
 	}
-	else
+	else // DHCP
 	{
 		cfg.line = 'D';
 	}
