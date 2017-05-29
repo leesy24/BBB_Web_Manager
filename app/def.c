@@ -167,30 +167,29 @@ int Product_ID;
 //=============================================================================
 int main (int argc, char *argv[])
 {
-int i;
+	int i;
 	printf ("%s:%s\n", argv[0], argv[1]);
 
 	Product_ID = SB_GetModel ();
-    if (argc < 2)
-	    {
+	if (argc < 2)
+	{
 		help ();
-	   	return 0;
-    	}
+		return 0;
+	}
 
-    if (argc > 1) for (i=0; i < strlen( argv[1]) ; i++) argv[1][i] = tolower( argv[1][i] );
-    if (argc > 2) for (i=0; i < strlen( argv[2]) ; i++) argv[2][i] = tolower( argv[2][i] );
-    if (argc > 3) for (i=0; i < strlen( argv[3]) ; i++) argv[3][i] = tolower( argv[3][i] );    
-    if (argc > 4) for (i=0; i < strlen( argv[4]) ; i++) argv[4][i] = tolower( argv[4][i] );    
+	if (argc > 1) for (i=0; i < strlen( argv[1]) ; i++) argv[1][i] = tolower( argv[1][i] );
+	if (argc > 2) for (i=0; i < strlen( argv[2]) ; i++) argv[2][i] = tolower( argv[2][i] );
+	if (argc > 3) for (i=0; i < strlen( argv[3]) ; i++) argv[3][i] = tolower( argv[3][i] );    
+	if (argc > 4) for (i=0; i < strlen( argv[4]) ; i++) argv[4][i] = tolower( argv[4][i] );    
 
-
-    if (!strncmp("help", argv[1], 2)) 
-    	{
+	if (!strncmp("help", argv[1], 2)) 
+	{
 		help ();
-	   	return 0;
-		}
+		return 0;
+	}
 
-    if (!strncmp("save", argv[1], 3)) 
-		{
+	if (!strncmp("save", argv[1], 3)) 
+	{
 		SB_ReadConfig  (CFGFILE_ETC_SYSTEM,  (char *)&CFG_SYS, sizeof(struct SB_SYSTEM_CONFIG));	
 		SB_WriteConfig (CFGFILE_FLASH_SYSTEM,(char *)&CFG_SYS, sizeof(struct SB_SYSTEM_CONFIG));
 
@@ -208,29 +207,29 @@ int i;
 
 		SB_ReadConfig  (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
 		SB_WriteConfig (CFGFILE_FLASH_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
-		
+
 		printf ("Flash Write Successfully\n");
 		write_web_login ();
 		return 0;
-		}
+	}
 
-    if (!strncmp("factory", argv[1], 4)) 
-		{
+	if (!strncmp("factory", argv[1], 4)) 
+	{
 		char MAC[10] = { 0x00, 0x05, 0xf4, 0x00, 0x20, 0x57 };	 // Factory MAC address
-			
+
 		if (SB_ReadConfig  (CFGFILE_ETC_SYSTEM,  (char *)&CFG_SYS, sizeof(struct SB_SYSTEM_CONFIG)) > 0)
-			memcpy (MAC, CFG_SYS.mac, 6);
+		memcpy (MAC, CFG_SYS.mac, 6);
 
 		factory_default (MAC);
 		printf ("Factory Default Successfully\n");
-	   	return 0;
-    	}
+		return 0;
+	}
 
-    if (!strncmp("view", argv[1], 2)) 
-    	{
+	if (!strncmp("view", argv[1], 2)) 
+	{
 		SB_ReadConfig  (CFGFILE_ETC_SYSTEM,  (char *)&CFG_SYS, sizeof(struct SB_SYSTEM_CONFIG));
-	   	if (argc == 2) 
-			{
+		if (argc == 2) 
+		{
 			view_wan();
 			if (Product_ID != EDDY_S4M) view_lan();
 			view_wifi ();
@@ -240,7 +239,7 @@ int i;
 			view_gpio();
 			if (Product_ID != EDDY_S4M) view_dio ();
 			return 0;
-			}	
+		}	
 		if (!strncmp ("management", argv[2], 2))  view_management ();
 		if (!strncmp ("wan", 		argv[2], 2))  view_wan ();
 		if (!strncmp ("wifi", 		argv[2], 2))  view_wifi ();	
@@ -250,51 +249,50 @@ int i;
 		if (!strncmp ("dio",   		argv[2], 2) && Product_ID != EDDY_S4M)  view_dio ();
 		if (!strncmp ("snmp",   	argv[2], 2))  view_snmp ();
 		return 0; 
-		}
+	}
 
-
-    if (!strncmp("port", argv[1], 2) && argc == 5)
-		{
+	if (!strncmp("port", argv[1], 2) && argc == 5)
+	{
 		SB_ReadConfig  (CFGFILE_ETC_SIO,  (char *)&CFG_SIO[0], sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
 		if (set_port (argv[2], argv[3], argv[4]) == 1) 	
-			{
-			SB_WriteConfig  (CFGFILE_ETC_SIO,  (char *)&CFG_SIO[0], sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
-			}
-		else
-			{
-		  	printf("def port <port number> <command> <input data>\n");
-		  	printf("If you need help, execute 'def help' or 'help'\n");
-			}
-	  	return 0;
-    	}
-
-    if (!strncmp("wifi", argv[1], 2) && argc == 4)
 		{
-	    SB_ReadConfig  (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
-        if ( set_wifi (argc, argv[2], argv[3]) == 1 ) 
-	   	    {
-		    SB_WriteConfig (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
-    	    }
-	   else
-			{
+			SB_WriteConfig  (CFGFILE_ETC_SIO,  (char *)&CFG_SIO[0], sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
+		}
+		else
+		{
+			printf("def port <port number> <command> <input data>\n");
+			printf("If you need help, execute 'def help' or 'help'\n");
+		}
+		return 0;
+	}
+
+	if (!strncmp("wifi", argv[1], 2) && argc == 4)
+	{
+		SB_ReadConfig  (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
+		if ( set_wifi (argc, argv[2], argv[3]) == 1 ) 
+		{
+			SB_WriteConfig (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
+		}
+		else
+		{
 			printf("def <command> <input data>\n");
 			printf("If you need help, execute 'def help' or 'help'\n");
-			}
-		return 0;    	   
-    	}
+		}
+		return 0;
+	}
 
-   SB_ReadConfig  (CFGFILE_ETC_SYSTEM,  (char *)&CFG_SYS,  sizeof(struct SB_SYSTEM_CONFIG));	
-   SB_ReadConfig  (CFGFILE_ETC_SNMP,    (char *)&CFG_SNMP, sizeof(struct SB_SNMP_CONFIG));	
-   if ( set_wan (argc, argv[1], argv[2]) == 1 ) 
-	   	{
+	SB_ReadConfig  (CFGFILE_ETC_SYSTEM,  (char *)&CFG_SYS,  sizeof(struct SB_SYSTEM_CONFIG));	
+	SB_ReadConfig  (CFGFILE_ETC_SNMP,    (char *)&CFG_SNMP, sizeof(struct SB_SNMP_CONFIG));	
+	if ( set_wan (argc, argv[1], argv[2]) == 1 ) 
+	{
 		SB_WriteConfig  (CFGFILE_ETC_SYSTEM,  (char *)&CFG_SYS, sizeof(struct SB_SYSTEM_CONFIG));
 		SB_WriteConfig  (CFGFILE_ETC_SNMP,    (char *)&CFG_SNMP, sizeof(struct SB_SNMP_CONFIG));	
-	   	}
-   else
-		{
+	}
+	else
+	{
 		printf("def <command> <input data>\n");
 		printf("If you need help, execute 'def help' or 'help'\n");
-		}
+	}
 	return 0;
 }
 //=============================================================
@@ -372,7 +370,8 @@ int no;
 		{
 		sprintf (CFG_SIO[no].name,		"Port-%02d",	no+1);
 		CFG_SIO[no].socket_no		=	4001 + no;
-		CFG_SIO[no].protocol		=	SB_COM_REDIRECT_MODE;		
+		//CFG_SIO[no].protocol		=	SB_COM_REDIRECT_MODE;
+		CFG_SIO[no].protocol		=	SB_DISABLE_MODE;
 		CFG_SIO[no].device			=   SB_DATA_TYPE;
 		CFG_SIO[no].speed			=	6;						// 9600
 		CFG_SIO[no].dps				= 	0x03;					// n/8/1
