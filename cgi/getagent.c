@@ -140,7 +140,7 @@ struct	SB_SYSTEM_CONFIG	cfg;
 		listPutf(list,"S4M_END", "-->");
 		}
 
-
+#if 0
 	if (cfg.mac[3] == 0x00 && cfg.mac[4] == 0x20 && cfg.mac[5] == 0x57)
 		{
 		listPutf(list,"WARNING_START", "");
@@ -151,6 +151,10 @@ struct	SB_SYSTEM_CONFIG	cfg;
 		listPutf(list,"WARNING_START", "<!--");
 		listPutf(list,"WARNING_END", "-->");
 		}
+#else
+	listPutf(list,"WARNING_START", "<!--");
+	listPutf(list,"WARNING_END", "-->");
+#endif
 
 	switch (type)
 		{
@@ -928,83 +932,95 @@ listPutf(list, "n_oem", "disabled");
 //---------------------------------------------------------------------------
 void get_serial(int portno)
 {
-struct SB_SIO_CONFIG			cfg  [SB_MAX_SIO_PORT];
-struct SB_GPIO_CONFIG			gpio;
-int value, value2, mode;
-char buff[256];
-char charval;
-int p_no;
+	struct SB_SIO_CONFIG			cfg  [SB_MAX_SIO_PORT];
+	struct SB_GPIO_CONFIG			gpio;
+	int value, value2, mode;
+	char buff[256];
+	char charval;
+	int p_no;
+
+	fprintf(stderr, "get_serial(portno = %d)\n", portno);
 
 	SB_ReadConfig  (CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	
 	SB_ReadConfig  (CFGFILE_ETC_GPIO,(char *)&gpio,		sizeof(struct SB_GPIO_CONFIG));	
 
 	if(cgiFormInteger("PAGENUM",&p_no, 0) == cgiFormSuccess )
 		portno = p_no - 1;
+	fprintf(stderr, "portno = %d\n", portno);
 
 	listPutf(list, "port_no", "%d", portno+1);
 
-	if (portno <= 1) 
-		{
+	if (portno < SB_MAX_SIO_PORT) 
+	{
 		listPutf(list,"RS232_START", "");
 		listPutf(list,"RS232_END", "");
 		listPutf(list,"RS422485_START", "<!--");
 		listPutf(list,"RS422485_END", "-->");
-		}
+	}
 	else	
-		{
+	{
 		listPutf(list,"RS232_START", "<!--");
 		listPutf(list,"RS232_END", "-->");
 		listPutf(list,"RS422485_START", "");
 		listPutf(list,"RS422485_END", "");
 		switch(cfg[portno].interface)
-			{
+		{
 			case SB_RS422_PTOP:
 				listPutf(list, "s_type_rs422","selected");	break;
 			case SB_RS485_NONE_ECHO:
 				listPutf(list, "s_type_rs485n","selected");	break;
 			case SB_RS485_ECHO:
 				listPutf(list, "s_type_rs485e","selected");	break;	
-			}	
 		}	
+	}	
 	cgiFormInteger("IFTYPE", &mode, cfg[portno].interface);
 	
 	cgiFormInteger("OPMODE", &mode, cfg[portno].protocol);
 
-	switch (portno)	{
-		case 0	: if (gpio.serial_1 != 1) listPutf(list,"s_option", "disabled");	break;
-		case 1	: if (gpio.serial_2 != 1) listPutf(list,"s_option", "disabled");	break;
-		case 2	: if (gpio.serial_3 != 1) listPutf(list,"s_option", "disabled");	break;
-		case 3	: if (gpio.serial_4 != 1) listPutf(list,"s_option", "disabled");	break;	}			
+	switch (portno)
+	{
+		case 0: if(gpio.serial_1 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
+		case 1: if(gpio.serial_2 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
+		case 2: if(gpio.serial_3 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
+		case 3: if(gpio.serial_4 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
+	}
 
+	// Switch for Operation Mode
 	switch(mode)
-		{
-		case 0:
+	{
+		case SB_DISABLE_MODE:	// Disable
 			listPutf(list,"s_op_dis","selected");
 			listPutf(list,"s_option", "disabled");	
 			break;
-		case 1:
+		case SB_COM_REDIRECT_MODE: // COM Redirect
 			listPutf(list,"s_op_com","selected");
+			listPutf(list, "s_remote_option", "disabled");
 			break;
-		case 2:
+		case SB_TCP_SERVER_MODE: // TCP Server
 			listPutf(list,"s_op_tcps","selected");
+			listPutf(list, "s_remote_option", "disabled");
 			break;
-		case 3:
+		case SB_TCP_CLIENT_MODE: // TCP Client
 			listPutf(list,"s_op_tcpc","selected");
 			break;
-		case 4:
+		case SB_TCP_BROADCAST_MODE: // TCP Broadcast
 			listPutf(list,"s_op_tcpb","selected");
+			listPutf(list, "s_remote_option", "disabled");
 			break;
-		case 5:
+		case SB_TCP_MULTIPLEX_MODE: // TCP Multiplex
 			listPutf(list,"s_op_tcpm","selected");
+			listPutf(list, "s_remote_option", "disabled");
 			break;
-		case 6:
+		case SB_UDP_SERVER_MODE: // UDP Server
 			listPutf(list,"s_op_udps","selected");
+			listPutf(list, "s_remote_option", "disabled");
 			break;
-		case 7:
+		case SB_UDP_CLIENT_MODE: // UDP Client
 			listPutf(list,"s_op_udpc","selected");
 			break;
-		default:
-			listPutf(list,"s_op_com","selected");
+		default: // Default SB_DISABLE_MODE
+			listPutf(list,"s_op_dis","selected");
+			listPutf(list,"s_option", "disabled");	
 			break;
 	}
 
@@ -1173,7 +1189,7 @@ int p_no;
 	if (value == 0)
 		{
 		listPutf(list, "s_pdisable", "selected");
-		listPutf(list, "s_poption", "disabled");
+		listPutf(list, "s_passive_option", "disabled");
 		}
 	else
 		{

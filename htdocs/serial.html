@@ -33,17 +33,17 @@
 
 		function Validator(theForm)
 		{
-			if (!isValidIP(theForm.SERVER_IP.value))
+			if (!isValidIP(theForm.REMOTE_IP.value))
 			{
-				alert("Server IP address is invalid!");
-				theForm.SERVER_IP.focus();
+				alert("Remote IP address is invalid!");
+				theForm.REMOTE_IP.focus();
 				return (false);
 			}
 
-			if (!isInValidRange(theForm.SERVER_PORT.value, 0, 65535))
+			if (!isInValidRange(theForm.REMOTE_PORT.value, 0, 65535))
 			{
-				alert("Server port number is invalid: Value needs to be between 0 and 65535");
-				theForm.SERVER_PORT.focus();
+				alert("Remote port number is invalid: Value needs to be between 0 and 65535");
+				theForm.REMOTE_PORT.focus();
 				return (false);
 			}
 
@@ -282,7 +282,7 @@
 										<tr bgcolor="#FFFFFF">
 											<td class="content">Baud Rate</td>
 											<td class="content">
-												<select name="BAUDRATE" [v,s_option]>
+												<select name="BAUDRATE" [v,s_option] >
 													<option [v, s_b150] value="0">150 bps</option>
 													<option [v, s_b300] value="1">300 bps</option>
 													<option [v, s_b600] value="2">600 bps</option>
@@ -407,15 +407,16 @@
 										<tr bgcolor="#FFFFFF">
 											<td class="content">Remote IP Address / Port</td>
 											<td class="content">
-												<input type="text" size="16" maxlength="16" name="SERVER_IP" value="[v,s_rip]" [v,s_option] /> 
+												<input type="text" size="16" maxlength="16" name="REMOTE_IP" value="[v,s_rip]" [v,s_option] [v,s_remote_option] /> 
 												&nbsp;/&nbsp;
-												<input type="text" size="6" maxlength="6" name="SERVER_PORT" value="[v,s_rport]" [v,s_option] />
+												<input type="text" size="6" maxlength="6" name="REMOTE_PORT" value="[v,s_rport]" [v,s_option] [v,s_remote_option] />
 												&nbsp;&nbsp;
 												<a href=#option12 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
 												<DIV style='display:none'>
 													<br/>
 													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-														When the Operation Mode is set to TCP Client, set the IP address and the socket number to connect to.
+														When the Operation Mode is set to TCP Client or UDP Client,<br>
+														Set the IP address and the socket number to connect to.
 													</div>
 												</div>
 											</td>
@@ -475,9 +476,9 @@
 										<tr bgcolor="#FFFFFF">
 											<td class="content">Passive Username / Password</td>
 											<td class="content">
-												<input type="text" size="16" maxlength="15" name="PASSIVE_USER" value="[v,s_puser]" [v,s_option] [v,s_poption]/>
+												<input type="text" size="16" maxlength="15" name="PASSIVE_USER" value="[v,s_puser]" [v,s_option] [v,s_passive_option]/>
 												&nbsp;/&nbsp;
-												<input type="text" size="16" maxlength="15" name="PASSIVE_PASS" value="[v,s_ppass]" [v,s_option] [v,s_poption]/>
+												<input type="text" size="16" maxlength="15" name="PASSIVE_PASS" value="[v,s_ppass]" [v,s_option] [v,s_passive_option]/>
 												&nbsp;&nbsp;
 												<a href=#option16 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
 												<DIV style='display:none'>
