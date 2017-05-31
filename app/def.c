@@ -321,7 +321,7 @@ void factory_default (char *MAC)
 int no;
 
 	memcpy  (CFG_SYS.mac,		MAC, 			6);
-#if 1
+#if 0
 	sprintf (CFG_SYS.ip,		"%c%c%c%c",     192,168,0,223);
 	sprintf (CFG_SYS.mask,		"%c%c%c%c",     255,255,255,0);
 	sprintf (CFG_SYS.gateway,	"%c%c%c%c",     192,168,0,1);
@@ -335,6 +335,13 @@ int no;
 	CFG_SYS.line 				= 'I'; // Static IP
 #else
 	CFG_SYS.line 				= 'D'; // DHCP
+	// Set for reserved values
+	sprintf (CFG_SYS.ip,		"%c%c%c%c",     192,168,10,223);
+	sprintf (CFG_SYS.mask,		"%c%c%c%c",     255,255,255,0);
+	sprintf (CFG_SYS.gateway,	"%c%c%c%c",     192,168,10,1);
+	// Google DNSs
+	sprintf (CFG_SYS.dns,		"%c%c%c%c",     8,8,8,8);
+	sprintf (CFG_SYS.dns_s,		"%c%c%c%c",     8,8,4,4);
 #endif
 
 	CFG_SYS.dhcpenable			= 0;
@@ -373,7 +380,7 @@ int no;
 		//CFG_SIO[no].protocol		=	SB_COM_REDIRECT_MODE;
 		CFG_SIO[no].protocol		=	SB_DISABLE_MODE;
 		CFG_SIO[no].device			=   SB_DATA_TYPE;
-		CFG_SIO[no].speed			=	6;						// 9600
+		CFG_SIO[no].speed			=	10;						// 115200
 		CFG_SIO[no].dps				= 	0x03;					// n/8/1
 		CFG_SIO[no].flow			=	SB_FLOW_NONE;
 		sprintf (CFG_SIO[no].remote_ip, "%c%c%c%c",	0,0,0,0);
@@ -391,10 +398,10 @@ int no;
 	SB_WriteConfig (CFGFILE_FLASH_SIO, (char *)&CFG_SIO[0],  sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
 	SB_WriteConfig (CFGFILE_ETC_SIO,   (char *)&CFG_SIO[0],  sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
 
-	CFG_GPIO.serial_1			=	SB_DISABLE;
-	CFG_GPIO.serial_2			=	SB_DISABLE;
-	CFG_GPIO.serial_3			=	SB_DISABLE;
-	CFG_GPIO.serial_4			=	SB_DISABLE;
+	CFG_GPIO.serial_1			=	SB_ENABLE;
+	CFG_GPIO.serial_2			=	SB_ENABLE;
+	CFG_GPIO.serial_3			=	SB_ENABLE;
+	CFG_GPIO.serial_4			=	SB_ENABLE;
 	CFG_GPIO.debugport			=	SB_ENABLE;
 	CFG_GPIO.lan				=	SB_DISABLE;
 	CFG_GPIO.adc				=	SB_DISABLE;

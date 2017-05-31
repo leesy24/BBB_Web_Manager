@@ -275,7 +275,7 @@ int cgiMain()
 			strcpy(target_page, "afterComplete.html");
 			break;
 		case '8':	// factory
-			listPutf(list, "ip", "192.168.0.223");
+			listPutf(list, "ip", "from DHCP");
 			system("/sbin/def factory");
 			strcpy(target_page, "afterFactory.html");
 			break;
@@ -287,6 +287,7 @@ int cgiMain()
 			if (CheckLogin() == 1)
 			{
 				set_logout();
+				system("/usr/bin/sudo /sbin/wan");
 				system("/usr/bin/sudo /sbin/reboot");
 				return;	// return directly
 			}
@@ -579,6 +580,11 @@ int set_network(char **error_msg)
 	{
 		*error_msg = WARNNIG_NOTHING_SUBMIT;
 		return -2;
+	}
+
+	if(wan_changed)
+	{
+		system("/usr/bin/sudo /sbin/wan");
 	}
 	return 0;
 }
