@@ -16,6 +16,12 @@ SELECT
     COLOR: #555555;
 	FONT-FAMILY: Arial;
 }
+SELECT[disabled]{
+    FONT-SIZE: 9pt;
+    COLOR: rgb(84, 84, 84);
+    background-color: rgb(235, 235, 228);
+	FONT-FAMILY: Arial;
+}
 INPUT
 {
     FONT-SIZE: 9pt;

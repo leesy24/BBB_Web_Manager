@@ -944,7 +944,7 @@ void get_serial(int portno)
 	SB_ReadConfig  (CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	
 	SB_ReadConfig  (CFGFILE_ETC_GPIO,(char *)&gpio,		sizeof(struct SB_GPIO_CONFIG));	
 
-	if(cgiFormInteger("PAGENUM",&p_no, 0) == cgiFormSuccess )
+	if(cgiFormInteger("PORTNUM",&p_no, 0) == cgiFormSuccess )
 		portno = p_no - 1;
 	fprintf(stderr, "portno = %d\n", portno);
 
@@ -956,6 +956,7 @@ void get_serial(int portno)
 		listPutf(list,"RS232_END", "");
 		listPutf(list,"RS422485_START", "<!--");
 		listPutf(list,"RS422485_END", "-->");
+		listPutf(list, "s_type_rs232","selected");
 	}
 	else	
 	{
@@ -1157,7 +1158,7 @@ void get_serial(int portno)
 		listPutf(list, "s_dmodem", "selected");
 
 	// Remote IP Address / Port	
-	if (cgiFormStringNoNewlines("SERVER_IP", buff, 16) == cgiFormNotFound)
+	if (cgiFormStringNoNewlines("REMOTE_IP", buff, 16) == cgiFormNotFound)
 	{	
 		sprintf(buff, "%d.%d.%d.%d",cfg[portno].remote_ip[0], cfg[portno].remote_ip[1],cfg[portno].remote_ip[2],cfg[portno].remote_ip[3]);
 		listPutf(list, "s_rip", buff);
@@ -1165,7 +1166,7 @@ void get_serial(int portno)
 	else
 		listPutf(list, "s_rip", buff);
 
-	if ( cgiFormStringNoNewlines("SERVER_PORT", buff, 6) == cgiFormNotFound )
+	if ( cgiFormStringNoNewlines("REMOTE_PORT", buff, 6) == cgiFormNotFound )
 		listPutf(list, "s_rport", "%u", cfg[portno].remote_socket_no);
 	else
 		listPutf(list, "s_rport", buff);	

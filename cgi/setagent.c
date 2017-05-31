@@ -183,6 +183,7 @@ int cgiMain()
 	char target_page[64];
 	char type;
 	int i;
+	int portnum;
 	int mode=0;	// 0: html, 1: cgi
 	struct	SB_SYSTEM_CONFIG	cfg;
 	int ret;
@@ -238,18 +239,25 @@ int cgiMain()
 			break;
 
 		case '2':	// serial
-			i = set_serial();
-			switch (i)
-			{	
+			portnum = -1;
+			ret = set_serial(&portnum, &msg);
+			if(ret)
+			{
+				sprintf(error_msg, "Error: %s", msg);
+				Error(error_msg);
+			}
+			switch (portnum)
+			{
 				case 0 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=A");  break;
 				case 1 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=B");  break;
 				case 2 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=C");  break;
 				case 3 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=D");  break;
 				case 4 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=E");  break;
 				case 5 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=F");  break;
-				case 6 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=G");  break;																
+				case 6 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=G");  break;
 				case 7 : strcpy(target_page, "/cgi-bin/getagent.cgi?type=H");  break;
-			}	
+				default: strcpy(target_page, "/cgi-bin/getagent.cgi?type=A");  break;
+			}
 			mode = 1;
 			break;
 		case '3':	// gpio
@@ -375,7 +383,7 @@ static char ERROR_WAN_SUBNET_MASK[] = "Check WAN Subnet Mask!";
 static char ERROR_WAN_GATEWAY[] = "Check WAN Gateway!";
 static char ERROR_WAN_PRIMARY_DNS[] = "Check WAN Primary DNS!";
 static char ERROR_WAN_SECONDARY_DNS[] = "Check WAN Secondary DNS!";
-static char WARNNIG_NOTHING_SUBMIT[] = "There is noting to submit.";
+static char WARNNIG_NOTHING_APPLY[] = "There is noting to apply.";
 
 int set_network(char **error_msg)
 {
@@ -578,7 +586,7 @@ int set_network(char **error_msg)
 
 	if(changed != true)
 	{
-		*error_msg = WARNNIG_NOTHING_SUBMIT;
+		*error_msg = WARNNIG_NOTHING_APPLY;
 		return -2;
 	}
 
@@ -669,10 +677,16 @@ char tmp[10];
 	return 0;
 }
 //---------------------------------------------------------------------------
-int set_serial()
+static char ERROR_SERIAL_PORTNUM[] = "Check Port number!";
+static char ERROR_SERIAL_OPMODE[] = "Check Operation Mode!";
+static char ERROR_SERIAL_INTERFACE[] = "Check Interface type!";
+static char ERROR_SERIAL_LSPORT[] = "Check Local Socket Port!";
+static char ERROR_SERIAL_PORTNAME[] = "Check Port Alias Name!";
+
+int set_serial(int *portnum, char **error_msg)
 {
-    int value;
-    int value2;
+    int new_value;
+    int old_value;
     int mode;
     int iftype;
     char buff[64];
@@ -680,89 +694,140 @@ int set_serial()
     char charval;
     int portno;
 	struct SB_SIO_CONFIG			cfg [SB_MAX_SIO_PORT];
+	cgiFormResultType ret;
+	bool changed = false;
 
-	SB_ReadConfig  (CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	   
-    if ( cgiFormInteger("PAGENUM", &portno, 0) != cgiFormSuccess )
-        Error("Where are your from?");
+	SB_ReadConfig(CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	   
 
-    portno -=1;
-    
-  	if (portno > 1)
-		{	
-	    cgiFormInteger("IFTYPE", &value, cfg[portno].interface);
-    	cfg[portno].interface = value;
-    	}    
-    
-    cgiFormInteger("OPMODE", &value, cfg[portno].protocol);
-    cfg[portno].protocol = value;
+	ret = cgiFormInteger("PORTNUM", &portno, -1);
+	if( ret != cgiFormSuccess
+		||
+		( portno < 0 || portno >= SB_MAX_SIO_PORT )
+		)
+	{
+		*error_msg = ERROR_SERIAL_PORTNUM;
+		return -1;
+	}
+	portno -= 1;
 
-	cgiFormInteger("LOCAL_PORT", &value, cfg[portno].socket_no);
-    cfg[portno].socket_no = value;
+    ret = cgiFormInteger("OPMODE", &new_value, -1);
+	if( ret != cgiFormSuccess
+		||
+		( new_value < SB_DISABLE_MODE || new_value > SB_UDP_CLIENT_MODE )
+		)
+	{
+		*error_msg = ERROR_SERIAL_OPMODE;
+		return -1;
+	}
+	if( new_value != cfg[portno].protocol ) changed = true;
+    cfg[portno].protocol = new_value;
 
-    value = cgiFormStringNoNewlines("ALIAS", buff, 16); 
-    if (value != cgiFormEmpty) sprintf(cfg[portno].name, "%s", buff);
+	ret = cgiFormInteger("IFTYPE", &new_value, -1);
+	if( ret != cgiFormSuccess
+		||
+		( new_value < SB_RS232 || new_value > SB_RS485_ECHO1 )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_INTERFACE, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_INTERFACE;
+		return -1;
+	}
+	if( new_value != cfg[portno].interface ) changed = true;
+	cfg[portno].interface = new_value;
 
-    cgiFormInteger("BAUDRATE", &value, cfg[portno].speed);
-    cfg[portno].speed = value;
+	ret = cgiFormInteger("LOCAL_PORT", &new_value, -1);
+	if( ret != cgiFormSuccess
+		||
+		( new_value < 0 || new_value > 65535 )
+		)
+	{
+		*error_msg = ERROR_SERIAL_LSPORT;
+		return -1;
+	}
+	if( new_value != cfg[portno].socket_no ) changed = true;
+	cfg[portno].socket_no = new_value;
+
+    ret = cgiFormStringNoNewlines("ALIAS", buff, sizeof(cfg[portno].name));
+    if (ret == cgiFormNotFound)
+    {
+		*error_msg = ERROR_SERIAL_PORTNAME;
+		return -1;
+    }
+	fprintf(stderr, "sizeof(cfg[portno].name) = %d\n", sizeof(cfg[portno].name));
+	fprintf(stderr, "cfg[%d].name = %s\n", portno, cfg[portno].name);
+	fprintf(stderr, "buff = %s\n", buff);
+	if( memcmp(buff, cfg[portno].name, sizeof(cfg[portno].name)) ) changed = true;
+	sprintf(cfg[portno].name, "%s", buff);
+
+    cgiFormInteger("BAUDRATE", &new_value, cfg[portno].speed);
+    cfg[portno].speed = new_value;
  
-    value2 = cfg[portno].dps & 0x03;
-    cgiFormInteger("DATABIT", &value, value2);
+    old_value = cfg[portno].dps & 0x03;
+    cgiFormInteger("DATABIT", &new_value, old_value);
 	cfg[portno].dps &= 0xfc;
-	cfg[portno].dps |= value;
+	cfg[portno].dps |= new_value;
 
     charval = cfg[portno].dps & 0x04;
-    if (charval == 0x04) value2 = 1; else value2 = 0;
-    cgiFormInteger("STOPBIT", &value, value2);
+    if (charval == 0x04) old_value = 1; else old_value = 0;
+    cgiFormInteger("STOPBIT", &new_value, old_value);
     cfg[portno].dps &= 0xfb;
-    if (value == 1) cfg[portno].dps |= 0x04;    
+    if (new_value == 1) cfg[portno].dps |= 0x04;    
 
 
     charval = cfg[portno].dps & 0x18;
-    if (charval == 0x00)	value2 = 0;
-    if (charval == 0x08)	value2 = 1;
-    if (charval == 0x10 || charval == 0x18)	value2 = 2;    	    	
-    cgiFormInteger("PARITY", &value, value2);
+    if (charval == 0x00)	old_value = 0;
+    if (charval == 0x08)	old_value = 1;
+    if (charval == 0x10 || charval == 0x18)	old_value = 2;    	    	
+    cgiFormInteger("PARITY", &new_value, old_value);
 	cfg[portno].dps &= 0xe7;
-	switch (value)	
+	switch (new_value)	
 		{
 		case 0 :  break;
 		case 1 :  cfg[portno].dps |= 0x08;    break;
 		case 2 :  cfg[portno].dps |= 0x10;    break;	
 		}
 
-    cgiFormInteger("FLOW", &value, cfg[portno].flow);
-    cfg[portno].flow = value;
+    cgiFormInteger("FLOW", &new_value, cfg[portno].flow);
+    cfg[portno].flow = new_value;
 	
-    cgiFormInteger("DEVICETYPE", &value, cfg[portno].device);
-    cfg[portno].device = value;
+    cgiFormInteger("DEVICETYPE", &new_value, cfg[portno].device);
+    cfg[portno].device = new_value;
 
-    value = cgiFormStringNoNewlines("SERVER_IP", buff, 16);
-	if (value != cgiFormEmpty) convert_address (buff, cfg[portno].remote_ip);
+    new_value = cgiFormStringNoNewlines("REMOTE_IP", buff, 16);
+	if (new_value != cgiFormEmpty) convert_address (buff, cfg[portno].remote_ip);
 
-	cgiFormInteger("SERVER_PORT", &value, cfg[portno].remote_socket_no);
-    cfg[portno].remote_socket_no = value;
+	cgiFormInteger("REMOTE_PORT", &new_value, cfg[portno].remote_socket_no);
+    cfg[portno].remote_socket_no = new_value;
     
-	cgiFormInteger("ALIVE_TIME", &value, cfg[portno].keepalive);
-    cfg[portno].keepalive = value;
+	cgiFormInteger("ALIVE_TIME", &new_value, cfg[portno].keepalive);
+    cfg[portno].keepalive = new_value;
 
-    cgiFormInteger("LATENCY_TIME", &value, cfg[portno].packet_latency_time);
-    cfg[portno].packet_latency_time = value;
+    cgiFormInteger("LATENCY_TIME", &new_value, cfg[portno].packet_latency_time);
+    cfg[portno].packet_latency_time = new_value;
     
-    cgiFormInteger("PASSIVELOGIN", &value, cfg[portno].login);
-    cfg[portno].login = value;
+    cgiFormInteger("PASSIVELOGIN", &new_value, cfg[portno].login);
+    cfg[portno].login = new_value;
 
-    value = cgiFormStringNoNewlines("PASSIVE_USER", buff, 16); 
+    new_value = cgiFormStringNoNewlines("PASSIVE_USER", buff, 16); 
 	if (cfg[portno].login == 1)
-   		if (value != cgiFormEmpty) sprintf(cfg[portno].login_name, "%s", buff);
+   		if (new_value != cgiFormEmpty) sprintf(cfg[portno].login_name, "%s", buff);
 
-    value = cgiFormStringNoNewlines("PASSIVE_PASS", buff, 16); 
+    new_value = cgiFormStringNoNewlines("PASSIVE_PASS", buff, 16); 
     if (cfg[portno].login == 1)
-   		if (value != cgiFormEmpty) sprintf(cfg[portno].login_password, "%s", buff); 
+   		if (new_value != cgiFormEmpty) sprintf(cfg[portno].login_password, "%s", buff); 
 
 save_flash:
     SB_WriteConfig  (CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	   
 
-    return portno;
+	*portnum = portno;
+
+	if(changed != true)
+	{
+		*error_msg = WARNNIG_NOTHING_APPLY;
+		return -2;
+	}
+
+    return 0;
 }
 void set_wireless()
 {

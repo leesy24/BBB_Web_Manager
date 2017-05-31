@@ -554,7 +554,7 @@ int set_serial()
     char charval;
     int portno;
 
-    if ( cgiFormInteger("PAGENUM", &portno, 0) != cgiFormSuccess )
+    if ( cgiFormInteger("PORTNUM", &portno, 0) != cgiFormSuccess )
 	   Error("Where are your from?");
 
     portno -=1;
@@ -669,7 +669,7 @@ int set_serial()
     system(cmd);
 
     // Remote IP Address / Port	
-    value = cgiFormStringNoNewlines("SERVER_IP", buff, 16);
+    value = cgiFormStringNoNewlines("REMOTE_IP", buff, 16);
     if (value == cgiFormNotFound)
 	   Error ("Enter remote IP address");
     else if (value == cgiFormEmpty)
@@ -684,7 +684,7 @@ int set_serial()
 	   system(cmd);
     }
 
-    value = cgiFormStringNoNewlines("SERVER_PORT", buff, 6);
+    value = cgiFormStringNoNewlines("REMOTE_PORT", buff, 6);
     if (value == cgiFormNotFound )
 	   Error ("Enter remote server port");
     else if (value == cgiFormEmpty)
