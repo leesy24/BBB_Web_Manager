@@ -1,434 +1,540 @@
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head>
-<title>[v, device_name] Web Manager</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
-<script Language="JavaScript" src="/utility.js">
-</script>
-<script Language="JavaScript">
-    <!--
-function submit()
-{
-    if( Validator(document.f1) )
-    {
-	   document.f1.submit();
-    }
-}
+	<head>
+		<title>[v, device_name] Web Manager</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+		<script Language="JavaScript" src="/utility.js"></script>
+		<script Language="JavaScript">
+		function doBlink() 
+		{ 
+			var blink = document.all.tags("BLINK") 
+			for (var i=0; i < blink.length; i++) 
+				blink[i].style.visibility = blink[i].style.visibility == "" ? "hidden" : "" 
+		} 
 
-function doBlink() 
-{ 
-var blink = document.all.tags("BLINK") 
-for (var i=0; i < blink.length; i++) 
-blink[i].style.visibility = blink[i].style.visibility == "" ? "hidden" : "" 
-} 
-function startBlink() 
-{ 
-if (document.all) 
-setInterval("doBlink()",350) 
-} 
+		function startBlink()
+		{ 
+			if (document.all) setInterval("doBlink()",350) 
+		} 
 
-function changeType()
-{
-    document.f1.action="/cgi-bin/getagent.cgi?type=A";
-    document.f1.submit();
-}
-window.onload = startBlink; 
+		function changeType()
+		{
+			document.f1.action=document.URL;
+			document.f1.submit();
+		}
 
+		window.onload = startBlink; 
 
+		function isValid()
+		{
+		    return Validator(document.f1);
+		}
 
-function Validator(theForm)
-{
-    if (!isValidIP(theForm.SERVER_IP.value))
-    {
-	   alert("Server IP address is invalid!");
-	   theForm.SERVER_IP.focus();
-	   return (false);
-    }
+		function Validator(theForm)
+		{
+			if (!isValidIP(theForm.SERVER_IP.value))
+			{
+				alert("Server IP address is invalid!");
+				theForm.SERVER_IP.focus();
+				return (false);
+			}
 
-    if (!isInValidRange(theForm.SERVER_PORT.value, 0, 65535))
-    {
-	   alert("Server port number is invalid: Value needs to be between 0 and 65535");
-	   theForm.SERVER_PORT.focus();
-	   return (false);
-    }
+			if (!isInValidRange(theForm.SERVER_PORT.value, 0, 65535))
+			{
+				alert("Server port number is invalid: Value needs to be between 0 and 65535");
+				theForm.SERVER_PORT.focus();
+				return (false);
+			}
 
-    if (!isInValidRange(theForm.LOCAL_PORT.value, 0, 65535))
-    {
-	   alert("Local socket port is invalid: Value needs to be between 0 and 65535");
-	   theForm.LOCAL_PORT.focus();
-	   return (false);
-    }
+			if (!isInValidRange(theForm.LOCAL_PORT.value, 0, 65535))
+			{
+				alert("Local socket port is invalid: Value needs to be between 0 and 65535");
+				theForm.LOCAL_PORT.focus();
+				return (false);
+			}
 
-/*    
-    if (!isInValidRange(theForm.MTU.value, 1, 1100))
-    {
-	   alert("MTU value is invalid: Value needs to be between 1 and 1100");
-	   theForm.MTU.focus();
-	   return (false);
-    }
-*/
+			/*    
+			if (!isInValidRange(theForm.MTU.value, 1, 1100))
+			{
+				alert("MTU value is invalid: Value needs to be between 1 and 1100");
+				theForm.MTU.focus();
+				return (false);
+			}
+			*/
 
-    if (!isInValidRange(theForm.ALIVE_TIME.value, 0, 65535))
-    {
-	   alert("Keepalive time is invalid: Value needs to be between 0 and 65535)");
-	   theForm.ALIVE_TIME.focus();
-	   return (false);
-    }
-    return (true);
-}
+			if (!isInValidRange(theForm.ALIVE_TIME.value, 0, 65535))
+			{
+				alert("Keepalive time is invalid: Value needs to be between 0 and 65535)");
+				theForm.ALIVE_TIME.focus();
+				return (false);
+			}
+			return (true);
+		}
+		</script>
+	</head>
+
+	<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+		<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<!--
+			<tr valign="top"> 
+			<td height="16" colspan="4" bgcolor="#000000">&nbsp;</td>
+			</tr>
 -->
-</script>
-</head>
-
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-<!--  <tr valign="top"> 
-    <td height="16" colspan="4" bgcolor="#000000">&nbsp;</td>
-  </tr> -->
-  <tr valign="top"> 
-	  <td width="158" height="121" bgcolor="#000000" valign="top">
-			<img src="/images/LOGO.jpg" width="158" height="72"> 
-	<TABLE height=26 cellSpacing=0 cellPadding=0 border=0>
-		<TR> 
-		<TD class="menutitle" width=158 height=40 bgcolor=393C39>
-		<!-- background=images/left_top.gif -->
-		<font color="white">Setup Menu</font>
-		</TD>
-	    </TR>
-		</TABLE>
-	  <TABLE  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
-          <TR vAlign=top> 
-		  <TD vAlign=top align=right class="menu">
-		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font><font color="white"><BR> 
-		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font><font color="white"><BR> 
-		<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-
-	<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</A><BR> 
-          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font><font color="white"><BR> 
-		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font><font color="white"><BR> 
-          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+			<tr valign="top"> 
+				<td width="158" height="121" bgcolor="#000000" valign="top">
+					<img src="/images/LOGO.jpg" width="158" height="72"> 
+					<TABLE height=26 cellSpacing=0 cellPadding=0 border=0>
+						<TR> 
+							<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+								<!-- background=images/left_top.gif -->
+								<font color="white">Setup Menu</font>
+							</TD>
+						</TR>
+					</TABLE>
+					<TABLE  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+						<TR vAlign=top> 
+							<TD vAlign=top align=right class="menu">
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
 [v,S4M_START]
-		  <A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font><font color="white"><BR> 
+								<A href="/cgi-bin/getagent.cgi?type=d" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font></A><BR>
 [v,S4M_END]
-          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>          
-		  <A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font><font color="white"><BR> 
-          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
-		  <BR>
-		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font><font color="white"><BR>
-		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font><font color="white"><BR>
-          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font><font color="white"><BR> 
-          <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>  
-		  <BR>
-		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
-		  <A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font><font color="white"><BR> 
-		  <IMG src="/images/menu_div.gif" width="158" height=5 border=0></font></font></font></font></font></font></font></font></font></font> 
-		  </TD>
-          </TR>
-      </TABLE></td>
-	<td valign="top" height="68">
-<td colspan="3" rowspan="2" valign="top" height="68">
-<table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
-<tr> 
-<td height="72" bgcolor="6B0808">
-<div align="right">
-<table border="0" cellspacing="0" cellpadding="0">
-<tr> 
-<td width="530" rowspan=3 class="pagetitle"><font color="white">[Serial Settings]</td>
-<td width="252"><div align="center"><font color="#FFFFFF">
-Device Name: [v, device_name]</font></div></td>
-</tr>
-<tr>
-<td><div align="center"><font color="#FFFFFF">
-Logged in as [v, username]</font></div></td>
-</tr>
-<tr> 
-<td><div align="center"><font color="#FFFFFF">
-<a href="/cgi-bin/setagent.cgi?type=o"><font color="red"><font color="red">Logout</a></font></div></td>
-</tr>
-</table>
-</div>
-</td>
-</tr>
-</table>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0>
+							</TD>
+						</TR>
+					</TABLE>
+				</td>
+				<td valign="top" height="68">
+					<td colspan="3" rowspan="2" valign="top" height="68">
+					<table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td height="72" bgcolor="6B0808">
+								<div align="right">
+									<table border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td width="530" rowspan=3 class="pagetitle"><font color="white">[Serial Settings]</td>
+											<td width="252">
+												<div align="center">
+													<font color="#FFFFFF">Device Name: [v, device_name]</font>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div align="center">
+													<font color="#FFFFFF">Logged in as [v, username]</font>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div align="center">
+													<font color="#FFFFFF">
+														<a href="/cgi-bin/setagent.cgi?type=o">
+															<font color="red">Logout</a></font>
+													</font>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
 
-<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=2" onSubmit="return Validator(this)">
-<table width="805" border="0" cellspacing="0" cellpadding="20">
-<tr>
-<td>
-<table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+					<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=2" onSubmit="return Validator(this)">
+						<table width="805" border="0" cellspacing="0" cellpadding="20">
+							<tr>
+								<td>
+									<table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+										<input type="hidden" name="PAGENUM" value=[v,port_no] />
+										<tr bgcolor="#393C39"> 
+											<td height="24" colspan="2" class="title">
+												<font color=white><font size=5><blink>Serial Port [v, port_no]</blink>
+											</td>
+										</tr>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Operation Mode</td>
+											<td class="content">
+												<select name="OPMODE" onchange="changeType()">
+													<option [v, s_op_dis] value="0">Disable</option>
+													<option [v, s_op_com]  value="1">COM Redirect</option>
+													<option [v, s_op_tcps] value="2">TCP Server</option>
+													<option [v, s_op_tcpc] value="3">TCP Client</option>
+													<option [v, s_op_tcpb] value="4">TCP Broadcast</option>
+													<option [v, s_op_tcpm] value="5">TCP Multiplex</option>
+													<option [v, s_op_udps] value="6">UDP Server</option>
+													<option [v, s_op_udpc] value="7">UDP Client</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option3 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Select the operation protocol, which the serial port would use.<br>
+															<b>Disable</b><br>
+														Choose to use or not use this port.<br>
+															<b>COM Redirect</b><br>
+														Use the serial ports of [v,device_name] as the COM ports of Windows 2000/2003/XP/Vista operated PC. (Both the data and the signal line information of the serial port can be controlled.)<br>
+															<b>TCP Server</b><br>
+														[v,device_name] works as a socket server, waiting for the client connection on the network.<br>
+														Socket number for awaiting connections can be set in ‘Local socket port’ field.<br>
+														All data between the socket and the serial port is transferred untouched after the socket connection is established.<br>
+															<b>TCP Client</b><br>
+														[v,device_name] acts as a socket client in this mode. It tries to connect to the server IP address and the socket number assigned when a certain server waits for connection on the network.<br>
+														All data between the socket and the serial port is transferred untouched after the socket connection is established.<br>
+															<b>TCP Broadcast</b><br>
+														[v,device_name] works as a server, accepting up to 5 simultaneous connections from socket clients.<br>
+														Data transmitted from [v,device_name] is broadcast to each socket client.<br>
+															<b>TCP Multiplex</b><br>
+														[v,device_name] works as a server, accepting up to 5 simultaneous connections from socket clients.<br>
+														Data transmitted from [v,device_name] is Multiplex to each socket client.<br>
+															<b>UDP Server</b><br>
+														[v,device_name] works as a UDP server, waiting for UDP connection from the client on the network.<br>
+														Socket number for awaiting connections can be set in ‘Local socket port’ field.<br>
+														Once a UDP packet is received to the socket that waits for the connection, the data is transmitted to the serial port. The data input from the serial port is put into UDP packets, which eventually are sent to the client.<br>
+															<b>UDP Client</b><br>
+														When the data is input to the serial port, UDP packets are sent using the preset IP address and the socket number of the server.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
-<input type="hidden" name="PAGENUM" value=[v,port_no] />
-
-<tr bgcolor="#393C39"> 
-<td height="24" colspan="2" class="title"><font color=white><font size=5><blink>Serial Port [v, port_no]</blink></td>
-</tr>
-
-
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Operation Mode</td>
-<td class="content"><select name="OPMODE" onchange="changeType()">
-<option [v, s_op_dis] value="0">Disable</option>
-<option [v, s_op_com]  value="1">COM Redirect</option>
-<option [v, s_op_tcps] value="2">TCP Server</option>
-<option [v, s_op_tcpc] value="3">TCP Client</option>
-<option [v, s_op_tcpb] value="4">TCP Broadcast</option>
-<option [v, s_op_tcpm] value="5">TCP Multiplex</option>
-<option [v, s_op_udps] value="6">UDP Server</option>
-<option [v, s_op_udpc] value="7">UDP Client</option>
-</select>
-&nbsp;&nbsp;<a href=#option3 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Select the operation protocol, which the serial port would use.<br>
-	<b>Disable</b><br>
-Choose to use or not use this port.<br>
-	<b>COM Redirect</b><br>
-Use the serial ports of [v,device_name] as the COM ports of Windows 2000/2003/XP/Vista operated PC. (Both the data and the signal line information of the serial port can be controlled.)<br>
-	<b>TCP Server</b><br>
-[v,device_name] works as a socket server, waiting for the client connection on the network.<br>
-Socket number for awaiting connections can be set in ‘Local socket port’ field.<br>
-All data between the socket and the serial port is transferred untouched after the socket connection is established.<br>
-	<b>TCP Client</b><br>
-[v,device_name] acts as a socket client in this mode. It tries to connect to the server IP address and the socket number assigned when a certain server waits for connection on the network.<br>
-All data between the socket and the serial port is transferred untouched after the socket connection is established.<br>
-	<b>TCP Broadcast</b><br>
-[v,device_name] works as a server, accepting up to 5 simultaneous connections from socket clients.<br>
-Data transmitted from [v,device_name] is broadcast to each socket client.<br>
-	<b>TCP Multiplex</b><br>
-[v,device_name] works as a server, accepting up to 5 simultaneous connections from socket clients.<br>
-Data transmitted from [v,device_name] is Multiplex to each socket client.<br>
-	<b>UDP Server</b><br>
-[v,device_name] works as a UDP server, waiting for UDP connection from the client on the network.<br>
-Socket number for awaiting connections can be set in ‘Local socket port’ field.<br>
-Once a UDP packet is received to the socket that waits for the connection, the data is transmitted to the serial port. The data input from the serial port is put into UDP packets, which eventually are sent to the client.<br>
-	<b>UDP Client</b><br>
-When the data is input to the serial port, UDP packets are sent using the preset IP address and the socket number of the server.<br>
-
-</div></div>
-</td>
-</tr>
-
-<tr bgcolor="#FFFFFF">
-<td class="content">Interface</td>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Interface</td>
 [v,RS232_START]
-<td class="content">RS-232
+											<td class="content">RS-232
 [v,RS232_END]
-
 [v,RS422485_START]
-<td class="content"><select name="IFTYPE" [v,s_type]>
-<option [v, s_type_rs422] value="1">RS-422</option>
-<option [v, s_type_rs485n] value="3">RS-485(No Echo)</option>
-<option [v, s_type_rs485e] value="5">RS-485(Echo)</option>
-</select>
+											<td class="content">
+												<select name="IFTYPE" [v,s_type]>
+													<option [v, s_type_rs422] value="1">RS-422</option>
+													<option [v, s_type_rs485n] value="3">RS-485(No Echo)</option>
+													<option [v, s_type_rs485e] value="5">RS-485(Echo)</option>
+												</select>
 [v,RS422485_END]
+												&nbsp;&nbsp;
+												<a href=#option2 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Current serial interface type<br>
+													</div>
+												</div>
+											</td>
+										</tr>	
 
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Local Socket Port</td>
+											<td class="content"> 
+												<input type="text" size="6" maxlength="6" name="LOCAL_PORT" value="[v, s_port]" [v,s_option]/>
+												&nbsp;&nbsp;
+												<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Set the socket number for the port. <br>
+														TCP server and UDP server operation mode makes use of this port for awaiting network socket connections.
+													</div>
+												</div>
+											</td>
+										</tr>
 
-&nbsp;&nbsp;<a href=#option2 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Current serial interface type<br>
-</div></div>
-</td></tr>	
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Port Alias</td>
+											<td class="content"> 
+												<input type="text" size="16" maxlength="15" name="ALIAS" value="[v, s_alias]" [v,s_option]/>
+												&nbsp;&nbsp;
+												<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Port alias name for convenience. 15 Characters at maximum.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Baud Rate</td>
+											<td class="content">
+												<select name="BAUDRATE" [v,s_option]>
+													<option [v, s_b150] value="0">150 bps</option>
+													<option [v, s_b300] value="1">300 bps</option>
+													<option [v, s_b600] value="2">600 bps</option>
+													<option [v, s_b1200] value="3">1200 bps</option>
+													<option [v, s_b2400] value="4">2400 bps</option>
+													<option [v, s_b4800] value="5">4800 bps</option>
+													<option [v, s_b9600] value="6">9600 bps</option>
+													<option [v, s_b19200] value="7">19200 bps</option>
+													<option [v, s_b38400] value="8">38400 bps</option>
+													<option [v, s_b57600] value="9">57600 bps</option>
+													<option [v, s_b115200] value="10">115200 bps</option>
+													<option [v, s_b230400] value="11">230400 bps</option>
+													<option [v, s_b460800] value="12">460800 bps</option>
+													<option [v, s_b921600] value="13">921600 bps</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option6 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Set communication speed.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Data Bits</td>
+											<td class="content">
+												<select name="DATABIT" [v,s_option] >
+													<option [v, s_d5] value="0">5 bits</option>
+													<option [v, s_d6] value="1">6 bits</option>
+													<option [v, s_d7] value="2">7 bits</option>
+													<option [v, s_d8] value="3">8 bits</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option7 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Set the number of bits in each character size.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Local Socket Port</td>
-<td class="content"> 
-<input type="text" size="6" maxlength="6" name="LOCAL_PORT" value="[v, s_port]" [v,s_option]/>
-&nbsp;&nbsp;<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Set the socket number for the port. <br>
-TCP server and UDP server operation mode makes use of this port for awaiting network socket connections.
-</div></div>
-</td></tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Port Alias</td>
-<td class="content"> 
-<input type="text" size="16" maxlength="15" name="ALIAS" value="[v, s_alias]" [v,s_option]/>
-&nbsp;&nbsp;<a href=#option5 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Port alias name for convenience. 15 Characters at maximum.<br>
-</div></div>
-</td>
-</tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Baud Rate</td>
-<td class="content"><select name="BAUDRATE" [v,s_option]>
-<option [v, s_b150] value="0">150 bps</option>
-<option [v, s_b300] value="1">300 bps</option>
-<option [v, s_b600] value="2">600 bps</option>
-<option [v, s_b1200] value="3">1200 bps</option>
-<option [v, s_b2400] value="4">2400 bps</option>
-<option [v, s_b4800] value="5">4800 bps</option>
-<option [v, s_b9600] value="6">9600 bps</option>
-<option [v, s_b19200] value="7">19200 bps</option>
-<option [v, s_b38400] value="8">38400 bps</option>
-<option [v, s_b57600] value="9">57600 bps</option>
-<option [v, s_b115200] value="10">115200 bps</option>
-<option [v, s_b230400] value="11">230400 bps</option>
-<option [v, s_b460800] value="12">460800 bps</option>
-<option [v, s_b921600] value="13">921600 bps</option>
-</select>
-&nbsp;&nbsp;<a href=#option6 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Set communication speed.<br>
-</div></div>
-</td></tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Data Bits</td>
-<td class="content"><select name="DATABIT" [v,s_option] > 
-<option [v, s_d5] value="0">5 bits</option>
-<option [v, s_d6] value="1">6 bits</option>
-<option [v, s_d7] value="2">7 bits</option>
-<option [v, s_d8] value="3">8 bits</option>
-</select>
-&nbsp;&nbsp;<a href=#option7 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Set the number of bits in each character size.<br>
-</div></div>
-</td></tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Stop Bits</td>
-<td class="content"><select name="STOPBIT" [v,s_option] >
-<option [v, s_s1] value="0">1 bit</option>
-<option [v, s_s2] value="1">2 bits</option>
-</select>
-&nbsp;&nbsp;<a href=#option8 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Set the number of stop bits.<br>
-</div></div>
-</td></tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Parity</td>
-<td class="content"><select name="PARITY" [v,s_option] >
-<option [v, s_pnone] value="0">None</option>
-<option [v, s_podd] value="1">Odd</option>
-<option [v, s_peven] value="2">Even</option>
-</select>
-&nbsp;&nbsp;<a href=#option9 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Set parity bit check scheme.<br>
-</div></div>
-</td></tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Flow Control</td>
-<td class="content"><select name="FLOW" [v,s_option] >
-<option [v, s_fnone] value="0">None</option>
-<option [v, s_fhw] value="1">Xon/Xoff</option>
-<option [v, s_fsw] value="2">RTS/CTS</option>
-</select>
-&nbsp;&nbsp;<a href=#option10 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Set the flow control scheme.<br>
-</div></div>
-</td></tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Device Type</td>
-<td class="content"><select name="DEVICETYPE" [v,s_option] >
-<option [v, s_ddata] value="0">Data Only</option>
-<option [v, s_dmodem] value="1">Modem Signals</option>
-</select>
-&nbsp;&nbsp;<a href=#option11 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-Set the signal line checking method for the device to be connected to the given serial port.<br>
-If the mode is set to Data Only, only Txd, Rxd, and Gnd signal lines are used in inter-device communication. If the mode is set to Modem Signals, all modem signals except RI(Ring Indicator) are asserted, tested, and used in communication.<br>
-</div></div>
-</td></tr>
-<tr bgcolor="#FFFFFF"> 
-<td class="content">Remote IP Address / Port</td>
-<td class="content"><input type="text" size="16" maxlength="16" name="SERVER_IP" value="[v,s_rip]" [v,s_option] /> 
-&nbsp;/&nbsp; <input type="text" size="6" maxlength="6" name="SERVER_PORT" value="[v,s_rport]" [v,s_option] />
-&nbsp;&nbsp;<a href=#option12 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-When the Operation Mode is set to TCP Client, set the IP address and the socket number to connect to.
-</div></div>
-</td></tr>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Stop Bits</td>
+											<td class="content">
+												<select name="STOPBIT" [v,s_option] >
+													<option [v, s_s1] value="0">1 bit</option>
+													<option [v, s_s2] value="1">2 bits</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option8 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Set the number of stop bits.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
-<tr bgcolor="#FFFFFF"> 
-<td class="content">KeepAlive Check Time</td>
-<td class="content"><input type="text" size="5" maxlength="5" name="ALIVE_TIME" value="[v,s_alive]" [v,s_option] />&nbsp;sec
-&nbsp;&nbsp;<a href=#option13 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-    After a certain amount of time passes without any communication after the socket connection between the given serial port and the server is established, automatically disconnect the socket connection. If the value is set to 0, this function is disabled. Valid from 0 to 65535.
-    </div></div>
-    </td></tr>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Parity</td>
+											<td class="content">
+												<select name="PARITY" [v,s_option] >
+													<option [v, s_pnone] value="0">None</option>
+													<option [v, s_podd] value="1">Odd</option>
+													<option [v, s_peven] value="2">Even</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option9 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Set parity bit check scheme.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
-    <tr bgcolor="#FFFFFF"> 
-    <td class="content">Latency Time</td>
-    <td class="content"><input type="text" size="5" maxlength="5" name="LATENCY_TIME" value="[v,s_latency]" [v,s_option] />&nbsp;msec
-    &nbsp;&nbsp;<a href=#option15 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-    <div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-    <div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-    This option will decide whether serial data received by the DTE is immediately transferred or system waits for the time that you specified. If you set the latency time to 0, the received data will be immediately transferred. If it is not 0, the system will wait for the time and check new data. If there is new data, the system repeatedly wait for the time. Otherwise, the system will transfer the buffered data.
-Latency time unit is milliseconds and the scope is from 0 to 65535.    </div></div>
-    </td></tr>
-        
-    <tr bgcolor="#FFFFFF"> 
-    <td class="content">Port Login</td>
-    <td class="content"><select name="PASSIVELOGIN" onchange="changeType()" [v,s_option] >
-    <option [v, s_pdisable] value="0">Disable</option>
-    <option [v, s_penable] value="1">Enable</option>
-    </select>
-    &nbsp;&nbsp;<a href=#option15 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-    <div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-    When the Operation Mode is set to TCP Server, ask for the username and password when the client tries to connect.
-    </div></div>
-    </td></tr>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Flow Control</td>
+											<td class="content">
+												<select name="FLOW" [v,s_option] >
+													<option [v, s_fnone] value="0">None</option>
+													<option [v, s_fhw] value="1">Xon/Xoff</option>
+													<option [v, s_fsw] value="2">RTS/CTS</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option10 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Set the flow control scheme.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Device Type</td>
+											<td class="content">
+												<select name="DEVICETYPE" [v,s_option] >
+													<option [v, s_ddata] value="0">Data Only</option>
+													<option [v, s_dmodem] value="1">Modem Signals</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option11 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														Set the signal line checking method for the device to be connected to the given serial port.<br>
+														If the mode is set to Data Only, only Txd, Rxd, and Gnd signal lines are used in inter-device communication. If the mode is set to Modem Signals, all modem signals except RI(Ring Indicator) are asserted, tested, and used in communication.<br>
+													</div>
+												</div>
+											</td>
+										</tr>
 
-    <tr bgcolor="#FFFFFF"> 
-    <td class="content">Passive Username / Password</td>
-    <td class="content">
-    <input type="text" size="16" maxlength="15" name="PASSIVE_USER" value="[v,s_puser]" [v,s_option] [v,s_poption]/>
-    <input type="text" size="16" maxlength="15" name="PASSIVE_PASS" value="[v,s_ppass]" [v,s_option] [v,s_poption]/>
-    &nbsp;&nbsp;<a href=#option16 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
-    <div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-    When the Operation Mode is set to TCP Server, set the username / password to ask for. 15 Characters at maximum.
-    </div></div>
-    </td>
-    </tr>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Remote IP Address / Port</td>
+											<td class="content">
+												<input type="text" size="16" maxlength="16" name="SERVER_IP" value="[v,s_rip]" [v,s_option] /> 
+												&nbsp;/&nbsp;
+												<input type="text" size="6" maxlength="6" name="SERVER_PORT" value="[v,s_rport]" [v,s_option] />
+												&nbsp;&nbsp;
+												<a href=#option12 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														When the Operation Mode is set to TCP Client, set the IP address and the socket number to connect to.
+													</div>
+												</div>
+											</td>
+										</tr>
 
+										<tr bgcolor="#FFFFFF">
+											<td class="content">KeepAlive Check Time</td>
+											<td class="content">
+												<input type="text" size="5" maxlength="5" name="ALIVE_TIME" value="[v,s_alive]" [v,s_option] />
+												&nbsp;sec
+												&nbsp;&nbsp;
+												<a href=#option13 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														After a certain amount of time passes without any communication after the socket connection between the given serial port and the server is established, automatically disconnect the socket connection. If the value is set to 0, this function is disabled. Valid from 0 to 65535.
+													</div>
+												</div>
+											</td>
+										</tr>
 
-    </table>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Latency Time</td>
+											<td class="content">
+												<input type="text" size="5" maxlength="5" name="LATENCY_TIME" value="[v,s_latency]" [v,s_option] />
+												&nbsp;msec
+												&nbsp;&nbsp;
+												<a href=#option15 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														This option will decide whether serial data received by the DTE is immediately transferred or system waits for the time that you specified. If you set the latency time to 0, the received data will be immediately transferred. If it is not 0, the system will wait for the time and check new data. If there is new data, the system repeatedly wait for the time. Otherwise, the system will transfer the buffered data.
+														Latency time unit is milliseconds and the scope is from 0 to 65535.
+													</div>
+												</div>
+											</td>
+										</tr>
 
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Port Login</td>
+											<td class="content">
+												<select name="PASSIVELOGIN" onchange="changeType()" [v,s_option] >
+													<option [v, s_pdisable] value="0">Disable</option>
+													<option [v, s_penable] value="1">Enable</option>
+												</select>
+												&nbsp;&nbsp;
+												<a href=#option15 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														When the Operation Mode is set to TCP Server, ask for the username and password when the client tries to connect.
+													</div>
+												</div>
+											</td>
+										</tr>
 
-    <table width="770" border="0" align="center" cellpadding="4" cellspacing="0" bgcolor="#999999">
-   	<tr style="background-color=#FFFFFF">
-	<td style="background-color=#FFFFFF">Serial&nbsp;Port&nbsp;Number&nbsp;:&nbsp;&nbsp;
-		<a href="/cgi-bin/getagent.cgi?type=A" style="color:red;">(1)</a>&nbsp;&nbsp;&nbsp;
-		<a href="/cgi-bin/getagent.cgi?type=B" style="color:red;">(2)</a>&nbsp;&nbsp;&nbsp;
-		<a href="/cgi-bin/getagent.cgi?type=C" style="color:red;">(3)</a>&nbsp;&nbsp;&nbsp;
-		<a href="/cgi-bin/getagent.cgi?type=D" style="color:red;">(4)</a>&nbsp;&nbsp;&nbsp;
-	</td></tr>
+										<tr bgcolor="#FFFFFF">
+											<td class="content">Passive Username / Password</td>
+											<td class="content">
+												<input type="text" size="16" maxlength="15" name="PASSIVE_USER" value="[v,s_puser]" [v,s_option] [v,s_poption]/>
+												&nbsp;/&nbsp;
+												<input type="text" size="16" maxlength="15" name="PASSIVE_PASS" value="[v,s_ppass]" [v,s_option] [v,s_poption]/>
+												&nbsp;&nbsp;
+												<a href=#option16 style="color:#0099CC" onclick="this.innerHTML=(this.nextElementSibling.style.display=='none')?'Hide':'Help';this.nextElementSibling.style.display=(this.nextElementSibling.style.display=='none')?'block':'none';">Help</a>
+												<DIV style='display:none'>
+													<br/>
+													<div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
+														When the Operation Mode is set to TCP Server, set the username / password to ask for. 15 Characters at maximum.
+													</div>
+												</div>
+											</td>
+										</tr>
+									</table>
 
-<tr style="background-color=#FFFFFF">
-    <td>&nbsp; <div align="left"> 
-    <input type="button" value="Submit" onClick="submit()" />
-    &nbsp;&nbsp;&nbsp;
-    <input type="reset" value="Cancel" />
-    </div></td>
-</tr>
+									<table width="770" border="0" align="center" cellpadding="4" cellspacing="0" bgcolor="#999999">
+										<tr style="background-color=#FFFFFF">
+											<td style="background-color=#FFFFFF">
+												Serial Port Number&nbsp;:&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=A" style="color:red;">(1)</a>
+												&nbsp;&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=B" style="color:red;">(2)</a>
+												&nbsp;&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=C" style="color:red;">(3)</a>
+												&nbsp;&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=D" style="color:red;">(4)</a>
+												&nbsp;&nbsp;&nbsp;
+											</td>
+										</tr>
 
-    </table>
+										<tr style="background-color=#FFFFFF">
+											<td>
+												&nbsp;
+												<div align="left"> 
+													<input type="submit" value="Submit" onclick="return isValid()" />
+													&nbsp;&nbsp;&nbsp;
+													<input type="reset" value="Cancel" />
+												</div>
+											</td>
+										</tr>
+									</table>
+								</table>
+							</form> 
+						</td>
+					</tr>
 
-    </table>
-    </form> 
-    </td>
-    </tr>
-    <tr valign="top"> 
-    <!--	  <td height="322" valign="top" bgcolor="393C39"> <img src="images/right.jpg" width="158" height="33"></td> -->
-    <td height="500" align="right" bgcolor="393C39"><font color="white"><br />Copyright 2014&nbsp;&nbsp;<br>DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>All rights reserved.&nbsp;&nbsp;</font></td> 
-    </tr>
-    </table>
-    <br>
-    </body>
-    </html>
+					<tr valign="top"> 
+						<!--	  <td height="322" valign="top" bgcolor="393C39"> <img src="images/right.jpg" width="158" height="33"></td> -->
+						<td height="500" align="right" bgcolor="393C39">
+							<font color="white">
+								<br />
+								Copyright 2014&nbsp;&nbsp;<br>
+								DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>
+								All rights reserved.&nbsp;&nbsp;
+							</font>
+						</td> 
+					</tr>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
 
