@@ -635,11 +635,11 @@ char tmp[100][90];
 	for (no=0; no<SB_MAX_SIO_PORT; no++)
 		{
 		memcpy(SSM->serial[no].name, CFG_SIO[no].name, sizeof(CFG_SIO[no].name));
-		SSM->serial[no].socket_no = CFG_SIO[no].socket_no;		
+		SSM->serial[no].local_port = CFG_SIO[no].local_port;		
 		SSM->serial[no].protocol = CFG_SIO[no].protocol;		
 		SSM->serial[no].device = CFG_SIO[no].device;		
 		memcpy(SSM->serial[no].remote_ip, CFG_SIO[no].remote_ip, sizeof(CFG_SIO[no].remote_ip));
-		SSM->serial[no].remote_socket_no = CFG_SIO[no].remote_socket_no;		
+		SSM->serial[no].remote_port = CFG_SIO[no].remote_port;		
 		SSM->serial[no].packet_latency_time = CFG_SIO[no].packet_latency_time;		
 		SSM->serial[no].keepalive = CFG_SIO[no].keepalive;		
 		SSM->serial[no].login = CFG_SIO[no].login;		
@@ -688,7 +688,7 @@ char tmp[100][90];
 		
 	for (no=0; no<3/*SB_MAX_GPIO_PORT*/; no++)
 		{
-		SSM->gpio[no].socket_no	= 0;
+		SSM->gpio[no].local_port	= 0;
 		SSM->gpio[no].mode		= CFG_GPIO.mode[no]; 
 		SSM->gpio[no].value		= CFG_GPIO.value[no];
 		}

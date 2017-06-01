@@ -33,18 +33,27 @@
 
 		function Validator(theForm)
 		{
-			if (!isValidIP(theForm.REMOTE_IP.value))
+			if(theForm.OPMODE.value == 3 || theForm.OPMODE.value == 7)
 			{
-				alert("Remote IP address is invalid!");
-				theForm.REMOTE_IP.focus();
-				return (false);
-			}
+				if (!isValidIP(theForm.REMOTE_IP.value))
+				{
+					alert("Remote IP address is invalid!");
+					theForm.REMOTE_IP.focus();
+					return (false);
+				}
+				if(IP2int(theForm.REMOTE_IP.value) == 0)
+				{
+					alert("Remote IP address should not 0.0.0.0!");
+					theForm.REMOTE_IP.focus();
+					return (false);
+				}
 
-			if (!isInValidRange(theForm.REMOTE_PORT.value, 0, 65535))
-			{
-				alert("Remote port number is invalid: Value needs to be between 0 and 65535");
-				theForm.REMOTE_PORT.focus();
-				return (false);
+				if (!isInValidRange(theForm.REMOTE_PORT.value, 0, 65535))
+				{
+					alert("Remote port number is invalid: Value needs to be between 0 and 65535");
+					theForm.REMOTE_PORT.focus();
+					return (false);
+				}
 			}
 
 			if (!isInValidRange(theForm.LOCAL_PORT.value, 0, 65535))

@@ -99,12 +99,12 @@ struct SB_SNMP_SYSTEM_CONFIG
 struct SB_SNMP_SERIAL_CONFIG	
 {
 	char			name	[16];		// Get & Set,	Port-01
-	unsigned short	socket_no;			// Get only,		4001 ~ 4016
+	unsigned short	local_port;			// Get only,		4001 ~ 4016
 	char			protocol;			// Get only,		disabled ( 0 ) , comRedirect ( 1 ) , tcpServer ( 2 ) , tcpClient ( 3 ) , tcpBroadcast ( 4 ) ,
 										// tcpMultiplex ( 5 ) , udpServer ( 6 ) , udpClient ( 7 )  
 	char			device;				// Get only,		0=Data, 1=Modem, default= 0
 	char			remote_ip [4];		// Get only,		default=0.0.0.0
-	unsigned short	remote_socket_no;	// Get only,		default=4000
+	unsigned short	remote_port;		// Get only,		default=4000
 	unsigned short	packet_latency_time;// Get only,		latency time for completion packet    limited=0~65535 msec
 	unsigned short	keepalive;			// Get only,		0 socket Timeout (sec)	limited=0~65535 sec
 	char			login;				// Get only,		0=Disable, 1=Enable, default=0
@@ -117,7 +117,7 @@ struct SB_SNMP_SERIAL_CONFIG
 
 struct SB_SNMP_GPIO						// all GET/SET support
 {
-	unsigned short	socket_no;			// Get only,		listen socket	5001~
+	unsigned short	local_port;			// Get only,		listen socket	5001~
 	char			mode;			// Get & Set,	0:input, 1:output, default 0
 	char    		value;			// Get & Set,	0 or 1, only works for output, default=0
 };

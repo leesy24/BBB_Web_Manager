@@ -21,7 +21,7 @@ argments  2	: Socket no (1000 ~ 65535)
 int main (int argc, char *argv[])
 {
 char WORK [1024];
-int  len, remote_socket_no, fd;
+int  len, remote_port, fd;
 
     if (argc < 3)
 	    {
@@ -29,22 +29,22 @@ int  len, remote_socket_no, fd;
 	   	return 0;
     	}
 
-	remote_socket_no = atoi (argv[2]);
-	printf ("Destination IP = (%s), Port (%d)\n", argv[1], remote_socket_no);
+	remote_port = atoi (argv[2]);
+	printf ("Destination IP = (%s), Port (%d)\n", argv[1], remote_port);
 
 	fd = SB_BindUdp (5000);
 	if (fd <= 0) return 0;
 
 
 	sprintf (WORK, "Hello World !!\r");
-	SB_SendUdpClient (fd, WORK, strlen(WORK), argv[1], remote_socket_no);
+	SB_SendUdpClient (fd, WORK, strlen(WORK), argv[1], remote_port);
 
 	while (1)
 		{
 		len = SB_ReadUdp (fd, WORK, BUFFER_SIZE);
 		if (len)
 			{
-			SB_SendUdpClient (fd, WORK, len, argv[1], remote_socket_no);
+			SB_SendUdpClient (fd, WORK, len, argv[1], remote_port);
 			WORK[len] = 0x00;
 			printf ("Read/Write Len = %d, Data = %s\n", len, WORK);
 			

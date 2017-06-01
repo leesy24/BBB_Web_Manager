@@ -54,9 +54,9 @@ void mainloop(void)
 {
 int  ret;
 	
-	printf ("Port = %d, Listen Port = %d, Baudrate = %d\n", port_no+1, cfg[port_no].socket_no, cfg[port_no].speed);
+	printf ("Port = %d, Listen Port = %d, Baudrate = %d\n", port_no+1, cfg[port_no].local_port, cfg[port_no].speed);
 	
-	LFD = SB_ListenTcp (cfg[port_no].socket_no, 8, 8);
+	LFD = SB_ListenTcp (cfg[port_no].local_port, 8, 8);
 	if (LFD <= 0) return;
 
 	while (1)

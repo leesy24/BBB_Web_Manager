@@ -169,3 +169,9 @@ function isValidMask(s) {
 	}
   return true;
 }
+
+function IP2int(IPstring) {
+  var IParray = IPstring.split(".");
+  return((IParray[0] * 0x1000000) + (IParray[1] * 0x10000) + (IParray[2] * 0x100) + (IParray[3] * 0x01));
+}
+

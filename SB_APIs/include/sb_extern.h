@@ -13,14 +13,14 @@ int  SB_GetDelaySerial     (int bps);
 void SB_SetSerialInterface (int port_no,int interface);
 unsigned char SB_GetMsr (int fd);
 //---------------- Socket APIs -----------------------------------------------------------
-int SB_ConnectTcp (char *IP_address, unsigned int socket_no, int wait_sec, int Tx_Size, int Rx_Size);
+int SB_ConnectTcp (char *IP_address, unsigned int local_port, int wait_sec, int Tx_Size, int Rx_Size);
 int SB_CheckConnect (int fd, struct sockaddr *saptr, socklen_t salen, long wait_sec);
-int SB_ListenTcp (unsigned int socket_no,  int Tx_Size, int Rx_Size);
+int SB_ListenTcp (unsigned int local_port,  int Tx_Size, int Rx_Size);
 int SB_AcceptTcp (int fd, int msec);
 int SB_AcceptTcpMulti (int fd, int msec);
 int SB_ReadTcp (int fd, char *buff, int buff_size);
 void SB_CloseTcp (int fd); 
-int SB_BindUdp (unsigned int socket_no) ;
+int SB_BindUdp (unsigned int local_port) ;
 int SB_ReadUdp (int fd, char *buff, int buffer_size);
 void SB_SendUdpServer (int fd, char *buff, int len);
 void SB_SendUdpClient (int fd, char *buff, int len, char *ServerIP, int ServerPort);

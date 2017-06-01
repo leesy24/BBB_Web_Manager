@@ -68,14 +68,14 @@ struct SB_SYSTEM_CONFIG
 struct SB_SIO_CONFIG
 {
 	char			name	[16];			// Port-01
-	unsigned short	socket_no;				// 4001 ~ 4016
+	unsigned short	local_port;				// 4001 ~ 4016
 	char			protocol;				// 0=disable, 1=Com_Redirect,2=TCP_Server,3=TCP_Client,4=TCP_Broadcast,5=TCP_multiplex,6=UDP_Server,7=UDP_Client
 	char			device;					// 0=Data, 1=Modem, Default : 0
 	char			speed;					// 0=150,1=300,2=600,3=1200,4=2400,5-4800,6=9600,7=19.2k,8=38.4k,9=57.6k,10=115k,11=230k,12=460k,13=960k,   Default=6
 	char			dps;					// 0x03, N/8/1
 	char			flow;					// 0=none, 1=Xon, 2=RTS
 	char			remote_ip [4];			// 0.0.0.0
-	unsigned short	remote_socket_no;		// 4000
+	unsigned short	remote_port;			// 4000
 	unsigned short	packet_latency_time;	// latency time for completion packet   0 ~ 65535 msec
 	unsigned short  keepalive;				// 0 socket Timeout (sec)	limited=0~65535 sec
 	char			login;					// 0=Disable, 1=Enable, default=0

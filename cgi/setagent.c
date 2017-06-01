@@ -682,6 +682,19 @@ static char ERROR_SERIAL_OPMODE[] = "Check Operation Mode!";
 static char ERROR_SERIAL_INTERFACE[] = "Check Interface type!";
 static char ERROR_SERIAL_LSPORT[] = "Check Local Socket Port!";
 static char ERROR_SERIAL_PORTNAME[] = "Check Port Alias Name!";
+static char ERROR_SERIAL_BAUDRATE[] = "Check Baud Rate!";
+static char ERROR_SERIAL_DATABITS[] = "Check Data Bits!";
+static char ERROR_SERIAL_STOPBITS[] = "Check Stop Bits!";
+static char ERROR_SERIAL_PARITY[] = "Check Parity!";
+static char ERROR_SERIAL_FLOWCON[] = "Check Flow Control!";
+static char ERROR_SERIAL_DEVTYPE[] = "Check Device Type!";
+static char ERROR_SERIAL_REMIP[] = "Check Remote IP Address!";
+static char ERROR_SERIAL_REMPORT[] = "Check Remote Port Number!";
+static char ERROR_SERIAL_KEEPALIVE[] = "Check KeepAlive Check Time!";
+static char ERROR_SERIAL_LATENCY[] = "Check Latency Time!";
+static char ERROR_SERIAL_LOGIN[] = "Check Port Login!";
+static char ERROR_SERIAL_LOGINID[] = "Check Passive Username!";
+static char ERROR_SERIAL_LOGINPW[] = "Check Passive Password!";
 
 int set_serial(int *portnum, char **error_msg)
 {
@@ -691,11 +704,11 @@ int set_serial(int *portnum, char **error_msg)
     int iftype;
     char buff[64];
     char cmd[256];
-    char charval;
     int portno;
 	struct SB_SIO_CONFIG			cfg [SB_MAX_SIO_PORT];
 	cgiFormResultType ret;
 	bool changed = false;
+    char addr[4];
 
 	SB_ReadConfig(CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	   
 
@@ -705,6 +718,7 @@ int set_serial(int *portnum, char **error_msg)
 		( portno < 0 || portno >= SB_MAX_SIO_PORT )
 		)
 	{
+		fprintf(stderr, "ERROR_SERIAL_PORTNUM, ret = %d, portno = %d\n", ret, portno);
 		*error_msg = ERROR_SERIAL_PORTNUM;
 		return -1;
 	}
@@ -716,14 +730,19 @@ int set_serial(int *portnum, char **error_msg)
 		( new_value < SB_DISABLE_MODE || new_value > SB_UDP_CLIENT_MODE )
 		)
 	{
+		fprintf(stderr, "ERROR_SERIAL_OPMODE, ret = %d, new_value = %d\n", ret, new_value);
 		*error_msg = ERROR_SERIAL_OPMODE;
 		return -1;
 	}
-	if( new_value != cfg[portno].protocol ) changed = true;
-    cfg[portno].protocol = new_value;
+	if( new_value != cfg[portno].protocol )
+	{
+		changed = true;
+	    cfg[portno].protocol = new_value;
+		fprintf(stderr, "New cfg[%d].protocol = %d\n", portno, cfg[portno].protocol);
+	}
 
-	ret = cgiFormInteger("IFTYPE", &new_value, -1);
-	if( ret != cgiFormSuccess
+	ret = cgiFormInteger("IFTYPE", &new_value, cfg[portno].interface);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
 		||
 		( new_value < SB_RS232 || new_value > SB_RS485_ECHO1 )
 		)
@@ -732,102 +751,334 @@ int set_serial(int *portnum, char **error_msg)
 		*error_msg = ERROR_SERIAL_INTERFACE;
 		return -1;
 	}
-	if( new_value != cfg[portno].interface ) changed = true;
-	cfg[portno].interface = new_value;
+	if( new_value != cfg[portno].interface )
+	{
+		changed = true;
+		cfg[portno].interface = new_value;
+		fprintf(stderr, "New cfg[%d].interface = %d\n", portno, cfg[portno].interface);
+	}
 
-	ret = cgiFormInteger("LOCAL_PORT", &new_value, -1);
-	if( ret != cgiFormSuccess
+
+	ret = cgiFormInteger("LOCAL_PORT", &new_value, cfg[portno].local_port);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
 		||
 		( new_value < 0 || new_value > 65535 )
 		)
 	{
+		fprintf(stderr, "ERROR_SERIAL_LSPORT, ret = %d, new_value = %d\n", ret, new_value);
 		*error_msg = ERROR_SERIAL_LSPORT;
 		return -1;
 	}
-	if( new_value != cfg[portno].socket_no ) changed = true;
-	cfg[portno].socket_no = new_value;
+	if( new_value != cfg[portno].local_port )
+	{
+		changed = true;
+		cfg[portno].local_port = new_value;
+		fprintf(stderr, "New cfg[%d].local_port = %d\n", portno, cfg[portno].local_port);
+	}
 
     ret = cgiFormStringNoNewlines("ALIAS", buff, sizeof(cfg[portno].name));
-    if (ret == cgiFormNotFound)
+    if( ( ret != cgiFormSuccess && ret != cgiFormNotFound ) )
     {
+		fprintf(stderr, "ERROR_SERIAL_PORTNAME, ret = %d\n", ret);
 		*error_msg = ERROR_SERIAL_PORTNAME;
 		return -1;
     }
+	if( ret == cgiFormNotFound )
+	{
+		memcpy(buff, cfg[portno].name, sizeof(cfg[portno].name));
+	}
+#if 0
 	fprintf(stderr, "sizeof(cfg[portno].name) = %d\n", sizeof(cfg[portno].name));
 	fprintf(stderr, "cfg[%d].name = %s\n", portno, cfg[portno].name);
+	fprintf(stderr, "strlen(cfg[portno].name) = %d\n", strlen(cfg[portno].name));
 	fprintf(stderr, "buff = %s\n", buff);
-	if( memcmp(buff, cfg[portno].name, sizeof(cfg[portno].name)) ) changed = true;
-	sprintf(cfg[portno].name, "%s", buff);
+	fprintf(stderr, "strlen(buff) = %d\n", strlen(buff));
+#endif
+	if( strncmp(buff, cfg[portno].name, (strlen(buff) > strlen(cfg[portno].name))?strlen(buff):strlen(cfg[portno].name)))
+	{
+		changed = true;
+		sprintf(cfg[portno].name, "%s", buff);
+		fprintf(stderr, "New cfg[%d].name = %s\n", portno, cfg[portno].name);
+	}
 
-    cgiFormInteger("BAUDRATE", &new_value, cfg[portno].speed);
-    cfg[portno].speed = new_value;
+	ret = cgiFormInteger("BAUDRATE", &new_value, cfg[portno].speed);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < SB_BAUDRATE_150 || new_value > SB_BAUDRATE_921600 )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_BAUDRATE, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_BAUDRATE;
+		return -1;
+	}
+	if( new_value != cfg[portno].speed )
+	{
+		changed = true;
+	    cfg[portno].speed = new_value;
+		fprintf(stderr, "New cfg[%d].speed = %d\n", portno, cfg[portno].speed);
+	}
  
-    old_value = cfg[portno].dps & 0x03;
-    cgiFormInteger("DATABIT", &new_value, old_value);
-	cfg[portno].dps &= 0xfc;
-	cfg[portno].dps |= new_value;
+#if 0
+	fprintf(stderr, "Old cfg[%d].dps = 0x%02x\n", portno, cfg[portno].dps);
+#endif
+	old_value = (cfg[portno].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT;
+	ret = cgiFormInteger("DATABIT", &new_value, old_value);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < SB_DATABITS_5 || new_value > SB_DATABITS_8 )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_DATABITS, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_DATABITS;
+		return -1;
+	}
+#if 0
+	fprintf(stderr, "Old = 0x%02x, New = 0x%02x\n", old_value, new_value);
+#endif
+	if( new_value != old_value )
+	{
+		changed = true;
+		cfg[portno].dps &= ~SB_DATABITS_MASK;
+		cfg[portno].dps |= (new_value << SB_DATABITS_SHIFT);
+		fprintf(stderr, "New DATABITS cfg[%d].dps = 0x%02x\n", portno, cfg[portno].dps);
+	}
 
-    charval = cfg[portno].dps & 0x04;
-    if (charval == 0x04) old_value = 1; else old_value = 0;
-    cgiFormInteger("STOPBIT", &new_value, old_value);
-    cfg[portno].dps &= 0xfb;
-    if (new_value == 1) cfg[portno].dps |= 0x04;    
+	old_value = (cfg[portno].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT;
+	ret = cgiFormInteger("STOPBIT", &new_value, old_value);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < SB_STOPBITS_1 || new_value > SB_STOPBITS_2 )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_STOPBITS, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_STOPBITS;
+		return -1;
+	}
+#if 0
+	fprintf(stderr, "Old = 0x%02x, New = 0x%02x\n", old_value, new_value);
+#endif
+	if( new_value != old_value )
+	{
+		changed = true;
+		cfg[portno].dps &= ~SB_STOPBITS_MASK;
+		cfg[portno].dps |= (new_value << SB_STOPBITS_SHIFT);
+		fprintf(stderr, "New STOPBITS cfg[%d].dps = 0x%02x\n", portno, cfg[portno].dps);
+	}
 
+	old_value = (cfg[portno].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT;
+	ret = cgiFormInteger("PARITY", &new_value, old_value);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < SB_PARITY_NONE || new_value > SB_PARITY_EVEN )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_PARITY, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_PARITY;
+		return -1;
+	}
+#if 0
+	fprintf(stderr, "Old = 0x%02x, New = 0x%02x\n", old_value, new_value);
+#endif
+	if( new_value != old_value )
+	{
+		changed = true;
+		cfg[portno].dps &= ~SB_PARITY_MASK;
+		cfg[portno].dps |= (new_value << SB_PARITY_SHIFT);
+		fprintf(stderr, "New PARITY cfg[%d].dps = 0x%02x\n", portno, cfg[portno].dps);
+	}
 
-    charval = cfg[portno].dps & 0x18;
-    if (charval == 0x00)	old_value = 0;
-    if (charval == 0x08)	old_value = 1;
-    if (charval == 0x10 || charval == 0x18)	old_value = 2;    	    	
-    cgiFormInteger("PARITY", &new_value, old_value);
-	cfg[portno].dps &= 0xe7;
-	switch (new_value)	
-		{
-		case 0 :  break;
-		case 1 :  cfg[portno].dps |= 0x08;    break;
-		case 2 :  cfg[portno].dps |= 0x10;    break;	
-		}
-
-    cgiFormInteger("FLOW", &new_value, cfg[portno].flow);
-    cfg[portno].flow = new_value;
+	ret = cgiFormInteger("FLOW", &new_value, cfg[portno].flow);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < SB_FLOW_NONE || new_value > SB_FLOW_RTS )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_FLOWCON, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_FLOWCON;
+		return -1;
+	}
+	if( new_value != cfg[portno].flow )
+	{
+		changed = true;
+	    cfg[portno].flow = new_value;
+		fprintf(stderr, "New cfg[%d].flow = %d\n", portno, cfg[portno].flow);
+	}
 	
-    cgiFormInteger("DEVICETYPE", &new_value, cfg[portno].device);
-    cfg[portno].device = new_value;
+	ret = cgiFormInteger("DEVICETYPE", &new_value, cfg[portno].device);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < SB_DATA_TYPE || new_value > SB_MODEM_TYPE )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_DEVTYPE, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_DEVTYPE;
+		return -1;
+	}
+	if( new_value != cfg[portno].device )
+	{
+		changed = true;
+	    cfg[portno].device = new_value;
+		fprintf(stderr, "New cfg[%d].device = %d\n", portno, cfg[portno].device);
+	}
 
-    new_value = cgiFormStringNoNewlines("REMOTE_IP", buff, 16);
-	if (new_value != cgiFormEmpty) convert_address (buff, cfg[portno].remote_ip);
+	ret = cgiFormStringNoNewlines("REMOTE_IP", buff, 16);
+	if( ret != cgiFormSuccess && ret != cgiFormNotFound )
+	{
+		*error_msg = ERROR_SERIAL_REMIP;
+		return -1;
+	}
+	if( ret == cgiFormNotFound )
+	{
+		memcpy(addr, cfg[portno].remote_ip, sizeof(cfg[portno].remote_ip));
+	}
+	else
+	{
+		ret = convert_address(buff, addr);
+		if(ret)
+		{
+			*error_msg = ERROR_SERIAL_REMIP;
+			return -1;
+		}
+	}
+	if( memcmp(addr, cfg[portno].remote_ip, sizeof(addr)) )
+	{
+		changed = true;
+		memcpy(cfg[portno].remote_ip, addr, sizeof(addr));
+		fprintf(stderr, "New cfg[%d].remote_ip = 0X%08X\n", portno, cfg[portno].remote_ip);
+	}
 
-	cgiFormInteger("REMOTE_PORT", &new_value, cfg[portno].remote_socket_no);
-    cfg[portno].remote_socket_no = new_value;
+	ret = cgiFormInteger("REMOTE_PORT", &new_value, cfg[portno].remote_port);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < 0 || new_value > 65535 )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_REMPORT, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_REMPORT;
+		return -1;
+	}
+	if( new_value != cfg[portno].remote_port )
+	{
+		changed = true;
+	    cfg[portno].remote_port = new_value;
+		fprintf(stderr, "New cfg[%d].remote_port = %d\n", portno, cfg[portno].remote_port);
+	}
     
-	cgiFormInteger("ALIVE_TIME", &new_value, cfg[portno].keepalive);
-    cfg[portno].keepalive = new_value;
+	ret = cgiFormInteger("ALIVE_TIME", &new_value, cfg[portno].keepalive);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < 0 || new_value > 65535 )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_KEEPALIVE, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_KEEPALIVE;
+		return -1;
+	}
+	if( new_value != cfg[portno].keepalive )
+	{
+		changed = true;
+	    cfg[portno].keepalive = new_value;
+		fprintf(stderr, "New cfg[%d].keepalive = %d\n", portno, cfg[portno].keepalive);
+	}
 
-    cgiFormInteger("LATENCY_TIME", &new_value, cfg[portno].packet_latency_time);
-    cfg[portno].packet_latency_time = new_value;
+	ret = cgiFormInteger("LATENCY_TIME", &new_value, cfg[portno].packet_latency_time);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < 0 || new_value > 65535 )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_LATENCY, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_LATENCY;
+		return -1;
+	}
+	if( new_value != cfg[portno].packet_latency_time )
+	{
+		changed = true;
+	    cfg[portno].packet_latency_time = new_value;
+		fprintf(stderr, "New cfg[%d].packet_latency_time = %d\n", portno, cfg[portno].packet_latency_time);
+	}
     
-    cgiFormInteger("PASSIVELOGIN", &new_value, cfg[portno].login);
-    cfg[portno].login = new_value;
+	ret = cgiFormInteger("PASSIVELOGIN", &new_value, cfg[portno].login);
+	if( ( ret != cgiFormSuccess && ret != cgiFormNotFound )
+		||
+		( new_value < SB_DISABLE || new_value > SB_ENABLE )
+		)
+	{
+		fprintf(stderr, "ERROR_SERIAL_LOGIN, ret = %d, new_value = %d\n", ret, new_value);
+		*error_msg = ERROR_SERIAL_LOGIN;
+		return -1;
+	}
+	if( new_value != cfg[portno].login )
+	{
+		changed = true;
+	    cfg[portno].login = new_value;
+		fprintf(stderr, "New cfg[%d].login = %d\n", portno, cfg[portno].login);
+	}
 
-    new_value = cgiFormStringNoNewlines("PASSIVE_USER", buff, 16); 
-	if (cfg[portno].login == 1)
-   		if (new_value != cgiFormEmpty) sprintf(cfg[portno].login_name, "%s", buff);
+	ret = cgiFormStringNoNewlines("PASSIVE_USER", buff, sizeof(cfg[portno].login_name)); 
+    if( ( ret != cgiFormSuccess && ret != cgiFormNotFound ) )
+    {
+		fprintf(stderr, "ERROR_SERIAL_LOGINID, ret = %d\n", ret);
+		*error_msg = ERROR_SERIAL_LOGINID;
+		return -1;
+    }
+	if( ret == cgiFormNotFound )
+	{
+		memcpy(buff, cfg[portno].login_name, sizeof(cfg[portno].login_name));
+	}
+#if 0
+	fprintf(stderr, "sizeof(cfg[portno].login_name) = %d\n", sizeof(cfg[portno].login_name));
+	fprintf(stderr, "cfg[%d].login_name = %s\n", portno, cfg[portno].login_name);
+	fprintf(stderr, "strlen(cfg[portno].login_name) = %d\n", strlen(cfg[portno].login_name));
+	fprintf(stderr, "buff = %s\n", buff);
+	fprintf(stderr, "strlen(buff) = %d\n", strlen(buff));
+#endif
+	if( strncmp(buff, cfg[portno].login_name, (strlen(buff) > strlen(cfg[portno].login_name))?strlen(buff):strlen(cfg[portno].login_name)))
+	{
+		changed = true;
+		sprintf(cfg[portno].login_name, "%s", buff);
+		fprintf(stderr, "New cfg[%d].login_name = %s\n", portno, cfg[portno].login_name);
+	}
 
-    new_value = cgiFormStringNoNewlines("PASSIVE_PASS", buff, 16); 
-    if (cfg[portno].login == 1)
-   		if (new_value != cgiFormEmpty) sprintf(cfg[portno].login_password, "%s", buff); 
+	ret = cgiFormStringNoNewlines("PASSIVE_PASS", buff, sizeof(cfg[portno].login_password)); 
+    if( ( ret != cgiFormSuccess && ret != cgiFormNotFound ) )
+    {
+		fprintf(stderr, "ERROR_SERIAL_LOGINPW, ret = %d\n", ret);
+		*error_msg = ERROR_SERIAL_LOGINPW;
+		return -1;
+    }
+	if( ret == cgiFormNotFound )
+	{
+		memcpy(buff, cfg[portno].login_password, sizeof(cfg[portno].login_password));
+	}
+#if 0
+	fprintf(stderr, "sizeof(cfg[portno].login_password) = %d\n", sizeof(cfg[portno].login_password));
+	fprintf(stderr, "cfg[%d].login_password = %s\n", portno, cfg[portno].login_password);
+	fprintf(stderr, "strlen(cfg[portno].login_password) = %d\n", strlen(cfg[portno].login_password));
+	fprintf(stderr, "buff = %s\n", buff);
+	fprintf(stderr, "strlen(buff) = %d\n", strlen(buff));
+#endif
+	if( strncmp(buff, cfg[portno].login_password, (strlen(buff) > strlen(cfg[portno].login_password))?strlen(buff):strlen(cfg[portno].login_password)))
+	{
+		changed = true;
+		sprintf(cfg[portno].login_password, "%s", buff);
+		fprintf(stderr, "New cfg[%d].login_password = %s\n", portno, cfg[portno].login_password);
+	}
 
-save_flash:
-    SB_WriteConfig  (CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	   
+	SB_WriteConfig  (CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
 
 	*portnum = portno;
 
-	if(changed != true)
+	if(!changed)
 	{
 		*error_msg = WARNNIG_NOTHING_APPLY;
 		return -2;
 	}
 
-    return 0;
+	sprintf(cmd,"/usr/bin/sudo /sbin/serial %d", portno + 1);
+	system(cmd);
+
+	return 0;
 }
 void set_wireless()
 {
@@ -979,7 +1230,7 @@ struct SB_ADC_CONFIG	cfg;
 	if (cfg.enable == 1) 
 		{
 	    value = cgiFormStringNoNewlines("LOCALPORT", buff, 6);
-    	if (value != cgiFormEmpty) cfg.socket_no = atoi(buff);
+    	if (value != cgiFormEmpty) cfg.local_port = atoi(buff);
 
     	value = cgiFormStringNoNewlines("INTERVAL", buff, 6);
     	if (value != cgiFormEmpty) cfg.interval = atoi(buff);

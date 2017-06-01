@@ -20,7 +20,7 @@ int main (int argc, char *argv[]);
 int main (int argc, char *argv[])
 {
 char WORK [1024];
-int  len, remote_socket_no, fd, cnt;
+int  len, remote_port, fd, cnt;
 
     if (argc < 3)
 	    {
@@ -28,12 +28,12 @@ int  len, remote_socket_no, fd, cnt;
 	   	return 0;
     	}
 
-	remote_socket_no = atoi (argv[2]);
-	printf ("Destination IP = (%s), Port (%d)\n", argv[1], remote_socket_no);
+	remote_port = atoi (argv[2]);
+	printf ("Destination IP = (%s), Port (%d)\n", argv[1], remote_port);
 
 	for (cnt=0; cnt<10; cnt++)
 		{
-		fd = SB_ConnectTcp (argv[1], remote_socket_no, 1, 8, 8);
+		fd = SB_ConnectTcp (argv[1], remote_port, 1, 8, 8);
 		if (fd > 0) break;
 		printf ("Connect Waiting !\n");
 		}

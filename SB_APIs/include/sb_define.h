@@ -58,9 +58,39 @@
 #define SB_FLOW_XON				1
 #define SB_FLOW_RTS				2
 //========================================< Serial Parity Option >
-#define	SB_PARITY_NONE			0
-#define	SB_PARITY_ODD			1
-#define	SB_PARITY_EVEN			2
+#define	SB_PARITY_NONE			0x00
+#define	SB_PARITY_ODD			0x08
+#define	SB_PARITY_EVEN			0x10
+#define	SB_PARITY_MASK			0x18
+#define	SB_PARITY_SHIFT			3
+//========================================< Serial Stop Bits >
+#define	SB_STOPBITS_1			0x00
+#define	SB_STOPBITS_2			0x04
+#define	SB_STOPBITS_MASK		0x04
+#define	SB_STOPBITS_SHIFT		2
+//========================================< Serial Data Bits >
+#define	SB_DATABITS_5			0x00
+#define	SB_DATABITS_6			0x01
+#define	SB_DATABITS_7			0x02
+#define	SB_DATABITS_8			0x03
+#define	SB_DATABITS_MASK		0x03
+#define	SB_DATABITS_SHIFT		0
+//========================================< Serial Baud Rate >
+#define	SB_BAUDRATE_150			0
+#define	SB_BAUDRATE_300			1
+#define	SB_BAUDRATE_600			2
+#define	SB_BAUDRATE_1200		3
+#define	SB_BAUDRATE_2400		4
+#define	SB_BAUDRATE_4800		5
+#define	SB_BAUDRATE_9600		6
+#define	SB_BAUDRATE_19200		7
+#define	SB_BAUDRATE_38400		8
+#define	SB_BAUDRATE_57600		9
+#define	SB_BAUDRATE_115200		10
+#define	SB_BAUDRATE_230400		11
+#define	SB_BAUDRATE_460800		12
+#define	SB_BAUDRATE_921600		13
+
 //========================================< Serial Operation Mode >
 #define SB_DISABLE_MODE			0 
 #define SB_COM_REDIRECT_MODE	1 

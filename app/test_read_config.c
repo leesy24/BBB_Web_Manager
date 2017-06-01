@@ -56,7 +56,7 @@ struct SB_WIFI_CONFIG			CFG_WIFI;						// /flash/eddy_wifi.cfg
 	
 	printf ("(%s)\n", CFGFILE_FLASH_SIO);
 	printf ("name       :   (1)%8s,  (2)%8s\n", CFG_SIO[0].name, CFG_SIO[1].name);
-	printf ("socket_no  :   (1)%8d,  (2)%8d\n", CFG_SIO[0].socket_no, CFG_SIO[1].socket_no);
+	printf ("local_port  :   (1)%8d,  (2)%8d\n", CFG_SIO[0].local_port, CFG_SIO[1].local_port);
 	printf ("speed      :   (1)%8d,  (2)%8d\n.\n.\n", CFG_SIO[0].speed, CFG_SIO[1].speed);
 
 	printf ("(%s)\n", CFGFILE_FLASH_WIFI);

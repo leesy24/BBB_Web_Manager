@@ -168,7 +168,7 @@ int Product_ID;
 int main (int argc, char *argv[])
 {
 	int i;
-	printf ("%s:%s\n", argv[0], argv[1]);
+	fprintf(stderr, "%s:%s\n", argv[0], argv[1]);
 
 	Product_ID = SB_GetModel ();
 	if (argc < 2)
@@ -376,15 +376,15 @@ int no;
 	for (no=0; no<SB_MAX_SIO_PORT; no++)
 		{
 		sprintf (CFG_SIO[no].name,		"Port-%02d",	no+1);
-		CFG_SIO[no].socket_no		=	4001 + no;
+		CFG_SIO[no].local_port		=	4001 + no;
 		//CFG_SIO[no].protocol		=	SB_COM_REDIRECT_MODE;
 		CFG_SIO[no].protocol		=	SB_DISABLE_MODE;
 		CFG_SIO[no].device			=   SB_DATA_TYPE;
-		CFG_SIO[no].speed			=	10;						// 115200
-		CFG_SIO[no].dps				= 	0x03;					// n/8/1
+		CFG_SIO[no].speed			=	SB_BAUDRATE_115200;		// 115200
+		CFG_SIO[no].dps				= 	SB_DATABITS_8 | SB_PARITY_NONE | SB_STOPBITS_1;	// n/8/1
 		CFG_SIO[no].flow			=	SB_FLOW_NONE;
 		sprintf (CFG_SIO[no].remote_ip, "%c%c%c%c",	0,0,0,0);
-		CFG_SIO[no].remote_socket_no=	4000;
+		CFG_SIO[no].remote_port=	4000;
 		CFG_SIO[no].packet_latency_time	= 0;
 		CFG_SIO[no].keepalive		=	0;
 		CFG_SIO[no].interface		=	SB_RS232;
@@ -1132,7 +1132,7 @@ int tmp_cnt1, tmp_cnt2, i;
 		{
 		ret = atoi (gv3);
 		if (ret < 1 || ret > 65535) return 0;
-		for (no=Fport; no<=Lport; no++)	CFG_SIO[no].socket_no = ret;
+		for (no=Fport; no<=Lport; no++)	CFG_SIO[no].local_port = ret;
 		return 1;
 		}	
 
@@ -1193,7 +1193,7 @@ int tmp_cnt1, tmp_cnt2, i;
 		{
 		ret = atoi (gv3);
 		if (ret < 0 || ret > 65000) return 0;
-		for (no=Fport; no<=Lport; no++)	CFG_SIO[no].remote_socket_no = ret;
+		for (no=Fport; no<=Lport; no++)	CFG_SIO[no].remote_port = ret;
 		return 1;
 		}	
 		
@@ -1726,9 +1726,9 @@ char Parity[40], protocol[20], flow[10], temp[100];
 		if (CFG_SIO[no].dps&0x04) stop = 2; else stop = 1;
 		printf("[%2d] Name     : %-16s       Protocol : %s\n",  no+1,  CFG_SIO[no].name, protocol);
 		printf("     Speed    : %-6d/%-4s/%d/%d        Flow     : %s\n", speed[(int)CFG_SIO[no].speed], Parity, (CFG_SIO[no].dps&0x03)+5, stop, flow );
-		printf("     Soket No.: %-4d                   Latency  : %-5d msec\n", CFG_SIO[no].socket_no, CFG_SIO[no].packet_latency_time);
+		printf("     Soket No.: %-4d                   Latency  : %-5d msec\n", CFG_SIO[no].local_port, CFG_SIO[no].packet_latency_time);
 		printf("     Keepalive: %-5d sec              Device   : %s\n", CFG_SIO[no].keepalive, (CFG_SIO[no].device == 0) ? "Data" : "Modem");        
-		sprintf(temp, "     Remote   : %d.%d.%d.%d (%d)",	CFG_SIO[no].remote_ip[0], CFG_SIO[no].remote_ip[1],CFG_SIO[no].remote_ip[2],CFG_SIO[no].remote_ip[3], CFG_SIO[no].remote_socket_no);
+		sprintf(temp, "     Remote   : %d.%d.%d.%d (%d)",	CFG_SIO[no].remote_ip[0], CFG_SIO[no].remote_ip[1],CFG_SIO[no].remote_ip[2],CFG_SIO[no].remote_ip[3], CFG_SIO[no].remote_port);
 		switch (CFG_SIO[no].interface)
 			{
 			case  SB_RS232     		: strcpy (Parity, "RS-232"); break;

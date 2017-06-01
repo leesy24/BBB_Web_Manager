@@ -55,11 +55,11 @@ char Server_IP [100];
 	
 	sprintf (Server_IP, "%d.%d.%d.%d", cfg[port_no].remote_ip[0], cfg[port_no].remote_ip[1], cfg[port_no].remote_ip[2], cfg[port_no].remote_ip[3]);
 
-	printf ("Port = %d, Server IP = %s(%d), Baudrate = %d\n", port_no+1, Server_IP, cfg[port_no].remote_socket_no, cfg[port_no].speed);
+	printf ("Port = %d, Server IP = %s(%d), Baudrate = %d\n", port_no+1, Server_IP, cfg[port_no].remote_port, cfg[port_no].speed);
 
 	for (cnt=0; cnt<10; cnt++)
 		{
-		ret = SB_ConnectTcp (Server_IP, cfg[port_no].remote_socket_no, 3, 8, 8);
+		ret = SB_ConnectTcp (Server_IP, cfg[port_no].remote_port, 3, 8, 8);
 		if (ret > 0) break;
 		SB_msleep (2000);
 		}

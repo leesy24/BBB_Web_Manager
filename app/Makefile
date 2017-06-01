@@ -29,7 +29,8 @@ TARGET		=	eddy					pinetd						def						\
 				test_dio				test_gpio_pin				test_bluetooth			\
 				test_spi_eeprom			\
 				test_serial				test_read_config			\
-				testdk					nand_erase					wan
+				testdk					nand_erase					wan						\
+				serial
 TARGET_C = $(addsuffix .c, $(TARGET))
 TARGET_BIN = $(addprefix bin/, $(TARGET))
 TARGET_OBJ = $(addsuffix .o, $(TARGET))

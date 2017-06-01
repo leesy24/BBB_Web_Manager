@@ -19,7 +19,7 @@ argments  1	: listen Socket no (1000 ~ 65535)
 int main (int argc, char *argv[])
 {
 char WORK [1024];
-int  len, listen_socket_no, fd;
+int  len, listen_local_port, fd;
 
     if (argc < 2)
 	    {
@@ -27,10 +27,10 @@ int  len, listen_socket_no, fd;
 	   	return 0;
     	}
 
-	listen_socket_no = atoi (argv[1]);
-	printf ("Listen Socket No = %d  \n", listen_socket_no);
+	listen_local_port = atoi (argv[1]);
+	printf ("Listen Socket No = %d  \n", listen_local_port);
 
-	fd = SB_BindUdp (listen_socket_no);
+	fd = SB_BindUdp (listen_local_port);
 	if (fd <= 0) return 0;
 
 	while (1)

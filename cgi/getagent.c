@@ -946,7 +946,7 @@ void get_serial(int portno)
 
 	if(cgiFormInteger("PORTNUM",&p_no, 0) == cgiFormSuccess )
 		portno = p_no - 1;
-	fprintf(stderr, "portno = %d\n", portno);
+	fprintf(stderr, "PORTNUM portno = %d\n", portno);
 
 	listPutf(list, "port_no", "%d", portno+1);
 
@@ -1028,7 +1028,7 @@ void get_serial(int portno)
 
 	// Local socket port
 	if (cgiFormStringNoNewlines("LOCAL_PORT", buff, 6) == cgiFormNotFound)
-		listPutf(list, "s_port", "%u", cfg[portno].socket_no);
+		listPutf(list, "s_port", "%u", cfg[portno].local_port);
 	else
 		listPutf(list, "s_port", "%u", atoi(buff));
 
@@ -1167,7 +1167,7 @@ void get_serial(int portno)
 		listPutf(list, "s_rip", buff);
 
 	if ( cgiFormStringNoNewlines("REMOTE_PORT", buff, 6) == cgiFormNotFound )
-		listPutf(list, "s_rport", "%u", cfg[portno].remote_socket_no);
+		listPutf(list, "s_rport", "%u", cfg[portno].remote_port);
 	else
 		listPutf(list, "s_rport", buff);	
 
@@ -1234,7 +1234,7 @@ struct SB_GPIO_CONFIG	gpio;
 
 	// Local socket port
 	if (cgiFormStringNoNewlines("LOCALPORT", buff, 6) == cgiFormNotFound)
-		listPutf(list, "localport", "%u", cfg.socket_no);
+		listPutf(list, "localport", "%u", cfg.local_port);
 	else
 		listPutf(list, "localport", "%u", atoi(buff));
 
