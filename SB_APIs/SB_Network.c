@@ -14,10 +14,14 @@
 /* http://www.geekpage.jp/en/programming/linux-network/get-ipaddr.php */
 unsigned int SB_GetIp (char *eth_name)
 {
-	int fd;
+	int fd, ret;
 	struct ifreq ifr;
 
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if(fd == -1)
+	{
+		return 0;
+	}
 
 	/* I want to get an IPv4 IP address */
 	ifr.ifr_addr.sa_family = AF_INET;
@@ -25,7 +29,12 @@ unsigned int SB_GetIp (char *eth_name)
 	/* I want IP address attached to eth_name */
 	strncpy(ifr.ifr_name, eth_name, IFNAMSIZ-1);
 
-	ioctl(fd, SIOCGIFADDR, &ifr);
+	ret = ioctl(fd, SIOCGIFADDR, &ifr);
+	if(ret == -1)
+	{
+		close(fd);
+		return 0;
+	}
 
 	close(fd);
 
@@ -36,10 +45,14 @@ unsigned int SB_GetIp (char *eth_name)
 /* http://www.geekpage.jp/en/programming/linux-network/get-netmask.php */
 unsigned int SB_GetMask (char *eth_name)
 {
-	int fd;
+	int fd, ret;
 	struct ifreq ifr;
 
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if(fd == -1)
+	{
+		return 0;
+	}
 
 	/* I want an IPv4 netmask */
 	ifr.ifr_addr.sa_family = AF_INET;
@@ -47,7 +60,12 @@ unsigned int SB_GetMask (char *eth_name)
 	/* I want netmask attached to eth_name */
 	strncpy(ifr.ifr_name, eth_name, IFNAMSIZ-1);
 
-	ioctl(fd, SIOCGIFNETMASK, &ifr);
+	ret = ioctl(fd, SIOCGIFNETMASK, &ifr);
+	if(ret == -1)
+	{
+		close(fd);
+		return 0;
+	}
 
 	close(fd);
 
