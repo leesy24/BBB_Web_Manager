@@ -1003,6 +1003,7 @@ void get_serial(int portno)
 			break;
 		case SB_TCP_CLIENT_MODE: // TCP Client
 			listPutf(list,"s_op_tcpc","selected");
+			listPutf(list, "s_local_option", "disabled");
 			break;
 		case SB_TCP_BROADCAST_MODE: // TCP Broadcast
 			listPutf(list,"s_op_tcpb","selected");
@@ -1018,6 +1019,7 @@ void get_serial(int portno)
 			break;
 		case SB_UDP_CLIENT_MODE: // UDP Client
 			listPutf(list,"s_op_udpc","selected");
+			listPutf(list, "s_local_option", "disabled");
 			break;
 		default: // Default SB_DISABLE_MODE
 			listPutf(list,"s_op_dis","selected");
