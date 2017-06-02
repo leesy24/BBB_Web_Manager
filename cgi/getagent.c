@@ -262,6 +262,7 @@ struct	SB_SYSTEM_CONFIG	cfg;
 //---------------------------------------------------------------------------
 void get_main()
 {
+	char name[256];
 	char buff[1024], Get_str[50];
 	int fd;
 	struct ifreq ifr;						
@@ -274,37 +275,38 @@ void get_main()
 	char *point;
 	char *temppoint;
 	struct SB_WIFI_CONFIG	wifi_cfg;
-	
-
+	struct SB_SIO_CONFIG	serial_cfg[SB_MAX_SIO_PORT];
+	int i;
+	int speed[14]={150, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
 
 	SB_ReadConfig(CFGFILE_ETC_WIFI, (char *)&wifi_cfg, sizeof(struct SB_WIFI_CONFIG));
-	
+
 	if (wifi_cfg.wireless)
-		{
+	{
 		int fd;
-		
+
 		listPutf(list, "WIRELESS_ON" , "");
 		listPutf(list, "WIRELESS_OFF", "");
-		
+
 		// mcpanic 7613 eth2 -> ETH_NAME
 		strcpy(ifr.ifr_name, "wlan0");
 		fd = socket(AF_INET, SOCK_DGRAM,0);
-	   	ioctl(fd, SIOCGIFHWADDR, &ifr);
-	   	memcpy(&maddr, (struct sockaddr *)&ifr.ifr_hwaddr, sizeof(struct sockaddr));
-			sprintf(buff, "%02X:%02X:%02X:%02X:%02X:%02X", 
-			maddr.sa_data[0]&0xff, 
-			maddr.sa_data[1]&0xff, 
-			maddr.sa_data[2]&0xff, 
-			maddr.sa_data[3]&0xff, 
-			maddr.sa_data[4]&0xff, 
-			maddr.sa_data[5]&0xff);
+		ioctl(fd, SIOCGIFHWADDR, &ifr);
+		memcpy(&maddr, (struct sockaddr *)&ifr.ifr_hwaddr, sizeof(struct sockaddr));
+		sprintf(buff, "%02X:%02X:%02X:%02X:%02X:%02X", 
+		maddr.sa_data[0]&0xff, 
+		maddr.sa_data[1]&0xff, 
+		maddr.sa_data[2]&0xff, 
+		maddr.sa_data[3]&0xff, 
+		maddr.sa_data[4]&0xff, 
+		maddr.sa_data[5]&0xff);
 		listPutf(list, "wifi_macaddr", buff);
 
 		system ("/sbin/iwlist wlan0 channel | grep Current > /var/tmp/iwlist");
 		SB_ReadConfig ("/var/tmp/iwlist", buff, 1000);
 		SB_getstring (buff, "Frequency:", 22, Get_str);
 		listPutf(list, "wifi_frequency", Get_str);
-		
+
 		system ("/sbin/iwconfig wlan0 > /var/tmp/iwconfig");
 		SB_ReadConfig ("/var/tmp/iwconfig", buff, 1000);
 
@@ -328,69 +330,67 @@ void get_main()
 		read(fd, buff,sizeof(buff));
 		close(fd);
 		point = strstr(buff, "inet addr:");
-		
+
 		if (point != NULL && strcmp(Get_str, "Not-Associated   ") != 0)
 			listPutf(list, "wifi_state", "Connection");
 		else	
-			{
+		{
 			if (wifi_cfg.wifi_mode == 1)		// ad-hoc	
 				listPutf(list, "wifi_state", "Connection");
 			else	
 				listPutf(list, "wifi_state", "No Connection");
-			}
-			
+		}
+
 		if (wifi_cfg.line == 0)		// DHCP
-			{
+		{
 			listPutf(list, "wifi_line", "DHCP");
-	
+
 			if (point == NULL)
-				{
+			{
 				listPutf(list, "wifi_ip", "None");
 				listPutf(list, "wifi_subnet", "None");
 				listPutf(list, "wifi_gw", "None");
-				}
+			}
 			else
-				{
+			{
 				memset(buff,0,sizeof(buff));
 				addr.s_addr = SB_GetIp ("wlan0");
 				strcpy(buff, inet_ntoa(addr));
 				listPutf(list, "wifi_ip", buff);
-			
+
 				memset(buff,0,sizeof(buff));
 				addr.s_addr = SB_GetMask ("wlan0");
 				strcpy(buff, inet_ntoa(addr));
 				listPutf(list, "wifi_subnet", buff);
-	
+
 				memset(buff,0,sizeof(buff));
 				addr.s_addr = SB_GetGateway ();
 				strcpy(buff, inet_ntoa(addr));
 				listPutf(list, "wifi_gw", buff);
-				}
 			}
+		}
 		else
-			{
+		{
 			listPutf(list, "wifi_line", "Static IP");	
-				
+
 			memset(buff,0,sizeof(buff));
 			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.ip[0], wifi_cfg.ip[1],wifi_cfg.ip[2],wifi_cfg.ip[3]);
 			listPutf(list, "wifi_ip", buff);
-		
+
 			memset(buff,0,sizeof(buff));
 			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.mask[0], wifi_cfg.mask[1],wifi_cfg.mask[2],wifi_cfg.mask[3]);
 			listPutf(list, "wifi_subnet", buff);
-		
+
 			memset(buff,0,sizeof(buff));
 			sprintf(buff, "%d.%d.%d.%d",wifi_cfg.gateway[0],wifi_cfg.gateway[1],wifi_cfg.gateway[2],wifi_cfg.gateway[3]);
 			listPutf(list, "wifi_gw", buff);
-			}
-
-
 		}
+	}
 	else
-		{
+	{
 		listPutf(list, "WIRELESS_ON" , "<!--");
 		listPutf(list, "WIRELESS_OFF", "-->");
-		}
+	}
 
 
 	SB_ReadConfig  (CFGFILE_ETC_SYSTEM,     (char *)&cfg,		sizeof(struct SB_SYSTEM_CONFIG));			
@@ -403,8 +403,8 @@ void get_main()
 	listPutf(list, "fw_version", fver);
 
 	sprintf(buff, "%02x:%02x:%02x:%02x:%02x:%02x", 
-			cfg.mac[0], cfg.mac[1], cfg.mac[2],
-			cfg.mac[3], cfg.mac[4], cfg.mac[5]);
+	cfg.mac[0], cfg.mac[1], cfg.mac[2],
+	cfg.mac[3], cfg.mac[4], cfg.mac[5]);
 
 	listPutf(list, "mac_addr", buff);
 
@@ -437,12 +437,97 @@ void get_main()
 		listPutf(list, "nw_gw", buff);
 	}
 
+	SB_ReadConfig(CFGFILE_ETC_SIO, (char *)&serial_cfg[0], sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
+
+	for(i = 0; i < SB_MAX_SIO_PORT; i ++)
+	{
+		sprintf(name, "s%d_mode", i + 1);
+		switch(serial_cfg[i].protocol)
+		{
+			case SB_DISABLE_MODE:		strcpy(buff, "Disable"); break;
+			case SB_COM_REDIRECT_MODE:	strcpy(buff, "COM Redirect"); break;
+			case SB_TCP_SERVER_MODE:	strcpy(buff, "TCP Server"); break;
+			case SB_TCP_CLIENT_MODE:	strcpy(buff, "TCP Client"); break;
+			case SB_TCP_BROADCAST_MODE:	strcpy(buff, "TCP Broadcast"); break;
+			case SB_TCP_MULTIPLEX_MODE:	strcpy(buff, "TCP Multiplex"); break;
+			case SB_UDP_SERVER_MODE:	strcpy(buff, "UDP Server"); break;
+			case SB_UDP_CLIENT_MODE:	strcpy(buff, "UDP Client"); break;							
+		}
+		listPutf(list, name, buff);
+
+		sprintf(name, "s%d_conf", i + 1);
+		if(serial_cfg[i].protocol == SB_DISABLE_MODE)
+		{
+			sprintf(buff, "");
+		}
+		else
+		{
+			sprintf(buff, "%d ", speed[(int)serial_cfg[i].speed]);
+			switch((serial_cfg[i].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT)
+			{
+				case SB_DATABITS_5:
+					sprintf(buff + strlen(buff), "5DATABITS");
+					break;
+				case SB_DATABITS_6:
+					sprintf(buff + strlen(buff), "6DATABITS");
+					break;
+				case SB_DATABITS_7:
+					sprintf(buff + strlen(buff), "7DATABITS");
+					break;
+				case SB_DATABITS_8:
+				default:
+					sprintf(buff + strlen(buff), "8DATABITS");
+					break;
+			}
+			sprintf(buff + strlen(buff), " ");
+			switch((serial_cfg[i].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT)
+			{
+				case SB_PARITY_ODD:
+					sprintf(buff + strlen(buff), "ODD");
+					break;
+				case SB_PARITY_EVEN:
+					sprintf(buff + strlen(buff), "EVEN");
+					break;
+				case SB_PARITY_NONE:
+				default:
+					sprintf(buff + strlen(buff), "NONE");
+					break;
+			}
+			sprintf(buff + strlen(buff), " ");
+			switch((serial_cfg[i].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT)
+			{
+				case SB_STOPBITS_2:
+					sprintf(buff + strlen(buff), "2STOPBITS");
+					break;
+				case SB_STOPBITS_1:
+				default:
+					sprintf(buff + strlen(buff), "1STOPBIT");
+					break;
+			}
+			sprintf(buff + strlen(buff), " ");
+			switch(serial_cfg[i].protocol)
+			{
+				case SB_COM_REDIRECT_MODE:
+				case SB_TCP_SERVER_MODE:
+				case SB_TCP_BROADCAST_MODE:
+				case SB_TCP_MULTIPLEX_MODE:
+				case SB_UDP_SERVER_MODE:
+					sprintf(buff + strlen(buff), "Local:%d", serial_cfg[i].local_port);
+					break;
+				case SB_TCP_CLIENT_MODE:
+				case SB_UDP_CLIENT_MODE:
+					sprintf(buff + strlen(buff), "Remote:%d.%d.%d.%d(%d)", serial_cfg[i].remote_ip[0], serial_cfg[i].remote_ip[1], serial_cfg[i].remote_ip[2], serial_cfg[i].remote_ip[3], serial_cfg[i].remote_port);
+					break;
+			}
+		}
+		listPutf(list, name, buff);
+	}
 
 	if (Product_ID != EDDY_S4M)
-		sprintf (buff, "Eddy-DK");
+	sprintf (buff, "Eddy-DK");
 	else
-		sprintf (buff, "Eddy-S4M");
-	
+	sprintf (buff, "Eddy-S4M");
+
 	listPutf(list, "device_type", buff);	
 	strcpy(buff, cfg.website);
 	listPutf(list, "website", buff);
@@ -452,6 +537,7 @@ void get_main()
 	sprintf (buff, "(%d Days) %02d:%02d:%02d", day, hour, min, sec);
 	listPutf(list, "alivetime", buff);
 }
+
 void get_wireless()
 {
 	int mode, value;
