@@ -296,6 +296,10 @@ int cgiMain()
 			{
 				set_logout();
 				system("/usr/bin/sudo /sbin/wan");
+				system("/usr/bin/sudo /sbin/serial 1");
+				system("/usr/bin/sudo /sbin/serial 2");
+				system("/usr/bin/sudo /sbin/serial 3");
+				system("/usr/bin/sudo /sbin/serial 4");
 				system("/usr/bin/sudo /sbin/reboot");
 				return;	// return directly
 			}
