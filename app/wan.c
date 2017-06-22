@@ -35,10 +35,18 @@ int main(void)
 			fprintf(fp, "\taddress %d.%d.%d.%d\n", CFG.ip[0], CFG.ip[1],CFG.ip[2],CFG.ip[3]);
 			fprintf(fp, "\tnetmask %d.%d.%d.%d\n", CFG.mask[0], CFG.mask[1],CFG.mask[2],CFG.mask[3]);
 			fprintf(fp, "\tgateway %d.%d.%d.%d\n", CFG.gateway[0], CFG.gateway[1],CFG.gateway[2],CFG.gateway[3]);
+			fprintf(fp, "\n");
+			fprintf(fp, "iface %s:0 inet static\n", SB_WAN_ETH_NAME);
+			fprintf(fp, "\taddress %d.%d.%d.%d\n", 10, 0, 10, 0);
+			fprintf(fp, "\tnetmask %d.%d.%d.%d\n", 255, 255, 0, 0);
 		}
 		else // if(CFG.line == 'D') // DHCP
 		{
 			fprintf(fp, "iface %s inet dhcp\n", SB_WAN_ETH_NAME);
+			fprintf(fp, "\n");
+			fprintf(fp, "iface %s:0 inet static\n", SB_WAN_ETH_NAME);
+			fprintf(fp, "\taddress %d.%d.%d.%d\n", 10, 0, 10, 0);
+			fprintf(fp, "\tnetmask %d.%d.%d.%d\n", 255, 255, 0, 0);
 		}
 		fprintf(fp, "\n");
 		fflush(fp);

@@ -3,7 +3,81 @@
 #include "sb_config.h"
 #include "sb_extern.h"
 
-static int disable(int portnum)
+struct SB_SYSTEM_CONFIG CFG_SYS;
+struct SB_SIO_CONFIG CFG_SERIAL[SB_MAX_SIO_PORT];
+
+static int ser2net_get_baudrate(int portnum)
+{
+	switch(CFG_SERIAL[portnum-1].speed)
+	{
+		case SB_BAUDRATE_150:		return 150;
+		case SB_BAUDRATE_300:		return 300;
+		case SB_BAUDRATE_600:		return 600;
+		case SB_BAUDRATE_1200:		return 1200;
+		case SB_BAUDRATE_2400:		return 2400;
+		case SB_BAUDRATE_4800:		return 4800;
+		case SB_BAUDRATE_9600:		return 9600;
+		case SB_BAUDRATE_19200:		return 19200;
+		case SB_BAUDRATE_38400:		return 38400;
+		case SB_BAUDRATE_57600:		return 57600;
+		case SB_BAUDRATE_115200:	return 115200;
+		case SB_BAUDRATE_230400:	return 230400;
+		case SB_BAUDRATE_460800:	return 460800;
+		case SB_BAUDRATE_921600:	return 921600;
+		default:					break;;
+	}
+	return 115200;
+}
+
+static char *ser2net_get_parity(int portnum)
+{
+	switch((CFG_SERIAL[portnum-1].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT)
+	{
+		case SB_PARITY_ODD:
+			return "ODD";
+		case SB_PARITY_EVEN:
+			return "EVEN";
+		case SB_PARITY_NONE:
+			return "NONE";
+		default:
+			break;
+	}
+	return "NONE";
+}
+
+static char *ser2net_get_stopbits(int portnum)
+{
+	switch((CFG_SERIAL[portnum-1].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT)
+	{
+		case SB_STOPBITS_2:
+			return "2STOPBITS";
+		case SB_STOPBITS_1:
+			return "1STOPBIT";
+		default:
+			break;
+	}
+	return "1STOPBIT";
+}
+
+static char *ser2net_get_databits(int portnum)
+{
+	switch((CFG_SERIAL[portnum-1].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT)
+	{
+		case SB_DATABITS_5:
+			return "5DATABITS";
+		case SB_DATABITS_6:
+			return "6DATABITS";
+		case SB_DATABITS_7:
+			return "7DATABITS";
+		case SB_DATABITS_8:
+			return "8DATABITS";
+		default:
+			break;
+	}
+	return "8DATABITS";
+}
+
+static void disable(int portnum)
 {
 	char cmd[1000];	
 	char sysd_filename[256];
@@ -19,7 +93,6 @@ static int disable(int portnum)
 	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
-
 }
 
 //---------------------------------------------------------------
@@ -34,8 +107,6 @@ int main(int argc, char *argv[])
 	char sysd_exec[256];
 	int ret;
 	FILE *fp;
-	struct SB_SYSTEM_CONFIG CFG_SYS;
-	struct SB_SIO_CONFIG CFG_SERIAL[SB_MAX_SIO_PORT];
 	int portnum;
 
 	fprintf(stderr, "%s:%s\n", argv[0], argv[1]);
@@ -73,7 +144,6 @@ int main(int argc, char *argv[])
 		CFG_SERIAL[portnum-1].protocol == SB_TCP_MULTIPLEX_MODE
 		)
 	{
-		int baudrate;
 		sprintf(conf_filename, "ser2net_ttyO%d.conf", portnum);
 		sprintf(conf_filepath, "/etc/%s", conf_filename);
 		if ((fp = fopen(conf_filepath, "w")) == NULL)
@@ -93,67 +163,13 @@ int main(int argc, char *argv[])
 		fprintf(fp, ":");
 		fprintf(fp, "/dev/ttyO%d", portnum);
 		fprintf(fp, ":");
-		switch(CFG_SERIAL[portnum-1].speed)
-		{
-			case SB_BAUDRATE_150:		baudrate = 150; break;
-			case SB_BAUDRATE_300:		baudrate = 300; break;
-			case SB_BAUDRATE_600:		baudrate = 600; break;
-			case SB_BAUDRATE_1200:		baudrate = 1200; break;
-			case SB_BAUDRATE_2400:		baudrate = 2400; break;
-			case SB_BAUDRATE_4800:		baudrate = 4800; break;
-			case SB_BAUDRATE_9600:		baudrate = 9600; break;
-			case SB_BAUDRATE_19200:		baudrate = 19200; break;
-			case SB_BAUDRATE_38400:		baudrate = 38400; break;
-			case SB_BAUDRATE_57600:		baudrate = 57600; break;
-			case SB_BAUDRATE_115200:	baudrate = 115200; break;
-			case SB_BAUDRATE_230400:	baudrate = 230400; break;
-			case SB_BAUDRATE_460800:	baudrate = 460800; break;
-			case SB_BAUDRATE_921600:	baudrate = 921600; break;
-			default:					baudrate = 115200; break;
-		}
-		fprintf(fp, "%d", baudrate);
+		fprintf(fp, "%d", ser2net_get_baudrate(portnum));
 		fprintf(fp, " ");
-		switch((CFG_SERIAL[portnum-1].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT)
-		{
-			case SB_PARITY_ODD:
-				fprintf(fp, "ODD");
-				break;
-			case SB_PARITY_EVEN:
-				fprintf(fp, "EVEN");
-				break;
-			case SB_PARITY_NONE:
-			default:
-				fprintf(fp, "NONE");
-				break;
-		}
+		fprintf(fp, ser2net_get_parity(portnum));
 		fprintf(fp, " ");
-		switch((CFG_SERIAL[portnum-1].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT)
-		{
-			case SB_STOPBITS_2:
-				fprintf(fp, "2STOPBITS");
-				break;
-			case SB_STOPBITS_1:
-			default:
-				fprintf(fp, "1STOPBIT");
-				break;
-		}
+		fprintf(fp, ser2net_get_stopbits(portnum));
 		fprintf(fp, " ");
-		switch((CFG_SERIAL[portnum-1].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT)
-		{
-			case SB_DATABITS_5:
-				fprintf(fp, "5DATABITS");
-				break;
-			case SB_DATABITS_6:
-				fprintf(fp, "6DATABITS");
-				break;
-			case SB_DATABITS_7:
-				fprintf(fp, "7DATABITS");
-				break;
-			case SB_DATABITS_8:
-			default:
-				fprintf(fp, "8DATABITS");
-				break;
-		}
+		fprintf(fp, ser2net_get_databits(portnum));
 		fprintf(fp, " ");
 		fprintf(fp, "max-connections=10");
 		fprintf(fp, "\n");
@@ -164,7 +180,6 @@ int main(int argc, char *argv[])
 	}
 	else if( CFG_SERIAL[portnum-1].protocol == SB_UDP_SERVER_MODE )
 	{
-		int baudrate;
 		sprintf(conf_filename, "ser2net_ttyO%d.conf", portnum);
 		sprintf(conf_filepath, "/etc/%s", conf_filename);
 		if ((fp = fopen(conf_filepath, "w")) == NULL)
@@ -184,67 +199,13 @@ int main(int argc, char *argv[])
 		fprintf(fp, ":");
 		fprintf(fp, "/dev/ttyO%d", portnum);
 		fprintf(fp, ":");
-		switch(CFG_SERIAL[portnum-1].speed)
-		{
-			case SB_BAUDRATE_150:		baudrate = 150; break;
-			case SB_BAUDRATE_300:		baudrate = 300; break;
-			case SB_BAUDRATE_600:		baudrate = 600; break;
-			case SB_BAUDRATE_1200:		baudrate = 1200; break;
-			case SB_BAUDRATE_2400:		baudrate = 2400; break;
-			case SB_BAUDRATE_4800:		baudrate = 4800; break;
-			case SB_BAUDRATE_9600:		baudrate = 9600; break;
-			case SB_BAUDRATE_19200:		baudrate = 19200; break;
-			case SB_BAUDRATE_38400:		baudrate = 38400; break;
-			case SB_BAUDRATE_57600:		baudrate = 57600; break;
-			case SB_BAUDRATE_115200:	baudrate = 115200; break;
-			case SB_BAUDRATE_230400:	baudrate = 230400; break;
-			case SB_BAUDRATE_460800:	baudrate = 460800; break;
-			case SB_BAUDRATE_921600:	baudrate = 921600; break;
-			default:					baudrate = 115200; break;
-		}
-		fprintf(fp, "%d", baudrate);
+		fprintf(fp, "%d", ser2net_get_baudrate(portnum));
 		fprintf(fp, " ");
-		switch((CFG_SERIAL[portnum-1].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT)
-		{
-			case SB_PARITY_ODD:
-				fprintf(fp, "ODD");
-				break;
-			case SB_PARITY_EVEN:
-				fprintf(fp, "EVEN");
-				break;
-			case SB_PARITY_NONE:
-			default:
-				fprintf(fp, "NONE");
-				break;
-		}
+		fprintf(fp, ser2net_get_parity(portnum));
 		fprintf(fp, " ");
-		switch((CFG_SERIAL[portnum-1].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT)
-		{
-			case SB_STOPBITS_2:
-				fprintf(fp, "2STOPBITS");
-				break;
-			case SB_STOPBITS_1:
-			default:
-				fprintf(fp, "1STOPBIT");
-				break;
-		}
+		fprintf(fp, ser2net_get_stopbits(portnum));
 		fprintf(fp, " ");
-		switch((CFG_SERIAL[portnum-1].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT)
-		{
-			case SB_DATABITS_5:
-				fprintf(fp, "5DATABITS");
-				break;
-			case SB_DATABITS_6:
-				fprintf(fp, "6DATABITS");
-				break;
-			case SB_DATABITS_7:
-				fprintf(fp, "7DATABITS");
-				break;
-			case SB_DATABITS_8:
-			default:
-				fprintf(fp, "8DATABITS");
-				break;
-		}
+		fprintf(fp, ser2net_get_databits(portnum));
 		fprintf(fp, " ");
 		fprintf(fp, "max-connections=10");
 		fprintf(fp, "\n");
