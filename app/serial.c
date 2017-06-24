@@ -93,6 +93,17 @@ static void disable(int portnum)
 	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
+
+	sprintf(sysd_filename, "ttyO%d_sub.service", portnum);
+	sprintf(sysd_filepath, "/lib/systemd/system/%s", sysd_filename);
+
+	sprintf (cmd, "/bin/systemctl stop %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+
+	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
 }
 
 //---------------------------------------------------------------
@@ -142,9 +153,12 @@ int main(int argc, char *argv[])
 		CFG_SERIAL[portnum-1].protocol == SB_TCP_BROADCAST_MODE
 		||
 		CFG_SERIAL[portnum-1].protocol == SB_TCP_MULTIPLEX_MODE
+		||
+		// For UDP Client, Needs TCP Server first.
+		CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE
 		)
 	{
-		sprintf(conf_filename, "ser2net_ttyO%d.conf", portnum);
+		sprintf(conf_filename, "ttyO%d.conf", portnum);
 		sprintf(conf_filepath, "/etc/%s", conf_filename);
 		if ((fp = fopen(conf_filepath, "w")) == NULL)
 		{
@@ -155,7 +169,15 @@ int main(int argc, char *argv[])
 		fprintf(fp, ",");
 		fprintf(fp, "tcp");
 		fprintf(fp, ",");
-		fprintf(fp, "%d", CFG_SERIAL[portnum-1].local_port);
+		// For UDP Client, Needs TCP Server with remote port.
+		if(CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE)
+		{
+			fprintf(fp, "%d", CFG_SERIAL[portnum-1].remote_port);
+		}
+		else
+		{
+			fprintf(fp, "%d", CFG_SERIAL[portnum-1].local_port);
+		}
 		fprintf(fp, ":");
 		fprintf(fp, "raw");
 		fprintf(fp, ":");
@@ -172,15 +194,42 @@ int main(int argc, char *argv[])
 		fprintf(fp, ser2net_get_databits(portnum));
 		fprintf(fp, " ");
 		fprintf(fp, "max-connections=10");
+		// For UDP Client, Needs TCP Server for localhost.
+		if(CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE)
+		{
+			fprintf(fp, " ");
+			fprintf(fp, "remaddr=ipv4,tcp,localhost,0");
+		}
 		fprintf(fp, "\n");
 		fflush(fp);
 		fclose(fp);
-		sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to TCP Server", portnum);
-		sprintf(sysd_exec, "/usr/local/sbin/ser2net -n -c %s", conf_filepath);
+		// For UDP Client, Needs TCP Server for localhost.
+		if(CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE)
+		{
+			sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to TCP Server for localhost", portnum);
+		}
+		else
+		{
+			sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to TCP Server", portnum);
+		}
+		// Control port of ser2net will be port + 10000.
+		if(CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE)
+		{
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
+		}
+		else
+		{
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
+		}
 	}
-	else if( CFG_SERIAL[portnum-1].protocol == SB_UDP_SERVER_MODE )
+	else if(
+		CFG_SERIAL[portnum-1].protocol == SB_UDP_SERVER_MODE
+		||
+		// For TCP Client, Needs UDP Server first.
+		CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE
+		)
 	{
-		sprintf(conf_filename, "ser2net_ttyO%d.conf", portnum);
+		sprintf(conf_filename, "ttyO%d.conf", portnum);
 		sprintf(conf_filepath, "/etc/%s", conf_filename);
 		if ((fp = fopen(conf_filepath, "w")) == NULL)
 		{
@@ -191,7 +240,15 @@ int main(int argc, char *argv[])
 		fprintf(fp, ",");
 		fprintf(fp, "udp");
 		fprintf(fp, ",");
-		fprintf(fp, "%d", CFG_SERIAL[portnum-1].local_port);
+		// For TCP Client, Needs UDP Server with remote port.
+		if(CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE)
+		{
+			fprintf(fp, "%d", CFG_SERIAL[portnum-1].remote_port);
+		}
+		else
+		{
+			fprintf(fp, "%d", CFG_SERIAL[portnum-1].local_port);
+		}
 		fprintf(fp, ":");
 		fprintf(fp, "raw");
 		fprintf(fp, ":");
@@ -208,126 +265,32 @@ int main(int argc, char *argv[])
 		fprintf(fp, ser2net_get_databits(portnum));
 		fprintf(fp, " ");
 		fprintf(fp, "max-connections=10");
+		// For TCP Client, Needs UDP Server for localhost.
+		if(CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE)
+		{
+			fprintf(fp, " ");
+			fprintf(fp, "remaddr=ipv4,udp,localhost,0");
+		}
 		fprintf(fp, "\n");
 		fflush(fp);
 		fclose(fp);
-		sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to UDP Server", portnum);
-		sprintf(sysd_exec, "/usr/local/sbin/ser2net -n -c %s", conf_filepath);
-	}
-	else if( CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE
-		||
-		CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE
-		)
-	{
-		int baudrate;
-		sprintf(conf_filename, "socat_ttyO%d.sh", portnum);
-		sprintf(conf_filepath, "/etc/%s", conf_filename);
-//		touch('/file/path/here');
-//		chmod('/file/path/here', 0775);
-		if ((fp = fopen(conf_filepath, "w")) == NULL)
+		if(CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE)
 		{
-			fprintf(stderr, "fopen error %s\n", conf_filepath);
-			return -1;
+			sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to UDP Server for localhost", portnum);
 		}
-		fprintf(fp, "#! /bin/sh\n");
-		fprintf(fp, "/usr/bin/socat");
-		fprintf(fp, " ");
-		fprintf(fp, "/dev/ttyO%d", portnum);
-		fprintf(fp, ",");
-		switch(CFG_SERIAL[portnum-1].speed)
+		else
 		{
-			case SB_BAUDRATE_150:		baudrate = 150; break;
-			case SB_BAUDRATE_300:		baudrate = 300; break;
-			case SB_BAUDRATE_600:		baudrate = 600; break;
-			case SB_BAUDRATE_1200:		baudrate = 1200; break;
-			case SB_BAUDRATE_2400:		baudrate = 2400; break;
-			case SB_BAUDRATE_4800:		baudrate = 4800; break;
-			case SB_BAUDRATE_9600:		baudrate = 9600; break;
-			case SB_BAUDRATE_19200:		baudrate = 19200; break;
-			case SB_BAUDRATE_38400:		baudrate = 38400; break;
-			case SB_BAUDRATE_57600:		baudrate = 57600; break;
-			case SB_BAUDRATE_115200:	baudrate = 115200; break;
-			case SB_BAUDRATE_230400:	baudrate = 230400; break;
-			case SB_BAUDRATE_460800:	baudrate = 460800; break;
-			case SB_BAUDRATE_921600:	baudrate = 921600; break;
-			default:					baudrate = 115200; break;
+			sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to UDP Server", portnum);
 		}
-		fprintf(fp, "b%d", baudrate);
-		fprintf(fp, ",");
-		switch((CFG_SERIAL[portnum-1].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT)
+		// Control port of ser2net will be port + 10000.
+		if(CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE)
 		{
-			case SB_DATABITS_5:
-				fprintf(fp, "cs5");
-				break;
-			case SB_DATABITS_6:
-				fprintf(fp, "cs6");
-				break;
-			case SB_DATABITS_7:
-				fprintf(fp, "cs7");
-				break;
-			case SB_DATABITS_8:
-			default:
-				fprintf(fp, "cs8");
-				break;
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
 		}
-		fprintf(fp, ",");
-		switch((CFG_SERIAL[portnum-1].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT)
+		else
 		{
-			case SB_PARITY_ODD:
-				fprintf(fp, "parenb=1,parodd=1");
-				break;
-			case SB_PARITY_EVEN:
-				fprintf(fp, "parenb=1,parodd=0");
-				break;
-			case SB_PARITY_NONE:
-			default:
-				fprintf(fp, "parenb=0");
-				break;
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
 		}
-		fprintf(fp, ",");
-		switch((CFG_SERIAL[portnum-1].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT)
-		{
-			case SB_STOPBITS_2:
-				fprintf(fp, "cstopb=1");
-				break;
-			case SB_STOPBITS_1:
-			default:
-				fprintf(fp, "cstopb=0");
-				break;
-		}
-		fprintf(fp, ",raw,echo=0,icanon=0");
-		fprintf(fp, " ");
-		if( CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE )
-			fprintf(fp, "TCP");
-		else // if( CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE )
-			fprintf(fp, "UDP");
-		fprintf(fp, ":");
-		fprintf(fp, "%d.%d.%d.%d", CFG_SERIAL[portnum-1].remote_ip[0], CFG_SERIAL[portnum-1].remote_ip[1], CFG_SERIAL[portnum-1].remote_ip[2], CFG_SERIAL[portnum-1].remote_ip[3]);
-		fprintf(fp, ":");
-		fprintf(fp, "%d", CFG_SERIAL[portnum-1].remote_port);
-		fprintf(fp, ",");
-		if( CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE )
-			fprintf(fp, "forever");
-		// option "forever" not support with UDP
-		/* 
- 		else // if( CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE )
-			fprintf(fp, "forever");
-		*/
-		fprintf(fp, "\n");
-		fprintf(fp, "exit $?");
-		fprintf(fp, "\n");
-		fflush(fp);
-		fclose(fp);
-
-		sprintf (cmd, "/bin/chmod 744 %s", conf_filepath);
-		fprintf(stderr, "system:%s\n", cmd);
-		system (cmd);
-
-		if( CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE )
-			sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to TCP Client %d.%d.%d.%d(%d)", portnum, CFG_SERIAL[portnum-1].remote_ip[0], CFG_SERIAL[portnum-1].remote_ip[1], CFG_SERIAL[portnum-1].remote_ip[2], CFG_SERIAL[portnum-1].remote_ip[3], CFG_SERIAL[portnum-1].remote_port);
-		else // if( CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE )
-			sprintf(sysd_desc, "Relay Serial /dev/ttyO%d to UDP Client %d.%d.%d.%d(%d)", portnum, CFG_SERIAL[portnum-1].remote_ip[0], CFG_SERIAL[portnum-1].remote_ip[1], CFG_SERIAL[portnum-1].remote_ip[2], CFG_SERIAL[portnum-1].remote_ip[3], CFG_SERIAL[portnum-1].remote_port);
-		sprintf(sysd_exec, "%s", conf_filepath);
 	}
 
 	sprintf(sysd_filename, "ttyO%d.service", portnum);
@@ -350,21 +313,8 @@ int main(int argc, char *argv[])
 			CFG_SERIAL[portnum-1].protocol == SB_TCP_MULTIPLEX_MODE
 			||
 			CFG_SERIAL[portnum-1].protocol == SB_UDP_SERVER_MODE
-			)
-		{
-			fprintf(fp, "[Unit]\n");
-			fprintf(fp, "Description=%s\n", sysd_desc);
-			fprintf(fp, "After=syslog.target\n");
-			fprintf(fp, "\n");
-			fprintf(fp, "[Service]\n");
-			fprintf(fp, "ExecStart=%s\n", sysd_exec);
-			fprintf(fp, "\n");
-			fprintf(fp, "[Install]\n");
-			fprintf(fp, "WantedBy=multi-user.target\n");
-			fprintf(fp, "Alias=%s\n", sysd_filename);
-			fprintf(fp, "\n");
-		}
-		else if( CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE
+			||
+			CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE
 			||
 			CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE
 			)
@@ -372,13 +322,9 @@ int main(int argc, char *argv[])
 			fprintf(fp, "[Unit]\n");
 			fprintf(fp, "Description=%s\n", sysd_desc);
 			fprintf(fp, "After=syslog.target\n");
-			fprintf(fp, "StartLimitIntervalSec=0\n");
 			fprintf(fp, "\n");
 			fprintf(fp, "[Service]\n");
 			fprintf(fp, "ExecStart=%s\n", sysd_exec);
-			fprintf(fp, "KillMode=mixed\n");
-			fprintf(fp, "RestartSec=1\n");
-			fprintf(fp, "Restart=always\n");
 			fprintf(fp, "\n");
 			fprintf(fp, "[Install]\n");
 			fprintf(fp, "WantedBy=multi-user.target\n");
@@ -401,6 +347,84 @@ int main(int argc, char *argv[])
 	sprintf (cmd, "/bin/systemctl start %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
+
+	// For TCP Client, Needs socat with UDP Client to TCP Client more.
+	// For UDP Client, Needs socat with TCP Client to UDP Client more.
+	if( CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE
+		||
+		CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE
+		)
+	{
+		sprintf(sysd_filename, "ttyO%d_sub.service", portnum);
+		sprintf(sysd_filepath, "/lib/systemd/system/%s", sysd_filename);
+
+		sprintf (cmd, "/bin/systemctl stop %s", sysd_filename);
+		fprintf(stderr, "system:%s\n", cmd);
+		system (cmd);
+
+		sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
+		fprintf(stderr, "system:%s\n", cmd);
+		system (cmd);
+
+		// For TCP Client, Needs socat with UDP Client to TCP Client.
+		if(CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE)
+		{
+			sprintf(sysd_desc, "Sub service for /dev/ttyO%d, Relay UDP Client(for localhost) to TCP Client", portnum);
+			sprintf(sysd_exec, "/usr/bin/socat UDP:localhost:%d TCP:%d.%d.%d.%d:%d,forever",
+				CFG_SERIAL[portnum-1].remote_port,
+				CFG_SERIAL[portnum-1].remote_ip[0],
+				CFG_SERIAL[portnum-1].remote_ip[1],
+				CFG_SERIAL[portnum-1].remote_ip[2],
+				CFG_SERIAL[portnum-1].remote_ip[3],
+				CFG_SERIAL[portnum-1].remote_port);
+		}
+		// For UDP Client, Needs socat with TCP Client to UDP Client.
+		else
+		{
+			sprintf(sysd_desc, "Sub service for /dev/ttyO%d, Relay TCP Client(for localhost) to UDP Client", portnum);
+			sprintf(sysd_exec, "/usr/bin/socat TCP:localhost:%d UDP:%d.%d.%d.%d:%d",
+				CFG_SERIAL[portnum-1].remote_port,
+				CFG_SERIAL[portnum-1].remote_ip[0],
+				CFG_SERIAL[portnum-1].remote_ip[1],
+				CFG_SERIAL[portnum-1].remote_ip[2],
+				CFG_SERIAL[portnum-1].remote_ip[3],
+				CFG_SERIAL[portnum-1].remote_port);
+		}
+
+		if ((fp = fopen(sysd_filepath, "w")) != NULL)
+		{
+			fprintf(fp, "[Unit]\n");
+			fprintf(fp, "Description=%s\n", sysd_desc);
+			fprintf(fp, "After=syslog.target\n");
+			fprintf(fp, "StartLimitIntervalSec=0\n");
+			fprintf(fp, "\n");
+			fprintf(fp, "[Service]\n");
+			fprintf(fp, "ExecStart=%s\n", sysd_exec);
+			fprintf(fp, "KillMode=mixed\n");
+			fprintf(fp, "RestartSec=1\n");
+			fprintf(fp, "Restart=always\n");
+			fprintf(fp, "\n");
+			fprintf(fp, "[Install]\n");
+			fprintf(fp, "WantedBy=multi-user.target\n");
+			fprintf(fp, "Alias=%s\n", sysd_filename);
+			fprintf(fp, "\n");
+
+			fflush(fp);
+			fclose(fp);
+		}
+		else
+		{
+			fprintf(stderr, "fopen error %s\n", sysd_filepath);
+		}
+
+		sprintf (cmd, "/bin/systemctl enable %s", sysd_filename);
+		fprintf(stderr, "system:%s\n", cmd);
+		system (cmd);
+
+		sprintf (cmd, "/bin/systemctl start %s", sysd_filename);
+		fprintf(stderr, "system:%s\n", cmd);
+		system (cmd);
+	}
 
 	return 0;
 }
