@@ -208,7 +208,7 @@ int main (int argc, char *argv[])
 		SB_ReadConfig  (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
 		SB_WriteConfig (CFGFILE_FLASH_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
 
-		printf ("Flash Write Successfully\n");
+		fprintf(stderr, "Flash Write Successfully\n");
 		write_web_login ();
 		return 0;
 	}
@@ -221,7 +221,7 @@ int main (int argc, char *argv[])
 		memcpy (MAC, CFG_SYS.mac, 6);
 
 		factory_default (MAC);
-		printf ("Factory Default Successfully\n");
+		fprintf(stderr, "Factory Default Successfully\n");
 		return 0;
 	}
 
@@ -260,8 +260,8 @@ int main (int argc, char *argv[])
 		}
 		else
 		{
-			printf("def port <port number> <command> <input data>\n");
-			printf("If you need help, execute 'def help' or 'help'\n");
+			fprintf(stderr, "def port <port number> <command> <input data>\n");
+			fprintf(stderr, "If you need help, execute 'def help' or 'help'\n");
 		}
 		return 0;
 	}
@@ -275,8 +275,8 @@ int main (int argc, char *argv[])
 		}
 		else
 		{
-			printf("def <command> <input data>\n");
-			printf("If you need help, execute 'def help' or 'help'\n");
+			fprintf(stderr, "def <command> <input data>\n");
+			fprintf(stderr, "If you need help, execute 'def help' or 'help'\n");
 		}
 		return 0;
 	}
@@ -290,8 +290,8 @@ int main (int argc, char *argv[])
 	}
 	else
 	{
-		printf("def <command> <input data>\n");
-		printf("If you need help, execute 'def help' or 'help'\n");
+		fprintf(stderr, "def <command> <input data>\n");
+		fprintf(stderr, "If you need help, execute 'def help' or 'help'\n");
 	}
 	return 0;
 }
@@ -733,7 +733,7 @@ char mac[30],x1,x2;
 		gv2[15] = 0x00;
 		if (strlen(gv2) < 8) 
 			{
-			printf ("Password is at least 8 character !\n");
+			fprintf(stderr, "Password is at least 8 character !\n");
 			return 0;
 			}
 		memset (CFG_SNMP.v3_password, 0x00, 16);
@@ -1352,126 +1352,126 @@ int tmp_cnt1, tmp_cnt2, i;
 }
 void help()
 {
-	printf("---<View Command>---------------------------------------------------------\n");	
-	printf("def view           ;  Print all Configuration\n");
-	printf("def view wan       ;  Print WAN Configuration\n");
-	printf("def view wifi      ;  Print WiFi Configuration\n");
+	fprintf(stderr, "---<View Command>---------------------------------------------------------\n");	
+	fprintf(stderr, "def view           ;  Print all Configuration\n");
+	fprintf(stderr, "def view wan       ;  Print WAN Configuration\n");
+	fprintf(stderr, "def view wifi      ;  Print WiFi Configuration\n");
 	if (Product_ID != EDDY_S4M)
-		printf("def view lan       ;  Print LAN Configuration\n");
-	printf("def view management;  Print Management Configuration\n");
-	printf("def view serial    ;  Print Serial Configuration\n");	
-	printf("def view gpio      ;  Print GPIO Configuration\n");		
+		fprintf(stderr, "def view lan       ;  Print LAN Configuration\n");
+	fprintf(stderr, "def view management;  Print Management Configuration\n");
+	fprintf(stderr, "def view serial    ;  Print Serial Configuration\n");	
+	fprintf(stderr, "def view gpio      ;  Print GPIO Configuration\n");		
 	if (Product_ID != EDDY_S4M)
-		printf("def view dio       ;  Print DIO Configuration\n");		
-	printf("---<Save & Factory>-------------------------------------------------------\n");	
-	printf("def factory        ;  Factory Default\n");
-	printf("def save           ;  Save to Flash (Configuration Data)\n");
-	printf ("Press any key continue...\n");	getchar ();
+		fprintf(stderr, "def view dio       ;  Print DIO Configuration\n");		
+	fprintf(stderr, "---<Save & Factory>-------------------------------------------------------\n");	
+	fprintf(stderr, "def factory        ;  Factory Default\n");
+	fprintf(stderr, "def save           ;  Save to Flash (Configuration Data)\n");
+	fprintf(stderr, "Press any key continue...\n");	getchar ();
 	
-	printf("---< WAN Config >---------------------------------------------------------\n");
-	printf("def mac           <MAC Address>       ; WAN MAC Address\n");
-	printf("def name          <string>            ; Device name\n");
-	printf("def username      <string>            ; Telnet, WEB Login username\n");
-	printf("def password      <string>            ; Telnet, WEB Login Password\n");	
-	printf("def line          <ip, dhcp>          ; IP, DHCP\n");
-	printf("def ip	          <address>           ; WAN IP address\n");
-	printf("def mask          <submask>           ; WAN Subnet Mask\n");
-	printf("def gateway       <address>           ; WAN GateWay address\n");
-	printf("def dns           <address>           ; WAN Primary DNS address\n");
-	printf("def dns_s         <address>           ; WAN Secondary DNS address\n");
-	printf ("Press any key continue...\n");	getchar ();
+	fprintf(stderr, "---< WAN Config >---------------------------------------------------------\n");
+	fprintf(stderr, "def mac           <MAC Address>       ; WAN MAC Address\n");
+	fprintf(stderr, "def name          <string>            ; Device name\n");
+	fprintf(stderr, "def username      <string>            ; Telnet, WEB Login username\n");
+	fprintf(stderr, "def password      <string>            ; Telnet, WEB Login Password\n");	
+	fprintf(stderr, "def line          <ip, dhcp>          ; IP, DHCP\n");
+	fprintf(stderr, "def ip	          <address>           ; WAN IP address\n");
+	fprintf(stderr, "def mask          <submask>           ; WAN Subnet Mask\n");
+	fprintf(stderr, "def gateway       <address>           ; WAN GateWay address\n");
+	fprintf(stderr, "def dns           <address>           ; WAN Primary DNS address\n");
+	fprintf(stderr, "def dns_s         <address>           ; WAN Secondary DNS address\n");
+	fprintf(stderr, "Press any key continue...\n");	getchar ();
 	
 	if (Product_ID != EDDY_S4M)
 		{
-		printf("---< LAN Config >---------------------------------------------------------\n");
-		printf("def landhcp       <enable, disable>   ; LAN DHCP Server Execution\n");	
-		printf("def lanip         <address>           ; LAN IP address\n");
-		printf("def lanmask       <address>           ; LAN subnet Mask\n");
-		printf("def lanstart      <address>           ; LAN DHCP Lease Start IP address\n");
-		printf("def lanend        <address>           ; LAN DHCP Lease End   IP address\n");
-		printf("def lanleasetime  <time>              ; LAN DHCP Lease Time\n");
-		printf ("Press any key continue...\n");	getchar ();
+		fprintf(stderr, "---< LAN Config >---------------------------------------------------------\n");
+		fprintf(stderr, "def landhcp       <enable, disable>   ; LAN DHCP Server Execution\n");	
+		fprintf(stderr, "def lanip         <address>           ; LAN IP address\n");
+		fprintf(stderr, "def lanmask       <address>           ; LAN subnet Mask\n");
+		fprintf(stderr, "def lanstart      <address>           ; LAN DHCP Lease Start IP address\n");
+		fprintf(stderr, "def lanend        <address>           ; LAN DHCP Lease End   IP address\n");
+		fprintf(stderr, "def lanleasetime  <time>              ; LAN DHCP Lease Time\n");
+		fprintf(stderr, "Press any key continue...\n");	getchar ();
 		}
 	
-	printf("---< Management Config >---------------------------------------------------\n");
-	printf("def ftp           <enable, disable>   ; FTP Server Execution\n");
-	printf("def telnet        <enable, disable>   ; Telnet Server Execution\n");	
-	printf("def ssh           <enable, disable>   ; SSH Server Execution\n");
-	printf("def web           <enable, disable>   ; WEB Server Execution\n");	
-	printf("def ddns          <address>           ; DDNS address\n");
-	printf("def ddnsuser      <address>           ; DDNS Loginname (http://ddns.nu)\n");
-	printf("def ddnspass      <address>           ; DDNS Loginpass (http://ddns.nu)\n");		
-	printf("def portview      <address>           ; PortView address\n");
-	printf("def portviewport  <Socket No.>        ; PortView Socket Number\n");
-	printf("def target_agent  <enable, disable>   ; LemonIDE Remote Debugger Execution\n");		
-	printf("---< GPIO Config >--------------------------------------------------------\n");
-	printf("                               <Set Browser only>\n");	
+	fprintf(stderr, "---< Management Config >---------------------------------------------------\n");
+	fprintf(stderr, "def ftp           <enable, disable>   ; FTP Server Execution\n");
+	fprintf(stderr, "def telnet        <enable, disable>   ; Telnet Server Execution\n");	
+	fprintf(stderr, "def ssh           <enable, disable>   ; SSH Server Execution\n");
+	fprintf(stderr, "def web           <enable, disable>   ; WEB Server Execution\n");	
+	fprintf(stderr, "def ddns          <address>           ; DDNS address\n");
+	fprintf(stderr, "def ddnsuser      <address>           ; DDNS Loginname (http://ddns.nu)\n");
+	fprintf(stderr, "def ddnspass      <address>           ; DDNS Loginpass (http://ddns.nu)\n");		
+	fprintf(stderr, "def portview      <address>           ; PortView address\n");
+	fprintf(stderr, "def portviewport  <Socket No.>        ; PortView Socket Number\n");
+	fprintf(stderr, "def target_agent  <enable, disable>   ; LemonIDE Remote Debugger Execution\n");		
+	fprintf(stderr, "---< GPIO Config >--------------------------------------------------------\n");
+	fprintf(stderr, "                               <Set Browser only>\n");	
 
-	printf ("Press any key continue...\n");	getchar ();
-	printf("---< SNMP Config >--------------------------------------------------------\n");
-	printf("def snmp          <enable, disable>   ; SNMP MIB V1/2/3 agent Execution\n");
-	printf("def v1readwrite   <readonly, readwrite, disable>\n");
-	printf("                  ; SNMP V1/2 Attribute Readonly or Read/Write or Disable\n");		
-	printf("def v3readwrite   <readonly, readwrite> \n");
-	printf("                  ; SNMP V3 Attribute Readonly or Read/Write\n");		
-	printf("def v3username    <string>            ; SNMP V3 username\n");		
-	printf("def v3password    <string>            ; SNMP V3 password\n");		
-	printf("def trapip        <address>           ; SNMP trap IP address\n");
-	printf("def trapoprt      <Socket No.>        ; SNMP trap Socket Number\n");
-	printf("def trap_reset    <enable, disable>   ; SNMP trap System Reset\n");		
-	printf("def trap_connect  <enable, disable>   ; SNMP trap port connected\n");		
-	printf("def trap_disconnect <enable, disable> ; SNMP trap port disconnected\n");		
+	fprintf(stderr, "Press any key continue...\n");	getchar ();
+	fprintf(stderr, "---< SNMP Config >--------------------------------------------------------\n");
+	fprintf(stderr, "def snmp          <enable, disable>   ; SNMP MIB V1/2/3 agent Execution\n");
+	fprintf(stderr, "def v1readwrite   <readonly, readwrite, disable>\n");
+	fprintf(stderr, "                  ; SNMP V1/2 Attribute Readonly or Read/Write or Disable\n");		
+	fprintf(stderr, "def v3readwrite   <readonly, readwrite> \n");
+	fprintf(stderr, "                  ; SNMP V3 Attribute Readonly or Read/Write\n");		
+	fprintf(stderr, "def v3username    <string>            ; SNMP V3 username\n");		
+	fprintf(stderr, "def v3password    <string>            ; SNMP V3 password\n");		
+	fprintf(stderr, "def trapip        <address>           ; SNMP trap IP address\n");
+	fprintf(stderr, "def trapoprt      <Socket No.>        ; SNMP trap Socket Number\n");
+	fprintf(stderr, "def trap_reset    <enable, disable>   ; SNMP trap System Reset\n");		
+	fprintf(stderr, "def trap_connect  <enable, disable>   ; SNMP trap port connected\n");		
+	fprintf(stderr, "def trap_disconnect <enable, disable> ; SNMP trap port disconnected\n");		
 	
-	printf ("Press any key continue...\n");	getchar ();
-	printf("---< Port Config >--------------------------------------------------------\n");
-	printf("def port <x, x-x, all> name         <Port alias name>\n" );
-	printf("def port <x, x-x, all> protocol     <disable, com_redirect, tcp_server,\n");
-	printf("                                     tcp_client, tcp_broadcast, tcp_multiplex,\n"); 
-	printf("                                     udp_server, udp_client>\n");
-	printf("def port <x, x-x, all> interface    <rs422, rs485ne, rs485e>\n" );
-	printf("def port <x, x-x, all> socket       <1 ~ 65535>\n" );
-	printf("def port <x, x-x, all> speed        <150, 300, 600, 1200, 2400, 4800, 9600,\n"); 
-	printf("                                     19200, 38400, 57600, 115200, 230400,  \n"); 
-	printf("                                     460800, 921600>\n"); 
-	printf("def port <x, x-x, all> char         <5, 6, 7, 8>\n");
-	printf("def port <x, x-x, all> parity       <none, odd, even>\n");
-	printf("def port <x, x-x, all> stop         <1, 2>\n" );
-	printf("def port <x, x-x, all> flow         <none, xon, rts>\n");
-	printf("def port <x, x-x, all> device       <data, modem>\n");
-	printf("def port <x, x-x, all> remote       <Destination IP Address>\n" );
-	printf("def port <x, x-x, all> remoterport  <Destination Socket Number>\n" );	
-	printf("def port <x, x-x, all> latency_time <0 ~ 65535 sec>\n" );
-	printf("def port <x, x-x, all> keepalive    <0 ~ 65535 sec>\n" );
-	printf("def port <x, x-x, all> login        <enable, disable>\n" );
-	printf("def port <x, x-x, all> loginname    <tcp_server login username>\n");
-	printf("def port <x, x-x, all> loginpass    <tcp_server login password>\n");
-	printf ("Press any key continue...\n");	getchar ();
+	fprintf(stderr, "Press any key continue...\n");	getchar ();
+	fprintf(stderr, "---< Port Config >--------------------------------------------------------\n");
+	fprintf(stderr, "def port <x, x-x, all> name         <Port alias name>\n" );
+	fprintf(stderr, "def port <x, x-x, all> protocol     <disable, com_redirect, tcp_server,\n");
+	fprintf(stderr, "                                     tcp_client, tcp_broadcast, tcp_multiplex,\n"); 
+	fprintf(stderr, "                                     udp_server, udp_client>\n");
+	fprintf(stderr, "def port <x, x-x, all> interface    <rs422, rs485ne, rs485e>\n" );
+	fprintf(stderr, "def port <x, x-x, all> socket       <1 ~ 65535>\n" );
+	fprintf(stderr, "def port <x, x-x, all> speed        <150, 300, 600, 1200, 2400, 4800, 9600,\n"); 
+	fprintf(stderr, "                                     19200, 38400, 57600, 115200, 230400,  \n"); 
+	fprintf(stderr, "                                     460800, 921600>\n"); 
+	fprintf(stderr, "def port <x, x-x, all> char         <5, 6, 7, 8>\n");
+	fprintf(stderr, "def port <x, x-x, all> parity       <none, odd, even>\n");
+	fprintf(stderr, "def port <x, x-x, all> stop         <1, 2>\n" );
+	fprintf(stderr, "def port <x, x-x, all> flow         <none, xon, rts>\n");
+	fprintf(stderr, "def port <x, x-x, all> device       <data, modem>\n");
+	fprintf(stderr, "def port <x, x-x, all> remote       <Destination IP Address>\n" );
+	fprintf(stderr, "def port <x, x-x, all> remoterport  <Destination Socket Number>\n" );	
+	fprintf(stderr, "def port <x, x-x, all> latency_time <0 ~ 65535 sec>\n" );
+	fprintf(stderr, "def port <x, x-x, all> keepalive    <0 ~ 65535 sec>\n" );
+	fprintf(stderr, "def port <x, x-x, all> login        <enable, disable>\n" );
+	fprintf(stderr, "def port <x, x-x, all> loginname    <tcp_server login username>\n");
+	fprintf(stderr, "def port <x, x-x, all> loginpass    <tcp_server login password>\n");
+	fprintf(stderr, "Press any key continue...\n");	getchar ();
 	
-	printf("---< WiFi Config >--------------------------------------------------------\n");	
-	printf("def wifi wireless       <Enable, Disable>\n" );
-	printf("def wifi mode           <infrastructure, ad-hoc>\n" );
-//	printf("def wifi network        <802.11b/g mixed, 802.11b only, 802.11a only\n");
-//	printf("                         802.11a/b/g mixed, 802.11g only>\n");
-	printf("def wifi network        <802.11b/g mixed, 802.11b only, 802.11g only>\n");
-	printf("def wifi ssid           <network name in a wireless network>\n"); 
-	printf("def wifi channel        <auto, 0 ~ 13>\n");
-	printf("def wifi bitrate        <auto, 1, 2, 5, 6, 9, 11, 12, 18, 24, 36, 48, 54>\n");
-	printf("def wifi rts            <1 ~ 2347>\n" );
-	printf("def wifi fragment       <256 ~ 2346>\n" );
-	//printf("def wifi 802.11h        <enable, disable>\n");
-	//printf("def wifi roamming       <enable, disable>\n");
-	printf("def wifi authentication <auto, open, share, wpapsk, wpa2psk>\n");
-	printf("def wifi encryption     <none, wep64, wep128, tkip, aes, tkip/aes>\n");
-	printf("def wifi keyindex       <1 ~ 4>\n");
-	printf("def wifi key            <wep key string>\n");
-	printf("def wifi password       <wpa password string>\n");
-	printf("def wifi line           <dhcp, static IP>\n" );
-	printf("def wifi ip             <IP address>\n" );	
-	printf("def wifi gateway        <Gateway IP address>\n" );	
-	printf("def wifi mask           <Subnet Mask address>\n" );	
-	printf("def wifi dns            <Primary DNS IP address>\n" );	
-	printf("def wifi dns_s          <Secondary DNS IP address>\n" );	
-	printf("--------------------------------------------------------------------------\n");	
+	fprintf(stderr, "---< WiFi Config >--------------------------------------------------------\n");	
+	fprintf(stderr, "def wifi wireless       <Enable, Disable>\n" );
+	fprintf(stderr, "def wifi mode           <infrastructure, ad-hoc>\n" );
+//	fprintf(stderr, "def wifi network        <802.11b/g mixed, 802.11b only, 802.11a only\n");
+//	fprintf(stderr, "                         802.11a/b/g mixed, 802.11g only>\n");
+	fprintf(stderr, "def wifi network        <802.11b/g mixed, 802.11b only, 802.11g only>\n");
+	fprintf(stderr, "def wifi ssid           <network name in a wireless network>\n"); 
+	fprintf(stderr, "def wifi channel        <auto, 0 ~ 13>\n");
+	fprintf(stderr, "def wifi bitrate        <auto, 1, 2, 5, 6, 9, 11, 12, 18, 24, 36, 48, 54>\n");
+	fprintf(stderr, "def wifi rts            <1 ~ 2347>\n" );
+	fprintf(stderr, "def wifi fragment       <256 ~ 2346>\n" );
+	//fprintf(stderr, "def wifi 802.11h        <enable, disable>\n");
+	//fprintf(stderr, "def wifi roamming       <enable, disable>\n");
+	fprintf(stderr, "def wifi authentication <auto, open, share, wpapsk, wpa2psk>\n");
+	fprintf(stderr, "def wifi encryption     <none, wep64, wep128, tkip, aes, tkip/aes>\n");
+	fprintf(stderr, "def wifi keyindex       <1 ~ 4>\n");
+	fprintf(stderr, "def wifi key            <wep key string>\n");
+	fprintf(stderr, "def wifi password       <wpa password string>\n");
+	fprintf(stderr, "def wifi line           <dhcp, static IP>\n" );
+	fprintf(stderr, "def wifi ip             <IP address>\n" );	
+	fprintf(stderr, "def wifi gateway        <Gateway IP address>\n" );	
+	fprintf(stderr, "def wifi mask           <Subnet Mask address>\n" );	
+	fprintf(stderr, "def wifi dns            <Primary DNS IP address>\n" );	
+	fprintf(stderr, "def wifi dns_s          <Secondary DNS IP address>\n" );	
+	fprintf(stderr, "--------------------------------------------------------------------------\n");	
 }
 
 //=============================================================
@@ -1481,42 +1481,42 @@ struct in_addr addr;
 char ver[20];
 union { char c[4]; unsigned int i; } q;
 
-    printf("=< Welcome to Eddy Configuration Manager >=========================\n");
+    fprintf(stderr, "=< Welcome to Eddy Configuration Manager >=========================\n");
     SB_GetVersion ('B', ver);
-    printf("BootLoader Version : %s\n", ver);
+    fprintf(stderr, "BootLoader Version : %s\n", ver);
     SB_GetVersion ('K', ver);
-    printf("Kernel     Version : %s\n", ver);
+    fprintf(stderr, "Kernel     Version : %s\n", ver);
     SB_GetVersion ('F', ver);
-    printf("Firmware   Version : %s\n", ver);
+    fprintf(stderr, "Firmware   Version : %s\n", ver);
 
-	printf("-< WAN >------------------------------------------------------------\n");
-	printf("MAC Address        : %02x:%02x:%02x:%02x:%02x:%02x\n", CFG_SYS.mac[0], CFG_SYS.mac[1], CFG_SYS.mac[2], CFG_SYS.mac[3], CFG_SYS.mac[4], CFG_SYS.mac[5]);
-	printf("Network Line       : %s\n", (CFG_SYS.line == 'I') ? "Static IP" : "DHCP");
+	fprintf(stderr, "-< WAN >------------------------------------------------------------\n");
+	fprintf(stderr, "MAC Address        : %02x:%02x:%02x:%02x:%02x:%02x\n", CFG_SYS.mac[0], CFG_SYS.mac[1], CFG_SYS.mac[2], CFG_SYS.mac[3], CFG_SYS.mac[4], CFG_SYS.mac[5]);
+	fprintf(stderr, "Network Line       : %s\n", (CFG_SYS.line == 'I') ? "Static IP" : "DHCP");
 
 	addr.s_addr = SB_GetIp (SB_WAN_ETH_NAME);
-	printf("IP Address         : %s  ", inet_ntoa(addr));
+	fprintf(stderr, "IP Address         : %s  ", inet_ntoa(addr));
 	memcpy (q.c, CFG_SYS.ip, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
 	addr.s_addr = SB_GetMask (SB_WAN_ETH_NAME);
-	printf("Subnet Mask        : %s  ", inet_ntoa(addr));
+	fprintf(stderr, "Subnet Mask        : %s  ", inet_ntoa(addr));
 	memcpy (q.c, CFG_SYS.mask, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
    	addr.s_addr = SB_GetGateway ();
-    printf("Gateway            : %s  ", inet_ntoa(addr));
+    fprintf(stderr, "Gateway            : %s  ", inet_ntoa(addr));
 	memcpy (q.c, CFG_SYS.gateway, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
    	addr.s_addr = SB_GetPrimaryDNS();
-	printf("Primary DNS        : %s\n", inet_ntoa (addr));
+	fprintf(stderr, "Primary DNS        : %s\n", inet_ntoa (addr));
 	memcpy (q.c, CFG_SYS.dns, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
    	addr.s_addr = SB_GetSecondaryDNS();
-	printf("Secondary DNS      : %s\n", inet_ntoa (addr));
+	fprintf(stderr, "Secondary DNS      : %s\n", inet_ntoa (addr));
 	memcpy (q.c, CFG_SYS.dns_s, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 }
 //=============================================================
 void view_wifi()
@@ -1528,22 +1528,22 @@ union { char c[4]; unsigned int i; } q;
 
 	SB_ReadConfig  (CFGFILE_ETC_WIFI, (char *)&CFG_WIFI, sizeof(struct SB_WIFI_CONFIG));
 
-	printf("-< WiFi >-----------------------------------------------------------\n");
-	printf("Wireless           : %s\n", (CFG_WIFI.wireless == 0) ? "Disable" : "Enable");
-	printf("WiFi Mode          : %s\n", (CFG_WIFI.wifi_mode == 0) ? "Infrastructure" : "AD-Hoc");
+	fprintf(stderr, "-< WiFi >-----------------------------------------------------------\n");
+	fprintf(stderr, "Wireless           : %s\n", (CFG_WIFI.wireless == 0) ? "Disable" : "Enable");
+	fprintf(stderr, "WiFi Mode          : %s\n", (CFG_WIFI.wifi_mode == 0) ? "Infrastructure" : "AD-Hoc");
 	switch (CFG_WIFI.b_g_mode)	{
 		case 0 : strcpy (buf, "802.11b/g mixed"); break;
 		case 1 : strcpy (buf, "802.11b only"); break;
 //		case 2 : strcpy (buf, "802.11a only"); break;
 //		case 3 : strcpy (buf, "802.11a/b/g mixed"); break; 
 		case 4 : strcpy (buf, "802.11g only"); break;	}			
-	printf("Network Mode       : %s\n", buf);
+	fprintf(stderr, "Network Mode       : %s\n", buf);
 	
-	printf("SSID               : %s\n", CFG_WIFI.ssid);
+	fprintf(stderr, "SSID               : %s\n", CFG_WIFI.ssid);
 	if (CFG_WIFI.channel == 0) 	
-		printf("Channel            : Auto\n");
+		fprintf(stderr, "Channel            : Auto\n");
 	else	
-		printf("Channel            : %d\n", CFG_WIFI.channel);
+		fprintf(stderr, "Channel            : %d\n", CFG_WIFI.channel);
 	
 	switch (CFG_WIFI.bit_rate)	{
 		case 0 : strcpy (buf, "Auto"); break;
@@ -1559,12 +1559,12 @@ union { char c[4]; unsigned int i; } q;
 		case 10: strcpy (buf, "36 Mbps"); break;	
 		case 11: strcpy (buf, "48 Mbps"); break;	
 		case 12: strcpy (buf, "54 Mbps"); break;		}										
-	printf("Bit Rate           : %s\n", buf);
-	printf("RTS Threshold      : %d\n", CFG_WIFI.rts_thr);
-	printf("Fragment Threshold : %d\n", CFG_WIFI.frag_thr);
-	//printf("802.11h Support    : %s\n", (CFG_WIFI.ieee80211h == 0) ? "Disable" : "Enable");
-	//printf("Roaming            : %s\n", (CFG_WIFI.roaming_mode == 0) ? "Disable" : "Enable");	
-	//printf("Roaming Threshold  : %d\n", CFG_WIFI.roaming_threshold);
+	fprintf(stderr, "Bit Rate           : %s\n", buf);
+	fprintf(stderr, "RTS Threshold      : %d\n", CFG_WIFI.rts_thr);
+	fprintf(stderr, "Fragment Threshold : %d\n", CFG_WIFI.frag_thr);
+	//fprintf(stderr, "802.11h Support    : %s\n", (CFG_WIFI.ieee80211h == 0) ? "Disable" : "Enable");
+	//fprintf(stderr, "Roaming            : %s\n", (CFG_WIFI.roaming_mode == 0) ? "Disable" : "Enable");	
+	//fprintf(stderr, "Roaming Threshold  : %d\n", CFG_WIFI.roaming_threshold);
 	
 	switch (CFG_WIFI.auth_mode)	{
 		case 0 : strcpy (buf, "Auto"); break;
@@ -1572,7 +1572,7 @@ union { char c[4]; unsigned int i; } q;
 		case 2 : strcpy (buf, "Share"); break;	
 		case 3 : strcpy (buf, "WPAPSK"); break;	
 		case 4 : strcpy (buf, "WPA2PSK"); break;	}
-	printf("Authentication     : %s\n", buf);	
+	fprintf(stderr, "Authentication     : %s\n", buf);	
 	
 	switch (CFG_WIFI.encryp_type)	{
 		case 0 : strcpy (buf, "None"); break;
@@ -1581,35 +1581,35 @@ union { char c[4]; unsigned int i; } q;
 		case 3 : strcpy (buf, "TKIP"); break;	
 		case 4 : strcpy (buf, "AES"); break;
 		case 5 : strcpy (buf, "TKIP/AES"); break;}
-	printf("Encryption         : %s\n", buf);	
-	printf("NETWORK Key    : %s\n", CFG_WIFI.key);	
+	fprintf(stderr, "Encryption         : %s\n", buf);	
+	fprintf(stderr, "NETWORK Key    : %s\n", CFG_WIFI.key);	
 	
-	printf("Connection Type    : %s\n", (CFG_WIFI.line == 0) ? "DHCP" : "Static IP");
+	fprintf(stderr, "Connection Type    : %s\n", (CFG_WIFI.line == 0) ? "DHCP" : "Static IP");
 			
 	addr.s_addr = SB_GetIp (SB_WLAN_RA_NAME);
-	printf("IP Address         : %s  ", inet_ntoa(addr));
+	fprintf(stderr, "IP Address         : %s  ", inet_ntoa(addr));
 	memcpy (q.c, CFG_WIFI.ip, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
 	addr.s_addr = SB_GetMask (SB_WLAN_RA_NAME);
-	printf("Subnet Mask        : %s  ", inet_ntoa(addr));
+	fprintf(stderr, "Subnet Mask        : %s  ", inet_ntoa(addr));
 	memcpy (q.c, CFG_WIFI.mask, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
    	addr.s_addr = SB_GetGateway ();
-    printf("Gateway            : %s  ", inet_ntoa(addr));
+    fprintf(stderr, "Gateway            : %s  ", inet_ntoa(addr));
 	memcpy (q.c, CFG_WIFI.gateway, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
    	addr.s_addr = SB_GetPrimaryDNS();
-	printf("Primary DNS        : %s\n", inet_ntoa (addr));
+	fprintf(stderr, "Primary DNS        : %s\n", inet_ntoa (addr));
 	memcpy (q.c, CFG_WIFI.dns, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 
    	addr.s_addr = SB_GetSecondaryDNS();
-	printf("Secondary DNS      : %s\n", inet_ntoa (addr));
+	fprintf(stderr, "Secondary DNS      : %s\n", inet_ntoa (addr));
 	memcpy (q.c, CFG_WIFI.dns_s, 4);	addr.s_addr   = q.i;
-	printf("(Config = %s)\n", inet_ntoa (addr));
+	fprintf(stderr, "(Config = %s)\n", inet_ntoa (addr));
 }
 //=============================================================
 void view_lan()
@@ -1617,25 +1617,25 @@ void view_lan()
 struct in_addr addr;
 union { char c[4]; unsigned int i; } q;
 
-	printf("-< LAN >-----------------------------------------------------------\n");
-	printf("DHCPD Enable       : %s\n", (CFG_SYS.dhcpenable == 1) ? "Enable" : "Disable");
+	fprintf(stderr, "-< LAN >-----------------------------------------------------------\n");
+	fprintf(stderr, "DHCPD Enable       : %s\n", (CFG_SYS.dhcpenable == 1) ? "Enable" : "Disable");
 
 	memcpy (q.c, CFG_SYS.lanip, 4);	
 	addr.s_addr   = q.i;
-	printf("IP Address         : %s\n", inet_ntoa(addr));
+	fprintf(stderr, "IP Address         : %s\n", inet_ntoa(addr));
 	
 	memcpy (q.c, CFG_SYS.lanmask, 4);	
 	addr.s_addr   = q.i;
-	printf("Mask Address       : %s\n", inet_ntoa(addr));
+	fprintf(stderr, "Mask Address       : %s\n", inet_ntoa(addr));
 	
 	memcpy (q.c, CFG_SYS.dhcpstartIP, 4);	
 	addr.s_addr   = q.i;
-	printf("Lease Start IP     : %s\n", inet_ntoa(addr));
+	fprintf(stderr, "Lease Start IP     : %s\n", inet_ntoa(addr));
 
 	memcpy (q.c, CFG_SYS.dhcpendIP, 4);	
 	addr.s_addr   = q.i;
-	printf("Lease End IP       : %s\n", inet_ntoa(addr));		
-	printf("Lease Time         : %d min\n", CFG_SYS.lease_time);
+	fprintf(stderr, "Lease End IP       : %s\n", inet_ntoa(addr));		
+	fprintf(stderr, "Lease Time         : %d min\n", CFG_SYS.lease_time);
 }
 //=============================================================
 void view_management()
@@ -1644,21 +1644,21 @@ struct in_addr addr;
 union { char c[4]; unsigned int i; } q;
 					  
 	CFG_SYS.device_name[31] = 0x00;
-	printf("-< Management >----------------------------------------------------\n");	
-//	printf("Device Type        : %s\n", buff);	
-	printf("Device Name        : %s\n", CFG_SYS.device_name);
-	printf("Username           : %s\n", CFG_SYS.username);
-	printf("Password           : %s\n", CFG_SYS.password);
+	fprintf(stderr, "-< Management >----------------------------------------------------\n");	
+//	fprintf(stderr, "Device Type        : %s\n", buff);	
+	fprintf(stderr, "Device Name        : %s\n", CFG_SYS.device_name);
+	fprintf(stderr, "Username           : %s\n", CFG_SYS.username);
+	fprintf(stderr, "Password           : %s\n", CFG_SYS.password);
 
 	memcpy (q.c, CFG_SYS.ddns, 4); addr.s_addr   = q.i;
-	printf("DDNS               : %s (%s/%s)\n", inet_ntoa (addr), CFG_SYS.ddnsuser, CFG_SYS.ddnspass);
+	fprintf(stderr, "DDNS               : %s (%s/%s)\n", inet_ntoa (addr), CFG_SYS.ddnsuser, CFG_SYS.ddnspass);
 	memcpy (q.c, CFG_SYS.portview, 4); addr.s_addr   = q.i;
-	printf("PortView           : %s (%d)\n", inet_ntoa (addr), CFG_SYS.portview_port_no);
-	printf("WEB Server         : %s\n", (CFG_SYS.web_server == 0) ? "Disable" : "Enable");
-	printf("TELNET Server      : %s\n", (CFG_SYS.telnet_server == 0) ? "Disable" : "Enable");
-	printf("FTP Server         : %s\n", (CFG_SYS.ftp_server == 0) ? "Disable" : "Enable");
-	printf("SSH Server         : %s\n", (CFG_SYS.ssh_server == 0) ? "Disable" : "Enable");				
-	printf("Target_Agent       : %s\n", (CFG_SYS.target_agent == 0) ? "Disable" : "Enable");				
+	fprintf(stderr, "PortView           : %s (%d)\n", inet_ntoa (addr), CFG_SYS.portview_port_no);
+	fprintf(stderr, "WEB Server         : %s\n", (CFG_SYS.web_server == 0) ? "Disable" : "Enable");
+	fprintf(stderr, "TELNET Server      : %s\n", (CFG_SYS.telnet_server == 0) ? "Disable" : "Enable");
+	fprintf(stderr, "FTP Server         : %s\n", (CFG_SYS.ftp_server == 0) ? "Disable" : "Enable");
+	fprintf(stderr, "SSH Server         : %s\n", (CFG_SYS.ssh_server == 0) ? "Disable" : "Enable");				
+	fprintf(stderr, "Target_Agent       : %s\n", (CFG_SYS.target_agent == 0) ? "Disable" : "Enable");				
 }
 //=============================================================
 void view_snmp()
@@ -1669,22 +1669,22 @@ struct in_addr addr;
 	
 
 	SB_ReadConfig  (CFGFILE_ETC_SNMP,  (char *)&CFG_SNMP, sizeof(struct SB_SNMP_CONFIG));
-	printf("-< SNMP >----------------------------------------------------------\n");	
-	printf("SNMP Agent         : %s\n", (CFG_SNMP.enable == 0) ? "Disable" : "Enable");
+	fprintf(stderr, "-< SNMP >----------------------------------------------------------\n");	
+	fprintf(stderr, "SNMP Agent         : %s\n", (CFG_SNMP.enable == 0) ? "Disable" : "Enable");
 	switch (CFG_SNMP.v1_readwrite)
 		{
 		case 0 :  sprintf (ver, "Readonly"); break;	
 		case 1 :  sprintf (ver, "Read/Write"); break;
 		case 2 :  sprintf (ver, "Disable"); break;
 		}		
-	printf("SNMP V1 read/write : %s\n", ver);
-	printf("SNMP V3 read/write : %s\n", (CFG_SNMP.v3_readwrite == 0) ? "Readonly" : "Read/Write");	
-	printf("SNMP V3 user/pass  : %s / %s\n", CFG_SNMP.v3_username, CFG_SNMP.v3_password);	
+	fprintf(stderr, "SNMP V1 read/write : %s\n", ver);
+	fprintf(stderr, "SNMP V3 read/write : %s\n", (CFG_SNMP.v3_readwrite == 0) ? "Readonly" : "Read/Write");	
+	fprintf(stderr, "SNMP V3 user/pass  : %s / %s\n", CFG_SNMP.v3_username, CFG_SNMP.v3_password);	
 	memcpy (q.c, CFG_SNMP.trap_ip, 4);	addr.s_addr   = q.i;
-	printf("SNMP Trap IP/Port  : %s / %d\n", inet_ntoa (addr), CFG_SNMP.trap_port);
-	printf("reset trap         : %s\n", ((CFG_SNMP.trap_option & 0x01) == 1) ? "Enable" : "Disable");				
-	printf("connected trap     : %s\n", ((CFG_SNMP.trap_option & 0x02) == 2) ? "Enable" : "Disable");				
-	printf("disconnect trap    : %s\n", ((CFG_SNMP.trap_option & 0x04) == 4) ? "Enable" : "Disable");				
+	fprintf(stderr, "SNMP Trap IP/Port  : %s / %d\n", inet_ntoa (addr), CFG_SNMP.trap_port);
+	fprintf(stderr, "reset trap         : %s\n", ((CFG_SNMP.trap_option & 0x01) == 1) ? "Enable" : "Disable");				
+	fprintf(stderr, "connected trap     : %s\n", ((CFG_SNMP.trap_option & 0x02) == 2) ? "Enable" : "Disable");				
+	fprintf(stderr, "disconnect trap    : %s\n", ((CFG_SNMP.trap_option & 0x04) == 4) ? "Enable" : "Disable");				
 }
 //=============================================================
 void view_port()
@@ -1695,7 +1695,7 @@ char Parity[40], protocol[20], flow[10], temp[100];
 
 	
 	SB_ReadConfig  (CFGFILE_ETC_SIO,  (char *)&CFG_SIO[0], sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
-	printf("-< Serial>---------------------------------------------------------\n");		
+	fprintf(stderr, "-< Serial>---------------------------------------------------------\n");		
 	for (no=0; no<SB_MAX_SIO_PORT; no++)
 		{
 		switch (CFG_SIO[no].protocol)
@@ -1724,10 +1724,10 @@ char Parity[40], protocol[20], flow[10], temp[100];
 			}
 
 		if (CFG_SIO[no].dps&0x04) stop = 2; else stop = 1;
-		printf("[%2d] Name     : %-16s       Protocol : %s\n",  no+1,  CFG_SIO[no].name, protocol);
-		printf("     Speed    : %-6d/%-4s/%d/%d        Flow     : %s\n", speed[(int)CFG_SIO[no].speed], Parity, (CFG_SIO[no].dps&0x03)+5, stop, flow );
-		printf("     Soket No.: %-4d                   Latency  : %-5d msec\n", CFG_SIO[no].local_port, CFG_SIO[no].packet_latency_time);
-		printf("     Keepalive: %-5d sec              Device   : %s\n", CFG_SIO[no].keepalive, (CFG_SIO[no].device == 0) ? "Data" : "Modem");        
+		fprintf(stderr, "[%2d] Name     : %-16s       Protocol : %s\n",  no+1,  CFG_SIO[no].name, protocol);
+		fprintf(stderr, "     Speed    : %-6d/%-4s/%d/%d        Flow     : %s\n", speed[(int)CFG_SIO[no].speed], Parity, (CFG_SIO[no].dps&0x03)+5, stop, flow );
+		fprintf(stderr, "     Soket No.: %-4d                   Latency  : %-5d msec\n", CFG_SIO[no].local_port, CFG_SIO[no].packet_latency_time);
+		fprintf(stderr, "     Keepalive: %-5d sec              Device   : %s\n", CFG_SIO[no].keepalive, (CFG_SIO[no].device == 0) ? "Data" : "Modem");        
 		sprintf(temp, "     Remote   : %d.%d.%d.%d (%d)",	CFG_SIO[no].remote_ip[0], CFG_SIO[no].remote_ip[1],CFG_SIO[no].remote_ip[2],CFG_SIO[no].remote_ip[3], CFG_SIO[no].remote_port);
 		switch (CFG_SIO[no].interface)
 			{
@@ -1736,8 +1736,8 @@ char Parity[40], protocol[20], flow[10], temp[100];
 			case  SB_RS485_NONE_ECHO: strcpy (Parity, "RS-485-N0-ECHO"); break;
 			case  SB_RS485_ECHO		: strcpy (Parity, "RS485-ECHO"); break;	
 			}
-		printf("%-39sInterface: %s\n", temp, Parity);
-		printf("     Login    : %-7s                Username : %s/%s\n", (CFG_SIO[no].login == 0) ? "Disable" : "Enable",  CFG_SIO[no].login_name, CFG_SIO[no].login_password);        
+		fprintf(stderr, "%-39sInterface: %s\n", temp, Parity);
+		fprintf(stderr, "     Login    : %-7s                Username : %s/%s\n", (CFG_SIO[no].login == 0) ? "Disable" : "Enable",  CFG_SIO[no].login_name, CFG_SIO[no].login_password);        
 		}
 }
 //=============================================================
@@ -1751,9 +1751,9 @@ unsigned int hexa = 0x00000001, hex;
 
 	SB_ReadConfig  (CFGFILE_ETC_GPIO,  (char *)&CFG_GPIO, sizeof(struct SB_GPIO_CONFIG));
 
-	printf("-< GPIO >-----------------------------------------------------------\n");
-	printf("No. Status  Value               No. Status  Value     \n");
-	printf("--------------------------------------------------------------------\n");	
+	fprintf(stderr, "-< GPIO >-----------------------------------------------------------\n");
+	fprintf(stderr, "No. Status  Value               No. Status  Value     \n");
+	fprintf(stderr, "--------------------------------------------------------------------\n");	
 
 
 	if (Product_ID != EDDY_S4M)
@@ -1763,14 +1763,14 @@ unsigned int hexa = 0x00000001, hex;
 			if (CFG_GPIO.value [GPORT_A] & HEX_PA04) strcpy (v, "Output(High)    ");  else strcpy (v, "Output(Low)     ");
 		else		
 			if (CFG_GPIO.pullup[GPORT_A] & HEX_PA04) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
-		printf ("A04 %s %s    ",  u, v);
+		fprintf(stderr, "A04 %s %s    ",  u, v);
 	
 		if (CFG_GPIO.enable   [GPORT_A] & HEX_PA05) strcpy (u, "Enable "); else strcpy (u, "Disable");
 		if (CFG_GPIO.mode  [GPORT_A] & HEX_PA05) 
 			if (CFG_GPIO.value [GPORT_A] & HEX_PA05) strcpy (v, "Output(High)    ");  else strcpy (v, "Output(Low)     ");
 		else		
 			if (CFG_GPIO.pullup[GPORT_A] & HEX_PA05) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
-		printf ("A05 %s %s\n",  u, v);
+		fprintf(stderr, "A05 %s %s\n",  u, v);
 	
 		for (no=0; no<32; no++)
 			{
@@ -1781,9 +1781,9 @@ unsigned int hexa = 0x00000001, hex;
 			else		
 				if (CFG_GPIO.pullup[GPORT_B] & hex) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
 			if (no % 2 == 1)
-				printf ("B%02d %s %s\n",  no, u, v);
+				fprintf(stderr, "B%02d %s %s\n",  no, u, v);
 			else
-				printf ("B%02d %s %s    ", no, u, v);
+				fprintf(stderr, "B%02d %s %s    ", no, u, v);
 			}
 	
 		cnt = 0;
@@ -1804,9 +1804,9 @@ unsigned int hexa = 0x00000001, hex;
 			else		
 				if (CFG_GPIO.pullup[GPORT_C] & hex) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
 			if (cnt % 2 == 0)
-				printf ("C%02d %s %s\n",  no, u, v);
+				fprintf(stderr, "C%02d %s %s\n",  no, u, v);
 			else
-				printf ("C%02d %s %s    ", no, u, v);
+				fprintf(stderr, "C%02d %s %s    ", no, u, v);
 			}
 		}
 	else		// S4M
@@ -1816,21 +1816,21 @@ unsigned int hexa = 0x00000001, hex;
 			if (CFG_GPIO.value [GPORT_A] & HEX_PA05) strcpy (v, "Output(High)    ");  else strcpy (v, "Output(Low)     ");
 		else		
 			if (CFG_GPIO.pullup[GPORT_A] & HEX_PA05) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
-		printf ("A05 %s %s    ",  u, v);
+		fprintf(stderr, "A05 %s %s    ",  u, v);
 	
 		if (CFG_GPIO.enable   [GPORT_A] & HEX_PA22) strcpy (u, "Enable "); else strcpy (u, "Disable");
 		if (CFG_GPIO.mode  [GPORT_A] & HEX_PA22) 
 			if (CFG_GPIO.value [GPORT_A] & HEX_PA22) strcpy (v, "Output(High)    ");  else strcpy (v, "Output(Low)     ");
 		else		
 			if (CFG_GPIO.pullup[GPORT_A] & HEX_PA22) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
-		printf ("A22 %s %s\n",  u, v);
+		fprintf(stderr, "A22 %s %s\n",  u, v);
 		
 		if (CFG_GPIO.enable   [GPORT_A] & HEX_PA30) strcpy (u, "Enable "); else strcpy (u, "Disable");
 		if (CFG_GPIO.mode  [GPORT_A] & HEX_PA22) 
 			if (CFG_GPIO.value [GPORT_A] & HEX_PA30) strcpy (v, "Output(High)    ");  else strcpy (v, "Output(Low)     ");
 		else		
 			if (CFG_GPIO.pullup[GPORT_A] & HEX_PA30) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
-		printf ("A30 %s %s\n",  u, v);		
+		fprintf(stderr, "A30 %s %s\n",  u, v);		
 	
 		for (cnt=0, no=0; no<=31; no++)
 			{
@@ -1843,9 +1843,9 @@ unsigned int hexa = 0x00000001, hex;
 			else		
 				if (CFG_GPIO.pullup[GPORT_B] & hex) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
 			if (cnt % 2 == 0)
-				printf ("B%02d %s %s\n",  no, u, v);
+				fprintf(stderr, "B%02d %s %s\n",  no, u, v);
 			else
-				printf ("B%02d %s %s    ", no, u, v);
+				fprintf(stderr, "B%02d %s %s    ", no, u, v);
 			}
 
 		for (cnt=0, no=0; no<=25; no++)
@@ -1859,11 +1859,11 @@ unsigned int hexa = 0x00000001, hex;
 			else		
 				if (CFG_GPIO.pullup[GPORT_C] & hex) strcpy (v, "Input (PullUp)  ");  else strcpy (v, "Input (PullDown)");
 			if (cnt % 2 == 0)
-				printf ("C%02d %s %s\n",  no, u, v);
+				fprintf(stderr, "C%02d %s %s\n",  no, u, v);
 			else
-				printf ("C%02d %s %s    ", no, u, v);
+				fprintf(stderr, "C%02d %s %s    ", no, u, v);
 			}			
-		printf ("\n");	
+		fprintf(stderr, "\n");	
 		}
 }
 
@@ -1876,9 +1876,9 @@ unsigned short hexa = 0x0001, hex;
 
 	SB_ReadConfig  (CFGFILE_ETC_DIO,  (char *)&CFG_DIO, sizeof(struct SB_DIO_CONFIG));
 
-	printf("-< DIO >------------------------------------------------------------\n");
-	printf("No Value          No Value          No Value          No Value\n");
-	printf("--------------------------------------------------------------------\n");	
+	fprintf(stderr, "-< DIO >------------------------------------------------------------\n");
+	fprintf(stderr, "No Value          No Value          No Value          No Value\n");
+	fprintf(stderr, "--------------------------------------------------------------------\n");	
 
 	for (no=0; no<16; no++)
 		{
@@ -1889,9 +1889,9 @@ unsigned short hexa = 0x0001, hex;
 			if (CFG_DIO.value  & hex) strcpy (v, "Output(High)   ");  else strcpy (v, "Output(Low)    ");
 
 		if (no % 4 == 3)
-			printf ("%02d %s\n",  no, v);
+			fprintf(stderr, "%02d %s\n",  no, v);
 		else
-			printf ("%02d %s", no, v);
+			fprintf(stderr, "%02d %s", no, v);
 		}
 }
 
