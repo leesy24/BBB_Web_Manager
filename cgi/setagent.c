@@ -411,8 +411,12 @@ int set_network(char **error_msg)
 		return -1;
 	}
 
-	if(new_value != old_value) { changed = true; wan_changed = true; }
-	if (new_value == 0) // Static IP
+	if(new_value != old_value)
+	{
+		changed = true;
+		wan_changed = true;
+	}
+	if(new_value == 0) // Static IP
 	{
 		cfg.line = 'I';
 		ret = cgiFormStringNoNewlines("N_IP", buff, 16);
@@ -532,7 +536,56 @@ int set_network(char **error_msg)
 	}
 	else // DHCP
 	{
+		struct in_addr dns;
 		cfg.line = 'D';
+
+		dns.s_addr = SB_GetPrimaryDNS();
+		ret = cgiFormStringNoNewlines("N_DNS", buff, 16);
+		if (ret == cgiFormSuccess)
+		{
+			ret = convert_address(buff, addr);
+			if(ret)
+			{
+				*error_msg = ERROR_WAN_PRIMARY_DNS;
+				return -1;
+			}
+			ret = memcmp(addr, dns.s_addr, sizeof(addr));
+			if(ret != 0)
+			{
+				changed = true;
+				wan_changed = true;
+			}
+			memcpy(cfg.dns, addr, sizeof(addr));
+		}
+		else
+		{
+			*error_msg = ERROR_WAN_PRIMARY_DNS;
+			return -1;
+		}
+
+		dns.s_addr = SB_GetSecondaryDNS();
+		ret = cgiFormStringNoNewlines("N_DNS_S", buff, 16);
+		if (ret == cgiFormSuccess)
+		{
+			ret = convert_address(buff, addr);
+			if(ret)
+			{
+				*error_msg = ERROR_WAN_SECONDARY_DNS;
+				return -1;
+			}
+			ret = memcmp(addr, dns.s_addr, sizeof(addr));
+			if(ret != 0)
+			{
+				changed = true;
+				wan_changed = true;
+			}
+			memcpy(cfg.dns_s, addr, sizeof(addr));
+		}
+		else
+		{
+			*error_msg = ERROR_WAN_SECONDARY_DNS;
+			return -1;
+		}
 	}
 
     ret = cgiFormStringNoNewlines("N_NIP", buff, 16);

@@ -36,6 +36,7 @@ int main(void)
 			fprintf(fp, "\tnetmask %d.%d.%d.%d\n", CFG.mask[0], CFG.mask[1],CFG.mask[2],CFG.mask[3]);
 			fprintf(fp, "\tgateway %d.%d.%d.%d\n", CFG.gateway[0], CFG.gateway[1],CFG.gateway[2],CFG.gateway[3]);
 			fprintf(fp, "\n");
+			fprintf(fp, "auto %s:0\n", SB_WAN_ETH_NAME);
 			fprintf(fp, "iface %s:0 inet static\n", SB_WAN_ETH_NAME);
 			fprintf(fp, "\taddress %d.%d.%d.%d\n", 10, 0, 10, 0);
 			fprintf(fp, "\tnetmask %d.%d.%d.%d\n", 255, 255, 0, 0);
@@ -44,6 +45,7 @@ int main(void)
 		{
 			fprintf(fp, "iface %s inet dhcp\n", SB_WAN_ETH_NAME);
 			fprintf(fp, "\n");
+			fprintf(fp, "auto %s:0\n", SB_WAN_ETH_NAME);
 			fprintf(fp, "iface %s:0 inet static\n", SB_WAN_ETH_NAME);
 			fprintf(fp, "\taddress %d.%d.%d.%d\n", 10, 0, 10, 0);
 			fprintf(fp, "\tnetmask %d.%d.%d.%d\n", 255, 255, 0, 0);
@@ -82,7 +84,49 @@ int main(void)
 		fprintf(stderr, "fopen error /etc/resolv.conf\n");
 	}
 
+	if ((fp = fopen("/etc/dhcp/dhclient.conf", "w")) != NULL)
+	{
+		fprintf(fp, "option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n");
+		fprintf(fp, "send host-name = gethostname();\n");
+		fprintf(fp, "request subnet-mask, broadcast-address, time-offset, routers,\n");
+		fprintf(fp, "\tdomain-name, domain-name-servers, domain-search, host-name,\n");
+		fprintf(fp, "\tdhcp6.name-servers, dhcp6.domain-search,\n");
+		fprintf(fp, "\tnetbios-name-servers, netbios-scope, interface-mtu,\n");
+		fprintf(fp, "\trfc3442-classless-static-routes, ntp-servers;\n");
+		if(CFG.line == 'D') // DHCP
+		{
+			if(
+				(CFG.dns[0] != 0 || CFG.dns[1] != 0 || CFG.dns[2] != 0 || CFG.dns[3] != 0)
+				||
+				(CFG.dns_s[0] != 0 || CFG.dns_s[1] != 0 || CFG.dns_s[2] != 0 || CFG.dns_s[3] != 0)
+				)
+			{
+				fprintf(fp, "supersede domain-name-servers ");
+				if(CFG.dns[0] != 0 || CFG.dns[1] != 0 || CFG.dns[2] != 0 || CFG.dns[3] != 0)
+					fprintf(fp, "%d.%d.%d.%d", CFG.dns[0], CFG.dns[1], CFG.dns[2], CFG.dns[3]);
+				if(CFG.dns_s[0] != 0 || CFG.dns_s[1] != 0 || CFG.dns_s[2] != 0 || CFG.dns_s[3] != 0)
+				{
+					if(CFG.dns[0] != 0 || CFG.dns[1] != 0 || CFG.dns[2] != 0 || CFG.dns[3] != 0)
+						fprintf(fp, ",");
+					fprintf(fp, "%d.%d.%d.%d", CFG.dns_s[0], CFG.dns_s[1], CFG.dns_s[2], CFG.dns_s[3]);
+				}
+				fprintf(fp, "\n");
+			}
+		}
+		fprintf(fp, "\n");
+		fflush(fp);
+		fclose(fp);
+	}
+	else
+	{
+		fprintf(stderr, "fopen error /etc/resolv.conf\n");
+	}
+
 	sprintf (cmd, "/sbin/ifup %s", SB_WAN_ETH_NAME);	// start WAN network 
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+
+	sprintf (cmd, "/sbin/ifup %s:0", SB_WAN_ETH_NAME);	// start WAN network 
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
 

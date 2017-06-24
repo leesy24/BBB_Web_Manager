@@ -199,20 +199,28 @@ IP obtaining method for Eddy’s network connection
 
               <tr bgcolor="#FFFFFF"> 
 				  <td class="content">Primary DNS</td>
-				  <td class="content"><input type="text" size="16" maxlength="16" name="N_DNS" value="[v,n_dns]" [v,n_option1]/> 
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_DNS" value="[v,n_dns]" /> 
 &nbsp;&nbsp;<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
 <div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-		Current default primary DNS Address is assigned to.<br>
+		In Line Type is Static IP,<br>
+			Current default primary DNS Address is assigned to.<br>
+		In Line Type is DHCP,<br>
+			You can assign primary DNS address.<br>
+			If set to 0.0.0.0, DNS will use recevied DNS from DHCP server.<br>
 </div></div>
 			  </td></tr>
 
               <tr bgcolor="#FFFFFF"> 
 				  <td class="content">Secondary DNS</td>
-				  <td class="content"><input type="text" size="16" maxlength="16" name="N_DNS_S" value="[v,n_dns_s]" [v,n_option1]/> 
+				  <td class="content"><input type="text" size="16" maxlength="16" name="N_DNS_S" value="[v,n_dns_s]" /> 
 &nbsp;&nbsp;<a href=#option4 style="color:#0099CC" onclick="this.innerHTML=(this.nextSibling.style.display=='none')?'Hide':'Help';this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';">Help</a><DIV style='display:none'><br/>
 <div style="border:1px solid lightskyblue; padding:9px; background:mintcream;">
-		Current default secondary DNS Address is assigned to.<br>
-		If set to 0.0.0.0, secondary DNS is disabled.<br>
+		In Line Type is Static IP,<br>
+			Current default secondary DNS Address is assigned to.<br>
+			If set to 0.0.0.0, secondary DNS is disabled.<br>
+		In Line Type is DHCP,<br>
+			You can assign primary DNS address.<br>
+			If set to 0.0.0.0, DNS will use recevied DNS from DHCP server.<br>
 </div></div>
 			  </td></tr>
             </table>
