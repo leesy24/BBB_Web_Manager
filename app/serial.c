@@ -193,7 +193,11 @@ int main(int argc, char *argv[])
 		fprintf(fp, " ");
 		fprintf(fp, ser2net_get_databits(portnum));
 		fprintf(fp, " ");
-		fprintf(fp, "max-connections=10");
+		// TCP Server will accept only one connection.
+		if(CFG_SERIAL[portnum-1].protocol != SB_TCP_SERVER_MODE)
+		{
+			fprintf(fp, "max-connections=10");
+		}
 		// For UDP Client, Needs TCP Server for localhost.
 		if(CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE)
 		{
@@ -215,11 +219,13 @@ int main(int argc, char *argv[])
 		// Control port of ser2net will be port + 10000.
 		if(CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE)
 		{
-			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
+			//sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p %d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
 		}
 		else
 		{
-			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
+			//sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p %d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
 		}
 	}
 	else if(
@@ -264,7 +270,11 @@ int main(int argc, char *argv[])
 		fprintf(fp, " ");
 		fprintf(fp, ser2net_get_databits(portnum));
 		fprintf(fp, " ");
-		fprintf(fp, "max-connections=10");
+		// TCP Server will accept only one connection.
+		if(CFG_SERIAL[portnum-1].protocol != SB_UDP_SERVER_MODE)
+		{
+			fprintf(fp, "max-connections=10");
+		}
 		// For TCP Client, Needs UDP Server for localhost.
 		if(CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE)
 		{
@@ -285,11 +295,13 @@ int main(int argc, char *argv[])
 		// Control port of ser2net will be port + 10000.
 		if(CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE)
 		{
-			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
+			//sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p %d -n -c %s", CFG_SERIAL[portnum-1].remote_port + 10000, conf_filepath);
 		}
 		else
 		{
-			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
+			//sprintf(sysd_exec, "/usr/local/sbin/ser2net -p localhost,%d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
+			sprintf(sysd_exec, "/usr/local/sbin/ser2net -p %d -n -c %s", CFG_SERIAL[portnum-1].local_port + 10000, conf_filepath);
 		}
 	}
 

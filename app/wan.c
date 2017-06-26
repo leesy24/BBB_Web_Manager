@@ -103,14 +103,16 @@ int main(void)
 			{
 				fprintf(fp, "supersede domain-name-servers ");
 				if(CFG.dns[0] != 0 || CFG.dns[1] != 0 || CFG.dns[2] != 0 || CFG.dns[3] != 0)
+				{
 					fprintf(fp, "%d.%d.%d.%d", CFG.dns[0], CFG.dns[1], CFG.dns[2], CFG.dns[3]);
+				}
 				if(CFG.dns_s[0] != 0 || CFG.dns_s[1] != 0 || CFG.dns_s[2] != 0 || CFG.dns_s[3] != 0)
 				{
 					if(CFG.dns[0] != 0 || CFG.dns[1] != 0 || CFG.dns[2] != 0 || CFG.dns[3] != 0)
 						fprintf(fp, ",");
 					fprintf(fp, "%d.%d.%d.%d", CFG.dns_s[0], CFG.dns_s[1], CFG.dns_s[2], CFG.dns_s[3]);
 				}
-				fprintf(fp, "\n");
+				fprintf(fp, ";\n");
 			}
 		}
 		fprintf(fp, "\n");

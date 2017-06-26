@@ -537,10 +537,19 @@ int set_network(char **error_msg)
 	else // DHCP
 	{
 		struct in_addr dns;
+		char dns_addr[4];
 		cfg.line = 'D';
 
 		dns.s_addr = SB_GetPrimaryDNS();
+		ret = convert_address(inet_ntoa(dns), dns_addr);
+		if(ret)
+		{
+			*error_msg = ERROR_WAN_PRIMARY_DNS;
+			return -1;
+		}
+		//fprintf(stderr, "SB_GetPrimaryDNS():%x,%d.%d.%d.%d\n", dns.s_addr, dns_addr[0], dns_addr[1], dns_addr[2], dns_addr[3]);
 		ret = cgiFormStringNoNewlines("N_DNS", buff, 16);
+		//fprintf(stderr, "cgiFormStringNoNewlines():ret=%d,%s\n", ret, buff);
 		if (ret == cgiFormSuccess)
 		{
 			ret = convert_address(buff, addr);
@@ -549,7 +558,7 @@ int set_network(char **error_msg)
 				*error_msg = ERROR_WAN_PRIMARY_DNS;
 				return -1;
 			}
-			ret = memcmp(addr, dns.s_addr, sizeof(addr));
+			ret = memcmp(addr, dns_addr, sizeof(addr));
 			if(ret != 0)
 			{
 				changed = true;
@@ -564,7 +573,15 @@ int set_network(char **error_msg)
 		}
 
 		dns.s_addr = SB_GetSecondaryDNS();
+		ret = convert_address(inet_ntoa(dns), dns_addr);
+		if(ret)
+		{
+			*error_msg = ERROR_WAN_PRIMARY_DNS;
+			return -1;
+		}
+		//fprintf(stderr, "SB_GetSecondaryDNS():%x,%d.%d.%d.%d\n", dns.s_addr, dns_addr[0], dns_addr[1], dns_addr[2], dns_addr[3]);
 		ret = cgiFormStringNoNewlines("N_DNS_S", buff, 16);
+		//fprintf(stderr, "cgiFormStringNoNewlines():ret=%d,%s\n", ret, buff);
 		if (ret == cgiFormSuccess)
 		{
 			ret = convert_address(buff, addr);
@@ -573,7 +590,7 @@ int set_network(char **error_msg)
 				*error_msg = ERROR_WAN_SECONDARY_DNS;
 				return -1;
 			}
-			ret = memcmp(addr, dns.s_addr, sizeof(addr));
+			ret = memcmp(addr, dns_addr, sizeof(addr));
 			if(ret != 0)
 			{
 				changed = true;
