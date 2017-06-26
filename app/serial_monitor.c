@@ -7,6 +7,7 @@
 #include <fcntl.h>
  
 #define IAC_CMD		0xff	// 255: Interpret as command
+
 #define SERVER_DONT	0xfe	// 254: Indicates the demand that the other
 							//		party stop performing, or confirmation that you
 							//		are no longer expecting the other party to
@@ -22,8 +23,8 @@
 							//      the indicated option.
 
 #define CLIENT_DONT 0xfe	// 254: Sender wants the other not to do something.
-#define CLIENT_WONT 0xfd	// 253: Sender doesn't want to do something.
-#define CLIENT_DO	0xfc	// 252: Sender wants the other end to do something.
+#define CLIENT_DO	0xfd	// 253: Sender wants the other end to do something.
+#define CLIENT_WONT 0xfc	// 252: Sender doesn't want to do something.
 #define CLIENT_WILL	0xfb	// 251: Sender wants to do something.
 
 #define SB			0xfa 	// 250: Subnegotiation of the indicated option follows.
@@ -35,14 +36,16 @@
 void negotiate(int sock, unsigned char *buf, int len)
 {
 	int i;
-/*
+
+/**/
 	printf("len=%d:", len);
 	for(i = 0; i < len; i ++)
 	{
 		printf("buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
 	printf("\n");
-*/
+/**/
+
 	if (buf[1] == SERVER_DO && buf[2] == CMD_WINDOW_SIZE)
 	{
 		unsigned char tmp1[3] = {IAC_CMD, CLIENT_WILL, CMD_WINDOW_SIZE};
@@ -55,14 +58,19 @@ void negotiate(int sock, unsigned char *buf, int len)
 		return;
 	}
 
-	for (i = 0; i < len; i++)
-	{
-		if (buf[i] == SERVER_DO)
-			buf[i] = CLIENT_WONT;
-		else if (buf[i] == SERVER_WILL)
-			buf[i] = CLIENT_DO;
-	}
+	if (buf[i] == SERVER_DO)
+		buf[i] = CLIENT_WONT;
+	else if (buf[i] == SERVER_WILL)
+		buf[i] = CLIENT_DO;
 
+/**/
+	printf("=>len=%d:", len);
+	for(i = 0; i < len; i ++)
+	{
+		printf("buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
+	}
+	printf("\n");
+/**/
 	if (send(sock, buf, len , 0) < 0)
 	exit(1);
 }
