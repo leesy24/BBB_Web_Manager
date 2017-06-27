@@ -38,43 +38,41 @@
 #define CMD_STAT_REPLY	1
 #define CMD_STAT_ACK	2
 
-int CMD_ECHO_STAT = CMD_STAT_NONE;
-int CMD_SGA_STAT = CMD_STAT_NONE;
+int cmd_ECHO_status[2] = {CMD_STAT_NONE, CMD_STAT_NONE};
+int cmd_SGA_status[2] = {CMD_STAT_NONE, CMD_STAT_NONE};
 
-void negotiate(int sock, unsigned char *buf, int len)
+void negotiate(int sock, int index, unsigned char *buf, int len)
 {
-	int i;
-
-/**/
-	printf("len=%d:", len);
-	for(i = 0; i < len; i ++)
+/*
+	fprintf(stderr, "len=%d:", len);
+	for(int i = 0; i < len; i ++)
 	{
-		printf("buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
+		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
-	printf("\n");
-/**/
+	fprintf(stderr, "\n");
+*/
 
 	if (buf[1] == SERVER_WILL)
 	{
 		if(buf[2] == CMD_ECHO)
 		{
-			if(CMD_ECHO_STAT != CMD_STAT_NONE)
+			if(cmd_ECHO_status[index] != CMD_STAT_NONE)
 			{
-				CMD_ECHO_STAT = CMD_STAT_ACK;
+				cmd_ECHO_status[index] = CMD_STAT_ACK;
 				return;
 			}
 			buf[1] = CLIENT_DO;
-			CMD_ECHO_STAT = CMD_STAT_REPLY;
+			cmd_ECHO_status[index] = CMD_STAT_REPLY;
 		}
 		else if(buf[2] == CMD_SGA)
 		{
-			if(CMD_SGA_STAT != CMD_STAT_NONE)
+			if(cmd_SGA_status[index] != CMD_STAT_NONE)
 			{
-				CMD_SGA_STAT = CMD_STAT_ACK;
+				cmd_SGA_status[index] = CMD_STAT_ACK;
 				return;
 			}
 			buf[1] = CLIENT_DO;
-			CMD_SGA_STAT = CMD_STAT_REPLY;
+			cmd_SGA_status[index] = CMD_STAT_REPLY;
 		}
 		else
 		{
@@ -104,43 +102,37 @@ void negotiate(int sock, unsigned char *buf, int len)
 		return;
 	}
 
-/**/
-	printf("=>len=%d:", len);
-	for(i = 0; i < len; i ++)
+/*
+	fprintf(stderr, "=>len=%d:", len);
+	for(int i = 0; i < len; i ++)
 	{
-		printf("buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
+		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
-	printf("\n");
-/**/
+	fprintf(stderr, "\n");
+*/
 	if (send(sock, buf, len , 0) < 0)
 		exit(1);
 }
- 
+
 #define BUFLEN 1024
-int main(int argc , char *argv[]) {
-	int sock;
+
+int main(int argc , char *argv[])
+{
+	int sock_net;
+	int sock_term;
 	struct sockaddr_in server;
 	struct hostent *host;
 	unsigned char buf[BUFLEN];
 	int len;
-	int i;
 
 	if (argc < 2 || argc > 3)
 	{
-		printf("Usage: %s address [port]\n", argv[0]);
+		fprintf(stderr, "Usage: %s address [port]\n", argv[0]);
 		return 1;
 	}
 	int port = 23;
 	if (argc == 3)
 	port = atoi(argv[2]);
-
-	//Create socket
-	sock = socket(AF_INET , SOCK_STREAM , 0);
-	if (sock == -1)
-	{
-		perror("Could not create socket. Error");
-		return 1;
-	}
 
 	host = gethostbyname(argv[1]);
 	if(host == NULL)
@@ -156,13 +148,40 @@ int main(int argc , char *argv[]) {
 	server.sin_family = AF_INET;
 	server.sin_port = htons(port);
 
-	//Connect to remote server
-	if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
+#if 1
+	//Create socket
+	sock_net = socket(AF_INET , SOCK_STREAM , 0);
+	if (sock_net == -1)
 	{
-		perror("connect failed. Error");
+		perror("Could not create sock_net socket. Error");
 		return 1;
 	}
-	puts("Connected...\n");
+
+	//Connect to remote server
+	if (connect(sock_net , (struct sockaddr *)&server , sizeof(server)) < 0)
+	{
+		perror("Connect sock_net failed. Error");
+		return 1;
+	}
+	fprintf(stderr, "Connected to controller net ...\n");
+#endif
+#if 0
+	//Create socket
+	sock_term = socket(AF_INET , SOCK_STREAM , 0);
+	if (sock_net == -1)
+	{
+		perror("Could not create sock_term socket. Error");
+		return 1;
+	}
+
+	//Connect to remote server
+	if (connect(sock_term , (struct sockaddr *)&server , sizeof(server)) < 0)
+	{
+		perror("Connect sock_term failed. Error");
+		return 1;
+	}
+	fprintf(stderr, "Connected to controller term ...\n");
+#endif
 
 	struct timeval ts;
 	ts.tv_sec = 1; // 1 second
@@ -170,15 +189,16 @@ int main(int argc , char *argv[]) {
  
 	while (1)
 	{
+		int nready;
 		// select setup
-		fd_set fds;
-		FD_ZERO(&fds);
-		if (sock != 0)
-			FD_SET(sock, &fds);
-		FD_SET(0, &fds);
+		fd_set fds_net;
+		FD_ZERO(&fds_net);
+		if (sock_net != 0)
+			FD_SET(sock_net, &fds_net);
+		FD_SET(0, &fds_net);
 
 		// wait for data
-		int nready = select(sock + 1, &fds, (fd_set *) 0, (fd_set *) 0, &ts);
+		nready = select(sock_net + 1, &fds_net, (fd_set *) 0, (fd_set *) 0, &ts);
 		if (nready < 0)
 		{
 			perror("select. Error");
@@ -189,25 +209,25 @@ int main(int argc , char *argv[]) {
 			ts.tv_sec = 1; // 1 second
 			ts.tv_usec = 0;
 		}
-		else if (sock != 0 && FD_ISSET(sock, &fds))
+		else if (sock_net != 0 && FD_ISSET(sock_net, &fds_net))
 		{
-			if(	CMD_ECHO_STAT != CMD_STAT_ACK ||
-				CMD_ECHO_STAT != CMD_STAT_ACK)
+			if(	cmd_ECHO_status[0] != CMD_STAT_ACK ||
+				cmd_ECHO_status[0] != CMD_STAT_ACK)
 			{
 				// start by reading a single byte
 				int rv;
-				if ((rv = recv(sock , buf , 1 , 0)) < 0)
+				if ((rv = recv(sock_net , buf , 1 , 0)) < 0)
 					return 1;
 				else if (rv == 0)
 				{
-					printf("Connection closed by the remote end\n\r");
+					fprintf(stderr, "Connection closed by the remote end\n\r");
 					return 0;
 				}
 
 				if (buf[0] == IAC_CMD)
 				{
 					// read 2 more bytes
-					len = recv(sock , buf + 1 , 2 , 0);
+					len = recv(sock_net , buf + 1 , 2 , 0);
 					if (len  < 0)
 					{
 						perror("Could not recv. Error");
@@ -215,30 +235,133 @@ int main(int argc , char *argv[]) {
 					}
 					else if (len == 0)
 					{
-						printf("Connection closed by the remote end\n\r");
+						fprintf(stderr, "Connection closed by the remote end\n\r");
 						return 0;
 					}
-					negotiate(sock, buf, 3);
-					if(	CMD_ECHO_STAT == CMD_STAT_ACK &&
-						CMD_ECHO_STAT == CMD_STAT_ACK)
+					negotiate(sock_net, 0, buf, 3);
+					if(	cmd_ECHO_status[0] == CMD_STAT_ACK &&
+						cmd_ECHO_status[0] == CMD_STAT_ACK)
 					{
-						char cmd[] = "monitor tcp ipv4,tcp,4001\r";
+						char cmd[] = "monitor both ipv4,tcp,4001\r";
 						//char cmd[] = "help\r";
-						/**/
-						printf(">>>len=%d:", strlen(cmd));
-						for(i = 0; i < strlen(cmd); i ++)
+						/*
+						fprintf(stderr, ">>>len=%d:", strlen(cmd));
+						for(int i = 0; i < strlen(cmd); i ++)
 						{
-							printf("cmd[%d]=0x%02x(%d),", i, cmd[i], cmd[i]);
+							fprintf(stderr, "cmd[%d]=0x%02x(%d),", i, cmd[i], cmd[i]);
 						}
-						printf("\n");
-						/**/
-						send(sock, cmd, strlen(cmd) , 0);
+						fprintf(stderr, "\n");
+						*/
+						send(sock_net, cmd, strlen(cmd) , 0);
 					}
 				}
 			}
 			else
 			{
-				len = recv(sock , buf , BUFLEN - 1 , 0);
+				int offset;
+				len = recv(sock_net , buf , BUFLEN - 1 , 0);
+				if(len < 0)
+				{
+					perror("Could not recv. Error");
+					return -1;
+				}
+				else if (len == 0)
+				{
+					perror("Connection closed by the remote end");
+					return 0;
+				}
+				buf[len] = 0;
+				//fprintf(stderr, "%s\r\n", buf);
+				//fflush(0);
+				//printf("len=%d,buf=0x%x\n", len, (int)buf);
+				offset = 0;
+				do
+				{
+					unsigned char *ret = (unsigned char *)strchr((char *)buf + offset, '\r');
+					//printf("ret=0x%x\n", (int)ret);
+					if(ret == NULL)
+					{
+						//printf("len=%d - offset=%d = %d\n", len, offset, len - offset);
+						fprintf(stderr, "%.*s", len - offset, buf + offset);
+						break;
+					}
+					//printf("len=%d\n", (int)(ret - buf) - offset + 1);
+					fprintf(stderr, "%.*s\n", (int)(ret - buf) - offset + 1, buf + offset);
+					offset = (int)(ret - buf) - offset + 1;
+				} while(1);
+				//fflush(0);
+			}
+		}
+#if 0
+		// select setup
+		fd_set fds_term;
+		FD_ZERO(&fds_term);
+		if (sock_term != 0)
+			FD_SET(sock_term, &fds_term);
+		FD_SET(0, &fds_term);
+
+		// wait for data
+		nready = select(sock_term + 1, &fds_term, (fd_set *) 0, (fd_set *) 0, &ts);
+		if (nready < 0)
+		{
+			perror("select. Error");
+			return 1;
+		}
+		else if (nready == 0)
+		{
+			ts.tv_sec = 1; // 1 second
+			ts.tv_usec = 0;
+		}
+		else if (sock_term != 0 && FD_ISSET(sock_term, &fds_term))
+		{
+			if(	cmd_ECHO_status[1] != CMD_STAT_ACK ||
+				cmd_ECHO_status[1] != CMD_STAT_ACK)
+			{
+				// start by reading a single byte
+				int rv;
+				if ((rv = recv(sock_term , buf , 1 , 0)) < 0)
+					return 1;
+				else if (rv == 0)
+				{
+					fprintf(stderr, "Connection closed by the remote end\n\r");
+					return 0;
+				}
+
+				if (buf[0] == IAC_CMD)
+				{
+					// read 2 more bytes
+					len = recv(sock_term , buf + 1 , 2 , 0);
+					if (len  < 0)
+					{
+						perror("Could not recv. Error");
+						return 1;
+					}
+					else if (len == 0)
+					{
+						fprintf(stderr, "Connection closed by the remote end\n\r");
+						return 0;
+					}
+					negotiate(sock_term, 1, buf, 3);
+					if(	cmd_ECHO_status[1] == CMD_STAT_ACK &&
+						cmd_ECHO_status[1] == CMD_STAT_ACK)
+					{
+						char cmd[] = "monitor term ipv4,tcp,4001\r";
+						//char cmd[] = "help\r";
+						/*
+						fprintf(stderr, ">>>len=%d:", strlen(cmd));
+						for(i = 0; i < strlen(cmd); i ++)
+						{
+							fprintf(stderr, "cmd[%d]=0x%02x(%d),", i, cmd[i], cmd[i]);
+						}
+						fprintf(stderr, "\n");
+						*/
+						send(sock_term, cmd, strlen(cmd) , 0);
+					}
+				}
+			}
+			else
+			{
+				len = recv(sock_term , buf , BUFLEN - 1 , 0);
 				if(len < 0)
 				{
 					perror("Could not recv. Error");
@@ -250,11 +373,13 @@ int main(int argc , char *argv[]) {
 					return 0;
 				}
 				buf[len] = 0;
-				printf("%s", buf);
+				fprintf(stderr, "%s", buf);
 				fflush(0);
 			}
 		}
+#endif
 	}
-	close(sock);
+	close(sock_net);
+	close(sock_term);
 	return 0;
 }
