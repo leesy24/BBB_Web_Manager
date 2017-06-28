@@ -5,7 +5,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
- 
+#include <ctype.h>
+
 #define IAC_CMD		0xff	// 255: Interpret as command
 
 #define SERVER_DONT	0xfe	// 254: Indicates the demand that the other
@@ -242,7 +243,7 @@ int main(int argc , char *argv[])
 					if(	cmd_ECHO_status[0] == CMD_STAT_ACK &&
 						cmd_ECHO_status[0] == CMD_STAT_ACK)
 					{
-						char cmd[] = "monitor both ipv4,tcp,4001\r";
+						char cmd[] = "monitor both\r";
 						//char cmd[] = "help\r";
 						/*
 						fprintf(stderr, ">>>len=%d:", strlen(cmd));
@@ -258,7 +259,6 @@ int main(int argc , char *argv[])
 			}
 			else
 			{
-				int offset;
 				len = recv(sock_net , buf , BUFLEN - 1 , 0);
 				if(len < 0)
 				{
@@ -270,11 +270,25 @@ int main(int argc , char *argv[])
 					perror("Connection closed by the remote end");
 					return 0;
 				}
+
+				/**/
+				int i;
+				fprintf(stderr, "recv len=%d:", len);
+				for(i = 0; i < len; i ++)
+				{
+					fprintf(stderr, "0x%02x(%d)[%c],", buf[i], buf[i], isprint(buf[i])?buf[i]:' ');
+				}
+				fprintf(stderr, "\n");
+				/**/
+#if 0
 				buf[len] = 0;
-				//fprintf(stderr, "%s\r\n", buf);
+				fprintf(stderr, "%s\n", buf);
 				//fflush(0);
+#endif
+#if 0
+				buf[len] = 0;
 				//printf("len=%d,buf=0x%x\n", len, (int)buf);
-				offset = 0;
+				int offset = 0;
 				do
 				{
 					unsigned char *ret = (unsigned char *)strchr((char *)buf + offset, '\r');
@@ -290,6 +304,7 @@ int main(int argc , char *argv[])
 					offset = (int)(ret - buf) - offset + 1;
 				} while(1);
 				//fflush(0);
+#endif
 			}
 		}
 #if 0
