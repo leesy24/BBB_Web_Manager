@@ -30,7 +30,7 @@ TARGET		=	eddy					pinetd						def						\
 				test_spi_eeprom			\
 				test_serial				test_read_config			\
 				testdk					nand_erase					wan						\
-				serial					serial_monitor
+				serial					serial_monitor				serial_get_rxtx
 TARGET_C = $(addsuffix .c, $(TARGET))
 TARGET_BIN = $(addprefix bin/, $(TARGET))
 TARGET_OBJ = $(addsuffix .o, $(TARGET))
