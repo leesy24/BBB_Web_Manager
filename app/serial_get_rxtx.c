@@ -6,6 +6,10 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include "sb_include.h"
+#include "sb_define.h"
+#include "sb_config.h"
+#include "sb_extern.h"
 
 #define IAC_CMD		0xff	// 255: Interpret as command
 
@@ -41,6 +45,9 @@
 
 int cmd_ECHO_status[2] = {CMD_STAT_NONE, CMD_STAT_NONE};
 int cmd_SGA_status[2] = {CMD_STAT_NONE, CMD_STAT_NONE};
+
+struct SB_SYSTEM_CONFIG CFG_SYS;
+struct SB_SIO_CONFIG CFG_SERIAL[SB_MAX_SIO_PORT];
 
 void negotiate(int sock, int index, unsigned char *buf, int len)
 {
@@ -125,24 +132,68 @@ int main(int argc , char *argv[])
 #endif
 	struct sockaddr_in server;
 	struct hostent *host;
+	int port;
 	unsigned char buf[BUFLEN];
 	int len;
+	int portnum;
+	int ret;
 
-	if (argc < 2 || argc > 3)
+	if (argc < 2 || argc > 2)
 	{
-		fprintf(stderr, "Usage: %s address [port]\n", argv[0]);
+		fprintf(stderr, "Usage: %s port_num\n", argv[0]);
 		return 1;
 	}
-	int port = 23;
-	if (argc == 3)
-	port = atoi(argv[2]);
+	portnum = atoi(argv[1]);
+	fprintf(stderr, "portnum = %d\n", portnum);
 
-	host = gethostbyname(argv[1]);
+	ret = SB_ReadConfig(CFGFILE_ETC_SYSTEM, (char *)&CFG_SYS, sizeof (struct SB_SYSTEM_CONFIG));
+	if (ret < 0 || strncmp(SB_DEVICE_ID, CFG_SYS.id, 4))	// CFG not found or ID mismatch
+	{
+		fprintf(stderr, "CFG_SYS not found or ID mismatch! %d, %4s !\n", ret, CFG_SYS.id);
+		return -1;
+	}
+	ret = SB_ReadConfig(CFGFILE_ETC_SIO, (char *)&CFG_SERIAL[0], sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
+	if (ret < 0)	// CFG_SERIAL not found
+	{
+		fprintf(stderr, "CFG_SERIAL not found! %d!\n", ret);
+		return -1;
+	}
+
+	if( CFG_SERIAL[portnum-1].protocol == SB_DISABLE_MODE )
+	{
+		return 0;
+	}
+
+	host = gethostbyname("localhost");
 	if(host == NULL)
 	{
 		perror("Could find host. Error");
 		return 1;
 	}
+	fprintf(stderr, "ser2net control IP = localhost\n");
+
+	if( CFG_SERIAL[portnum-1].protocol == SB_TCP_SERVER_MODE
+		||
+		CFG_SERIAL[portnum-1].protocol == SB_TCP_BROADCAST_MODE
+		||
+		CFG_SERIAL[portnum-1].protocol == SB_TCP_MULTIPLEX_MODE
+		||
+		CFG_SERIAL[portnum-1].protocol == SB_UDP_SERVER_MODE
+		)
+	{
+		port = CFG_SERIAL[portnum-1].local_port + 10000;
+	}
+	else if(
+		// For UDP Client, Needs TCP Server first.
+		CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE
+		||
+		// For TCP Client, Needs UDP Server first.
+		CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE
+		)
+	{
+		port = CFG_SERIAL[portnum-1].remote_port + 10000;
+	}
+	fprintf(stderr, "ser2net control port = %d\n", port);
 
 	// copy the network address to sockaddr_in structure
 	//memcpy(&server.sin_addr, host->h_addr, host->h_length);
