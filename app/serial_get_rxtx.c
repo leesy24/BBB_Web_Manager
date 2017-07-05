@@ -139,6 +139,8 @@ int main(int argc , char *argv[])
 	char log_file_path[] = "/tmp/";
 	char log_file_name[] = "serial_get_rxtx_";
 	char log_file_ext[] = ".txt";
+	char log_file_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + sizeof(log_file_ext) - 1 + 2];
+	FILE *fp_log;
 
 	if (argc < 2 || argc > 2)
 	{
@@ -221,6 +223,15 @@ int main(int argc , char *argv[])
 	}
 	fprintf(stderr, "Connected to controller net ...\n");
 
+	sprintf(log_file_full, "%s%s%1d%s", log_file_path, log_file_name, portnum, log_file_ext);
+	fp_log = fopen(log_file_full, "w");
+	if( fp_log == NULL )
+	{
+		close(sock_net);
+		perror("Create file failed. Error");
+		return 1;
+	}
+
 	struct timeval ts;
 	ts.tv_sec = 1; // 1 second
 	ts.tv_usec = 0;
@@ -239,6 +250,7 @@ int main(int argc , char *argv[])
 		nready = select(sock_net + 1, &fds_net, (fd_set *) 0, (fd_set *) 0, &ts);
 		if (nready < 0)
 		{
+			fclose(fp_log);
 			close(sock_net);
 			perror("select. Error");
 			return 1;
@@ -257,11 +269,13 @@ int main(int argc , char *argv[])
 				int rv;
 				if ((rv = recv(sock_net , buf , 1 , 0)) < 0)
 				{
+					fclose(fp_log);
 					close(sock_net);
 					return 1;
 				}
 				else if (rv == 0)
 				{
+					fclose(fp_log);
 					close(sock_net);
 					fprintf(stderr, "Connection closed by the remote end\n\r");
 					return 0;
@@ -273,12 +287,14 @@ int main(int argc , char *argv[])
 					len = recv(sock_net , buf + 1 , 2 , 0);
 					if (len  < 0)
 					{
+						fclose(fp_log);
 						close(sock_net);
 						perror("Could not recv. Error");
 						return 1;
 					}
 					else if (len == 0)
 					{
+						fclose(fp_log);
 						close(sock_net);
 						fprintf(stderr, "Connection closed by the remote end\n\r");
 						return 0;
@@ -300,12 +316,14 @@ int main(int argc , char *argv[])
 				len = recv(sock_net , buf , BUFLEN - 1 , 0);
 				if(len < 0)
 				{
+					fclose(fp_log);
 					close(sock_net);
 					perror("Could not recv. Error");
 					return -1;
 				}
 				else if (len == 0)
 				{
+					fclose(fp_log);
 					close(sock_net);
 					perror("Connection closed by the remote end");
 					return 0;
@@ -321,7 +339,8 @@ int main(int argc , char *argv[])
 					if( str_e != NULL )
 					{
 						*str_e = '\0';
-						fprintf(stderr, "%s", str_s);
+						fprintf(fp_log, "%s", str_s);
+						fprintf(stderr, "%s\n", str_s);
 						break;
 					}
 				}
@@ -366,10 +385,8 @@ int main(int argc , char *argv[])
 			}
 		}
 	}
+	fclose(fp_log);
 	close(sock_net);
-#if 0
-	close(sock_term);
-#endif
 	return 0;
 }
 
