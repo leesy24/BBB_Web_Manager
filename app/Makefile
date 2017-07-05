@@ -55,9 +55,6 @@ clean:
 #	cp  -f $(TARGET) $(DEST)
 #	cp  -f sb_default_config $(DEST_ETC)
 
-scp19:
-	-scp $(TARGET_BIN) root@192.168.10.19:/sbin/
-	
-scp3:
-	-scp $(TARGET_BIN) root@192.168.10.3:/sbin/
+copy:
+	-scp $(TARGET_BIN) root@$(TARGET_IP):/sbin/
 

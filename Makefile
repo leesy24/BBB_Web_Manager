@@ -15,13 +15,8 @@ htdocs:
 	chmod 755 htdocs/images htdocs/cgi-bin
 
 #-scp -r htdocs/[!.]* root@192.168.10.19:/var/www/html/
-scp19: htdocs
-	-rsync -rv --exclude='.*' htdocs/ root@192.168.10.19:/var/www/html/ 
-	make -C cgi $@
-	make -C app $@
-	
-#-scp -r htdocs/[!.]* root@192.168.10.3:/var/www/html/
-scp3: htdocs
-	-rsync -rv --exclude='.*' htdocs/ root@192.168.10.3:/var/www/html/ 
-	make -C cgi $@
-	make -C app $@
+copy: htdocs
+	-rsync -rv --exclude='.*' htdocs/ root@$(TARGET_IP):/var/www/html/ 
+	make -C cgi $@ TARGET_IP=$(TARGET_IP)
+	make -C app $@ TARGET_IP=$(TARGET_IP)
+

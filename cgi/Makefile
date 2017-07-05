@@ -34,9 +34,6 @@ clean:
 	make -C ../cgic205 $@
 	rm -f *.o *.cgi
 
-scp19:
-	-scp $(EXEC) root@192.168.10.19:/var/www/html/cgi-bin/
+copy:
+	-scp $(EXEC) root@$(TARGET_IP):/var/www/html/cgi-bin/
 
-
-scp3:
-	-scp $(EXEC) root@192.168.10.3:/var/www/html/cgi-bin/
