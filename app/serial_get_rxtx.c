@@ -288,7 +288,7 @@ int main(int argc , char *argv[])
 						cmd_ECHO_status[0] == CMD_STAT_ACK)
 					{
 						char cmd[sizeof(ser2net_cmd) + 1];
-						fprintf(stderr, "sizeof(ser2net_cmd) = %d\n", sizeof(ser2net_cmd));
+						//fprintf(stderr, "sizeof(ser2net_cmd) = %d\n", sizeof(ser2net_cmd));
 						
 						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
@@ -310,6 +310,22 @@ int main(int argc , char *argv[])
 					perror("Connection closed by the remote end");
 					return 0;
 				}
+
+#if 1
+				buf[len] = 0;
+				char *str_s = strstr((char *)buf, ser2net_cmd);
+				if( str_s != NULL )
+				{
+					str_s += strlen(ser2net_cmd) + 2;
+					char *str_e = strstr(str_s, "\r\n");
+					if( str_e != NULL )
+					{
+						*str_e = '\0';
+						fprintf(stderr, "%s", str_s);
+						break;
+					}
+				}
+#endif
 #if 1
 				/**/
 				int i;
