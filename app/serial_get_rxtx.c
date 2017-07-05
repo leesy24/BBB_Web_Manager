@@ -319,7 +319,7 @@ int main(int argc , char *argv[])
 				}
 				else
 				{
-					fprintf(stderr, "skip:0x%02x(%d)[%c]", buf[0], buf[0], isprint(buf[0])?buf[0]:' ');
+					fprintf(stderr, "skip:0x%02x(%d)[%c]\n", buf[0], buf[0], isprint(buf[0])?buf[0]:' ');
 /*
 					// read more bytes
 					len = recv(sock_net , buf + 1 , BUFLEN - 2 , 0);
