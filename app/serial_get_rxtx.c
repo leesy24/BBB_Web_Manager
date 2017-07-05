@@ -54,12 +54,15 @@ char ser2net_cmd[] = "showdevrxtx";
 void negotiate(int sock, int index, unsigned char *buf, int len)
 {
 /**/
+{
+	int i;
 	fprintf(stderr, "len=%d:", len);
-	for(int i = 0; i < len; i ++)
+	for(i = 0; i < len; i ++)
 	{
 		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
 	fprintf(stderr, "\n");
+}
 /**/
 
 	if (buf[1] == SERVER_WILL)
@@ -113,12 +116,15 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 	}
 
 /**/
+{
+	int i;
 	fprintf(stderr, "=>len=%d:", len);
-	for(int i = 0; i < len; i ++)
+	for(i = 0; i < len; i ++)
 	{
 		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
 	fprintf(stderr, "\n");
+}
 /**/
 	if (send(sock, buf, len , 0) < 0)
 		exit(1);
