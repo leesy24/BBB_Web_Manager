@@ -53,14 +53,14 @@ char ser2net_cmd[] = "showdevrxtx";
 
 void negotiate(int sock, int index, unsigned char *buf, int len)
 {
-/*
+/**/
 	fprintf(stderr, "len=%d:", len);
 	for(int i = 0; i < len; i ++)
 	{
 		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
 	fprintf(stderr, "\n");
-*/
+/**/
 
 	if (buf[1] == SERVER_WILL)
 	{
@@ -112,14 +112,14 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 		return;
 	}
 
-/*
+/**/
 	fprintf(stderr, "=>len=%d:", len);
 	for(int i = 0; i < len; i ++)
 	{
 		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
 	fprintf(stderr, "\n");
-*/
+/**/
 	if (send(sock, buf, len , 0) < 0)
 		exit(1);
 }
@@ -224,6 +224,7 @@ int main(int argc , char *argv[])
 	fprintf(stderr, "Connected to controller net ...\n");
 
 	sprintf(log_file_full, "%s%s%1d%s", log_file_path, log_file_name, portnum, log_file_ext);
+	fprintf(stderr, "Log file name = %s\n", log_file_full);
 	fp_log = fopen(log_file_full, "w");
 	if( fp_log == NULL )
 	{
@@ -262,8 +263,8 @@ int main(int argc , char *argv[])
 		}
 		else if (sock_net != 0 && FD_ISSET(sock_net, &fds_net))
 		{
-			if(	cmd_ECHO_status[0] != CMD_STAT_ACK ||
-				cmd_ECHO_status[0] != CMD_STAT_ACK)
+			if( cmd_ECHO_status[0] != CMD_STAT_ACK ||
+			    cmd_ECHO_status[0] != CMD_STAT_ACK)
 			{
 				// start by reading a single byte
 				int rv;
@@ -300,11 +301,11 @@ int main(int argc , char *argv[])
 						return 0;
 					}
 					negotiate(sock_net, 0, buf, 3);
-					if(	cmd_ECHO_status[0] == CMD_STAT_ACK &&
-						cmd_ECHO_status[0] == CMD_STAT_ACK)
+					if( cmd_ECHO_status[0] == CMD_STAT_ACK &&
+					    cmd_ECHO_status[0] == CMD_STAT_ACK)
 					{
 						char cmd[sizeof(ser2net_cmd) + 1];
-						//fprintf(stderr, "sizeof(ser2net_cmd) = %d\n", sizeof(ser2net_cmd));
+						fprintf(stderr, "Send ser2net_cmd = %s\n", ser2net_cmd);
 						
 						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
