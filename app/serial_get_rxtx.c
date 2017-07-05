@@ -287,9 +287,9 @@ int main(int argc , char *argv[])
 					if(	cmd_ECHO_status[0] == CMD_STAT_ACK &&
 						cmd_ECHO_status[0] == CMD_STAT_ACK)
 					{
-						char cmd[sizeof(ser2net_cmd)];
-						sprintf(cmd, "");
-						send(sock_net, ser2net_cmd, strlen(ser2net_cmd) , 0);
+						char cmd[sizeof(ser2net_cmd) + 1];
+						sprintf(cmd, "%s\r", ser2net_cmd);
+						send(sock_net, cmd, strlen(cmd) , 0);
 					}
 				}
 			}
