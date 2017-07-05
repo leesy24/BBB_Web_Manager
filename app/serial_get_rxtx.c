@@ -110,7 +110,7 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 			buf[1] = CLIENT_WONT;
 		}
 	}
-	else if (buf[1] == CLIENT_DONT)
+	else if (buf[1] == SERVER_DONT)
 	{
 		return;
 	}
@@ -270,7 +270,7 @@ int main(int argc , char *argv[])
 		else if (sock_net != 0 && FD_ISSET(sock_net, &fds_net))
 		{
 			if( cmd_ECHO_status[0] != CMD_STAT_ACK ||
-			    cmd_ECHO_status[0] != CMD_STAT_ACK)
+			    cmd_SGA_status[0] != CMD_STAT_ACK)
 			{
 				// start by reading a single byte
 				int rv;
@@ -308,14 +308,29 @@ int main(int argc , char *argv[])
 					}
 					negotiate(sock_net, 0, buf, 3);
 					if( cmd_ECHO_status[0] == CMD_STAT_ACK &&
-					    cmd_ECHO_status[0] == CMD_STAT_ACK)
+					    cmd_SGA_status[0] == CMD_STAT_ACK)
 					{
 						char cmd[sizeof(ser2net_cmd) + 1];
-						fprintf(stderr, "Send ser2net_cmd = %s\n", ser2net_cmd);
+						fprintf(stderr, "#1 Send ser2net_cmd = %s\n", ser2net_cmd);
 						
 						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
 					}
+				}
+				else
+				{
+					// read more bytes
+					len = recv(sock_net , buf + 1 , BUFLEN - 2 , 0);
+					buf[len] = 0;
+					fprintf(stderr, "%s", buf);
+
+					cmd_ECHO_status[0] = cmd_SGA_status[0] = CMD_STAT_ACK;
+
+					char cmd[sizeof(ser2net_cmd) + 1];
+					fprintf(stderr, "#2 Send ser2net_cmd = %s\n", ser2net_cmd);
+					
+					sprintf(cmd, "%s\r", ser2net_cmd);
+					send(sock_net, cmd, strlen(cmd) , 0);
 				}
 			}
 			else
