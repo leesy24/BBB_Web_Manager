@@ -49,7 +49,7 @@ int cmd_SGA_status[2] = {CMD_STAT_NONE, CMD_STAT_NONE};
 struct SB_SYSTEM_CONFIG CFG_SYS;
 struct SB_SIO_CONFIG CFG_SERIAL[SB_MAX_SIO_PORT];
 
-char ser2net_cmd[] = "showdevrxtx\r";
+char ser2net_cmd[] = "showdevrxtx";
 
 void negotiate(int sock, int index, unsigned char *buf, int len)
 {
@@ -288,6 +288,8 @@ int main(int argc , char *argv[])
 						cmd_ECHO_status[0] == CMD_STAT_ACK)
 					{
 						char cmd[sizeof(ser2net_cmd) + 1];
+						fprintf(stderr, "sizeof(ser2net_cmd) = %d\n", sizeof(ser2net_cmd));
+						
 						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
 					}
@@ -316,10 +318,10 @@ int main(int argc , char *argv[])
 				{
 					fprintf(stderr, "0x%02x(%d)[%c],", buf[i], buf[i], isprint(buf[i])?buf[i]:' ');
 				}
-				fprintf(stderr, "\n");
+				fprintf(stderr, "\n\n");
 				/**/
 #endif
-#if 0
+#if 1
 				buf[len] = 0;
 				fprintf(stderr, "%s", buf);
 				break;
