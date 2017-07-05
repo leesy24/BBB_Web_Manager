@@ -58,4 +58,6 @@ clean:
 scp19:
 	-scp $(TARGET_BIN) root@192.168.10.19:/sbin/
 	
+scp3:
+	-scp $(TARGET_BIN) root@192.168.10.3:/sbin/
 

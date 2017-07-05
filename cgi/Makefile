@@ -37,3 +37,6 @@ clean:
 scp19:
 	-scp $(EXEC) root@192.168.10.19:/var/www/html/cgi-bin/
 
+
+scp3:
+	-scp $(EXEC) root@192.168.10.3:/var/www/html/cgi-bin/

@@ -20,3 +20,8 @@ scp19: htdocs
 	make -C cgi $@
 	make -C app $@
 	
+#-scp -r htdocs/[!.]* root@192.168.10.3:/var/www/html/
+scp3: htdocs
+	-rsync -rv --exclude='.*' htdocs/ root@192.168.10.3:/var/www/html/ 
+	make -C cgi $@
+	make -C app $@
