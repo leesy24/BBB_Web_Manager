@@ -363,6 +363,7 @@ int main(int argc , char *argv[])
 						else
 						{
 							fprintf(fp_log, "%s", str_s);
+							fflush(fp_log);
 							fclose(fp_log);
 						}
 						fprintf(stderr, "%s\n", str_s);
