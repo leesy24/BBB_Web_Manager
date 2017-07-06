@@ -269,8 +269,10 @@ int main(int argc , char *argv[])
 		}
 		else if (sock_net != 0 && FD_ISSET(sock_net, &fds_net))
 		{
-			if( cmd_ECHO_status[0] != CMD_STAT_ACK ||
-			    cmd_SGA_status[0] != CMD_STAT_ACK)
+			//if( cmd_ECHO_status[0] < CMD_STAT_ACK ||
+			//    cmd_SGA_status[0] < CMD_STAT_ACK)
+			if( cmd_ECHO_status[0] < CMD_STAT_REPLY ||
+			    cmd_SGA_status[0] < CMD_STAT_REPLY)
 			{
 				// start by reading a single byte
 				int rv;
@@ -307,8 +309,10 @@ int main(int argc , char *argv[])
 						return 0;
 					}
 					negotiate(sock_net, 0, buf, 3);
-					if( cmd_ECHO_status[0] == CMD_STAT_ACK &&
-					    cmd_SGA_status[0] == CMD_STAT_ACK)
+					//if( cmd_ECHO_status[0] >= CMD_STAT_ACK &&
+					//    cmd_SGA_status[0] >= CMD_STAT_ACK)
+					if( cmd_ECHO_status[0] >= CMD_STAT_REPLY &&
+					    cmd_SGA_status[0] >= CMD_STAT_REPLY)
 					{
 						char cmd[sizeof(ser2net_cmd) + 1];
 						fprintf(stderr, "#1 Send ser2net_cmd = %s\n", ser2net_cmd);
