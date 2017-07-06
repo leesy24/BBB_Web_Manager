@@ -231,13 +231,6 @@ int main(int argc , char *argv[])
 
 	sprintf(log_file_full, "%s%s%1d%s", log_file_path, log_file_name, portnum, log_file_ext);
 	fprintf(stderr, "Log file name = %s\n", log_file_full);
-	fp_log = fopen(log_file_full, "w");
-	if( fp_log == NULL )
-	{
-		close(sock_net);
-		perror("Create file failed. Error");
-		return 1;
-	}
 
 	struct timeval ts;
 	ts.tv_sec = 1; // 1 second
@@ -257,7 +250,6 @@ int main(int argc , char *argv[])
 		nready = select(sock_net + 1, &fds_net, (fd_set *) 0, (fd_set *) 0, &ts);
 		if (nready < 0)
 		{
-			fclose(fp_log);
 			close(sock_net);
 			perror("select. Error");
 			return 1;
@@ -278,13 +270,11 @@ int main(int argc , char *argv[])
 				int rv;
 				if ((rv = recv(sock_net , buf , 1 , 0)) < 0)
 				{
-					fclose(fp_log);
 					close(sock_net);
 					return 1;
 				}
 				else if (rv == 0)
 				{
-					fclose(fp_log);
 					close(sock_net);
 					fprintf(stderr, "Connection closed by the remote end\n\r");
 					return 0;
@@ -296,14 +286,12 @@ int main(int argc , char *argv[])
 					len = recv(sock_net , buf + 1 , 2 , 0);
 					if (len  < 0)
 					{
-						fclose(fp_log);
 						close(sock_net);
 						perror("Could not recv. Error");
 						return 1;
 					}
 					else if (len == 0)
 					{
-						fclose(fp_log);
 						close(sock_net);
 						fprintf(stderr, "Connection closed by the remote end\n\r");
 						return 0;
@@ -345,14 +333,12 @@ int main(int argc , char *argv[])
 				len = recv(sock_net , buf , BUFLEN - 1 , 0);
 				if(len < 0)
 				{
-					fclose(fp_log);
 					close(sock_net);
 					perror("Could not recv. Error");
 					return -1;
 				}
 				else if (len == 0)
 				{
-					fclose(fp_log);
 					close(sock_net);
 					perror("Connection closed by the remote end");
 					return 0;
@@ -368,13 +354,30 @@ int main(int argc , char *argv[])
 					if( str_e != NULL )
 					{
 						*str_e = '\0';
-						fprintf(fp_log, "%s", str_s);
+						fp_log = fopen(log_file_full, "w");
+						if( fp_log == NULL )
+						{
+							perror("Create file failed. Error");
+							return 1;
+						}
+						else
+						{
+							fprintf(fp_log, "%s", str_s);
+							fclose(fp_log);
+						}
 						fprintf(stderr, "%s\n", str_s);
-						break;
+						sleep(3); // sleep 3secs
+
+						char cmd[sizeof(ser2net_cmd) + 1];
+						fprintf(stderr, "#3 Send ser2net_cmd = %s\n", ser2net_cmd);
+
+						sprintf(cmd, "%s\r", ser2net_cmd);
+						send(sock_net, cmd, strlen(cmd) , 0);
+						
 					}
 				}
 #endif
-#if 1
+#if 0
 				/**/
 				int i;
 				fprintf(stderr, "recv len=%d:", len);
@@ -385,7 +388,7 @@ int main(int argc , char *argv[])
 				fprintf(stderr, "\n\n");
 				/**/
 #endif
-#if 1
+#if 0
 				buf[len] = 0;
 				fprintf(stderr, "%s", buf);
 				break;
@@ -414,7 +417,6 @@ int main(int argc , char *argv[])
 			}
 		}
 	}
-	fclose(fp_log);
 	close(sock_net);
 	return 0;
 }
