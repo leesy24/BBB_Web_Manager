@@ -453,7 +453,7 @@ void get_main()
 			case SB_UDP_SERVER_MODE:	strcpy(buff, "UDP Server"); break;
 			case SB_UDP_CLIENT_MODE:	strcpy(buff, "UDP Client"); break;							
 		}
-		sprintf(buff + strlen(buff), " ");
+		sprintf(buff + strlen(buff), " rx,tx:");
 		sprintf(Get_str, "/tmp/serial_get_rxtx_%d.txt", i + 1);
 		fd=open(Get_str, O_RDONLY);
 		read(fd, buff + strlen(buff), sizeof(buff) - strlen(buff));
