@@ -455,11 +455,14 @@ void get_main()
 		}
 		if(serial_cfg[i].protocol != SB_DISABLE_MODE)
 		{
+			int offset, n;
 			sprintf(buff + strlen(buff), " rx tx bytes:");
 			sprintf(Get_str, "/tmp/serial_get_rxtx_%d.txt", i + 1);
-			fd=open(Get_str, O_RDONLY);
-			read(fd, buff + strlen(buff), sizeof(buff) - strlen(buff));
+			offset = strlen(buff);
+			fd = open(Get_str, O_RDONLY);
+			n = read(fd, buff + offset, sizeof(buff) - offset);
 			close(fd);
+			if(n != 0) buff[offset + n] = '\0';
 		}
 		listPutf(list, name, buff);
 

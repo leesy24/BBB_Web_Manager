@@ -83,24 +83,29 @@ static void disable(int portnum)
 	char sysd_filename[256];
 	char sysd_filepath[256];
 
-	sprintf(sysd_filename, "ttyO%d.service", portnum);
+	sprintf(sysd_filename, "ttyO%d_get_rxtx.service", portnum);
 	sprintf(sysd_filepath, "/lib/systemd/system/%s", sysd_filename);
-
 	sprintf (cmd, "/bin/systemctl stop %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
-
 	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
 
 	sprintf(sysd_filename, "ttyO%d_sub.service", portnum);
 	sprintf(sysd_filepath, "/lib/systemd/system/%s", sysd_filename);
-
 	sprintf (cmd, "/bin/systemctl stop %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
+	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
 
+	sprintf(sysd_filename, "ttyO%d.service", portnum);
+	sprintf(sysd_filepath, "/lib/systemd/system/%s", sysd_filename);
+	sprintf (cmd, "/bin/systemctl stop %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
 	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
@@ -438,6 +443,53 @@ int main(int argc, char *argv[])
 		system (cmd);
 	}
 
+	sprintf(sysd_filename, "ttyO%d_get_rxtx.service", portnum);
+	sprintf(sysd_filepath, "/lib/systemd/system/%s", sysd_filename);
+	
+	sprintf (cmd, "/bin/systemctl stop %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+	
+	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+	
+	sprintf(sysd_desc, "Get RX TX bytes of Serial /dev/ttyO%d", portnum);
+	sprintf(sysd_exec, "/sbin/serial_get_rxtx %d", portnum);
+	
+	if ((fp = fopen(sysd_filepath, "w")) != NULL)
+	{
+		fprintf(fp, "[Unit]\n");
+		fprintf(fp, "Description=%s\n", sysd_desc);
+		fprintf(fp, "After=syslog.target\n");
+		fprintf(fp, "StartLimitIntervalSec=0\n");
+		fprintf(fp, "\n");
+		fprintf(fp, "[Service]\n");
+		fprintf(fp, "ExecStart=%s\n", sysd_exec);
+		fprintf(fp, "KillMode=mixed\n");
+		fprintf(fp, "RestartSec=1\n");
+		fprintf(fp, "Restart=always\n");
+		fprintf(fp, "\n");
+		fprintf(fp, "[Install]\n");
+		fprintf(fp, "WantedBy=multi-user.target\n");
+		fprintf(fp, "Alias=%s\n", sysd_filename);
+		fprintf(fp, "\n");
+	
+		fflush(fp);
+		fclose(fp);
+	}
+	else
+	{
+		fprintf(stderr, "fopen error %s\n", sysd_filepath);
+	}
+	
+	sprintf (cmd, "/bin/systemctl enable %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+	
+	sprintf (cmd, "/bin/systemctl start %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
 	return 0;
 }
 
