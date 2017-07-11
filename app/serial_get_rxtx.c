@@ -53,7 +53,7 @@ char ser2net_cmd[] = "showdevrxtx";
 
 void negotiate(int sock, int index, unsigned char *buf, int len)
 {
-/**/
+/*
 {
 	int i;
 	fprintf(stderr, "len=%d:", len);
@@ -63,7 +63,7 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 	}
 	fprintf(stderr, "\n");
 }
-/**/
+*/
 
 	if (buf[1] == SERVER_WILL)
 	{
@@ -115,7 +115,7 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 		return;
 	}
 
-/**/
+/*
 {
 	int i;
 	fprintf(stderr, "=>len=%d:", len);
@@ -125,7 +125,7 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 	}
 	fprintf(stderr, "\n");
 }
-/**/
+*/
 	if (send(sock, buf, len , 0) < 0)
 		exit(1);
 }
@@ -154,7 +154,7 @@ int main(int argc , char *argv[])
 		return 1;
 	}
 	portnum = atoi(argv[1]);
-	fprintf(stderr, "portnum = %d\n", portnum);
+	//fprintf(stderr, "portnum = %d\n", portnum);
 
 	ret = SB_ReadConfig(CFGFILE_ETC_SYSTEM, (char *)&CFG_SYS, sizeof (struct SB_SYSTEM_CONFIG));
 	if (ret < 0 || strncmp(SB_DEVICE_ID, CFG_SYS.id, 4))	// CFG not found or ID mismatch
@@ -180,7 +180,7 @@ int main(int argc , char *argv[])
 		perror("Could find host. Error");
 		return 1;
 	}
-	fprintf(stderr, "ser2net control IP = localhost\n");
+	//fprintf(stderr, "ser2net control IP = localhost\n");
 
 	if( CFG_SERIAL[portnum-1].protocol == SB_TCP_SERVER_MODE
 		||
@@ -203,7 +203,7 @@ int main(int argc , char *argv[])
 	{
 		port = CFG_SERIAL[portnum-1].remote_port + 10000;
 	}
-	fprintf(stderr, "ser2net control port = %d\n", port);
+	//fprintf(stderr, "ser2net control port = %d\n", port);
 
 	// copy the network address to sockaddr_in structure
 	//memcpy(&server.sin_addr, host->h_addr, host->h_length);
@@ -227,10 +227,10 @@ int main(int argc , char *argv[])
 		perror("Connect sock_net failed. Error");
 		return 1;
 	}
-	fprintf(stderr, "Connected to controller net ...\n");
+	//fprintf(stderr, "Connected to controller net ...\n");
 
 	sprintf(log_file_full, "%s%s%1d%s", log_file_path, log_file_name, portnum, log_file_ext);
-	fprintf(stderr, "Log file name = %s\n", log_file_full);
+	//fprintf(stderr, "Log file name = %s\n", log_file_full);
 
 	struct timeval ts;
 	ts.tv_sec = 1; // 1 second
@@ -303,7 +303,7 @@ int main(int argc , char *argv[])
 					    cmd_SGA_status[0] >= CMD_STAT_REPLY)
 					{
 						char cmd[sizeof(ser2net_cmd) + 1];
-						fprintf(stderr, "#1 Send ser2net_cmd = %s\n", ser2net_cmd);
+						//fprintf(stderr, "#1 Send ser2net_cmd = %s\n", ser2net_cmd);
 						
 						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
@@ -311,7 +311,7 @@ int main(int argc , char *argv[])
 				}
 				else
 				{
-					fprintf(stderr, "skip:0x%02x(%d)[%c]\n", buf[0], buf[0], isprint(buf[0])?buf[0]:' ');
+					//fprintf(stderr, "skip:0x%02x(%d)[%c]\n", buf[0], buf[0], isprint(buf[0])?buf[0]:' ');
 /*
 					// read more bytes
 					len = recv(sock_net , buf + 1 , BUFLEN - 2 , 0);
@@ -366,11 +366,11 @@ int main(int argc , char *argv[])
 							fflush(fp_log);
 							fclose(fp_log);
 						}
-						fprintf(stderr, "%s\n", str_s);
+						//fprintf(stderr, "%s\n", str_s);
 						sleep(3); // sleep 3secs
 
 						char cmd[sizeof(ser2net_cmd) + 1];
-						fprintf(stderr, "#3 Send ser2net_cmd = %s\n", ser2net_cmd);
+						//fprintf(stderr, "#3 Send ser2net_cmd = %s\n", ser2net_cmd);
 
 						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
