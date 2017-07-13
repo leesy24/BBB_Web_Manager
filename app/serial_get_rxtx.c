@@ -11,6 +11,11 @@
 #include "sb_config.h"
 #include "sb_extern.h"
 
+//#define DEBUG
+
+//#define ENABLE_FILE_LOG
+//#define ENABLE_FILE_EM
+
 #define IAC_CMD		0xff	// 255: Interpret as command
 
 #define SERVER_DONT	0xfe	// 254: Indicates the demand that the other
@@ -53,7 +58,7 @@ char ser2net_cmd[] = "showdevrxtx";
 
 void negotiate(int sock, int index, unsigned char *buf, int len)
 {
-/*
+#ifdef DEBUG
 {
 	int i;
 	fprintf(stderr, "len=%d:", len);
@@ -63,7 +68,7 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 	}
 	fprintf(stderr, "\n");
 }
-*/
+#endif
 
 	if (buf[1] == SERVER_WILL)
 	{
@@ -115,7 +120,7 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 		return;
 	}
 
-/*
+#ifdef DEBUG
 {
 	int i;
 	fprintf(stderr, "=>len=%d:", len);
@@ -125,7 +130,8 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 	}
 	fprintf(stderr, "\n");
 }
-*/
+#endif
+
 	if (send(sock, buf, len , 0) < 0)
 		exit(1);
 }
@@ -142,13 +148,19 @@ int main(int argc , char *argv[])
 	int len;
 	int portnum;
 	int ret;
+#if defined(ENABLE_FILE_LOG) || defined(ENABLE_EM_LOG)
 	char log_file_path[] = "/tmp/";
 	char log_file_name[] = "serial_get_rxtx_";
+#ifdef ENABLE_FILE_LOG
 	char log_file_ext[] = ".txt";
 	char log_file_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + sizeof(log_file_ext) - 1 + 2];
 	FILE *fp_log;
-	//char log_em_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + 2];
-	//int fd_log;
+#endif
+#ifdef ENABLE_EM_LOG
+	char log_em_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + 2];
+	int fd_log;
+#endif
+#endif
 
 	if (argc < 2 || argc > 2)
 	{
@@ -156,7 +168,9 @@ int main(int argc , char *argv[])
 		return 1;
 	}
 	portnum = atoi(argv[1]);
-	//fprintf(stderr, "portnum = %d\n", portnum);
+#ifdef DEBUG
+	fprintf(stderr, "portnum = %d\n", portnum);
+#endif
 
 	ret = SB_ReadConfig(CFGFILE_ETC_SYSTEM, (char *)&CFG_SYS, sizeof (struct SB_SYSTEM_CONFIG));
 	if (ret < 0 || strncmp(SB_DEVICE_ID, CFG_SYS.id, 4))	// CFG not found or ID mismatch
@@ -173,6 +187,7 @@ int main(int argc , char *argv[])
 
 	if( CFG_SERIAL[portnum-1].protocol == SB_DISABLE_MODE )
 	{
+		fprintf(stderr, "Serial port %d is disabled !\n", portnum);
 		return 0;
 	}
 
@@ -182,7 +197,9 @@ int main(int argc , char *argv[])
 		perror("Could find host. Error");
 		return 1;
 	}
-	//fprintf(stderr, "ser2net control IP = localhost\n");
+#ifdef DEBUG
+	fprintf(stderr, "ser2net control IP = localhost\n");
+#endif
 
 	if( CFG_SERIAL[portnum-1].protocol == SB_TCP_SERVER_MODE
 		||
@@ -205,7 +222,9 @@ int main(int argc , char *argv[])
 	{
 		port = CFG_SERIAL[portnum-1].remote_port + 10000;
 	}
-	//fprintf(stderr, "ser2net control port = %d\n", port);
+#ifdef DEBUG
+	fprintf(stderr, "ser2net control port = %d\n", port);
+#endif
 
 	// copy the network address to sockaddr_in structure
 	//memcpy(&server.sin_addr, host->h_addr, host->h_length);
@@ -229,12 +248,22 @@ int main(int argc , char *argv[])
 		perror("Connect sock_net failed. Error");
 		return 1;
 	}
-	//fprintf(stderr, "Connected to controller net ...\n");
+#ifdef DEBUG
+	fprintf(stderr, "Connected to controller net ...\n");
+#endif
 
+#ifdef ENABLE_FILE_LOG
 	sprintf(log_file_full, "%s%s%1d%s", log_file_path, log_file_name, portnum, log_file_ext);
-	//fprintf(stderr, "Log file name = %s\n", log_file_full);
-	//sprintf(log_em_full, "%s%s%1d", log_file_path, log_file_name, portnum);
-	//fprintf(stderr, "Log em name = %s\n", log_em_full);
+#ifdef DEBUG
+	fprintf(stderr, "Log file name = %s\n", log_file_full);
+#endif
+#endif
+#ifdef ENABLE_EM_LOG
+	sprintf(log_em_full, "%s%s%1d", log_file_path, log_file_name, portnum);
+#ifdef DEBUG
+	fprintf(stderr, "Log em name = %s\n", log_em_full);
+#endif
+#endif
 
 	struct timeval ts;
 	ts.tv_sec = 1; // 1 second
@@ -307,15 +336,19 @@ int main(int argc , char *argv[])
 					    cmd_SGA_status[0] >= CMD_STAT_REPLY)
 					{
 						char cmd[sizeof(ser2net_cmd) + 1];
-						//fprintf(stderr, "#1 Send ser2net_cmd = %s\n", ser2net_cmd);
-						
+#ifdef DEBUG
+						fprintf(stderr, "#1 Send ser2net_cmd = %s\n", ser2net_cmd);
+#endif
+
 						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
 					}
 				}
 				else
 				{
-					//fprintf(stderr, "skip:0x%02x(%d)[%c]\n", buf[0], buf[0], isprint(buf[0])?buf[0]:' ');
+#ifdef DEBUG
+					fprintf(stderr, "skip:0x%02x(%d)[%c]\n", buf[0], buf[0], isprint(buf[0])?buf[0]:' ');
+#endif
 /*
 					// read more bytes
 					len = recv(sock_net , buf + 1 , BUFLEN - 2 , 0);
@@ -357,7 +390,7 @@ int main(int argc , char *argv[])
 					char *str_e = strstr(str_s, "\r\n");
 					if( str_e != NULL )
 					{
-#if 1
+#ifdef ENABLE_FILE_LOG
 						*str_e = '\0';
 						fp_log = fopen(log_file_full, "w");
 						if( fp_log == NULL )
@@ -369,9 +402,9 @@ int main(int argc , char *argv[])
 						fflush(fp_log);
 						fclose(fp_log);
 #endif
-#if 0
+#ifdef ENABLE_EM_LOG
 						*str_e++ = '\n';
-						*str_e++ = '\0';
+						*str_e = '\0';
 						fd_log = open(log_em_full, O_WRONLY);
 						if( fd_log == -1 )
 						{
