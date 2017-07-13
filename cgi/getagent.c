@@ -457,12 +457,22 @@ void get_main()
 		{
 			int offset, n;
 			sprintf(buff + strlen(buff), " rx tx bytes:");
+#if 0
+			sprintf(Get_str, "/tmp/serial_get_rxtx_%d", i + 1);
+			offset = strlen(buff);
+			fd = open(Get_str, O_RDONLY);
+			n = read(fd, buff + offset, sizeof(buff) - offset);
+			close(fd);
+			if(n != 0) buff[offset + n] = '\0';
+#endif
+#if 1
 			sprintf(Get_str, "/tmp/serial_get_rxtx_%d.txt", i + 1);
 			offset = strlen(buff);
 			fd = open(Get_str, O_RDONLY);
 			n = read(fd, buff + offset, sizeof(buff) - offset);
 			close(fd);
 			if(n != 0) buff[offset + n] = '\0';
+#endif
 		}
 		listPutf(list, name, buff);
 

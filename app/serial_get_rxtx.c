@@ -147,6 +147,8 @@ int main(int argc , char *argv[])
 	char log_file_ext[] = ".txt";
 	char log_file_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + sizeof(log_file_ext) - 1 + 2];
 	FILE *fp_log;
+	//char log_em_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + 2];
+	//int fd_log;
 
 	if (argc < 2 || argc > 2)
 	{
@@ -231,6 +233,8 @@ int main(int argc , char *argv[])
 
 	sprintf(log_file_full, "%s%s%1d%s", log_file_path, log_file_name, portnum, log_file_ext);
 	//fprintf(stderr, "Log file name = %s\n", log_file_full);
+	//sprintf(log_em_full, "%s%s%1d", log_file_path, log_file_name, portnum);
+	//fprintf(stderr, "Log em name = %s\n", log_em_full);
 
 	struct timeval ts;
 	ts.tv_sec = 1; // 1 second
@@ -353,6 +357,7 @@ int main(int argc , char *argv[])
 					char *str_e = strstr(str_s, "\r\n");
 					if( str_e != NULL )
 					{
+#if 1
 						*str_e = '\0';
 						fp_log = fopen(log_file_full, "w");
 						if( fp_log == NULL )
@@ -360,12 +365,22 @@ int main(int argc , char *argv[])
 							perror("Create file failed. Error");
 							return 1;
 						}
-						else
+						fprintf(fp_log, "%s", str_s);
+						fflush(fp_log);
+						fclose(fp_log);
+#endif
+#if 0
+						*str_e++ = '\n';
+						*str_e++ = '\0';
+						fd_log = open(log_em_full, O_WRONLY);
+						if( fd_log == -1 )
 						{
-							fprintf(fp_log, "%s", str_s);
-							fflush(fp_log);
-							fclose(fp_log);
+							perror("Could not open of emlog device");
+							return 1;
 						}
+						write(fd_log, str_s, strlen(str_s));
+						close(fd_log);
+#endif
 						//fprintf(stderr, "%s\n", str_s);
 						sleep(3); // sleep 3secs
 
