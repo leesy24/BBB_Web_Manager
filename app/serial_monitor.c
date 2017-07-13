@@ -6,6 +6,15 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include "sb_include.h"
+#include "sb_define.h"
+#include "sb_config.h"
+#include "sb_extern.h"
+
+//#define DEBUG
+
+//#define ENABLE_FILE_LOG
+#define ENABLE_EM_LOG
 
 #define IAC_CMD		0xff	// 255: Interpret as command
 
@@ -42,16 +51,24 @@
 int cmd_ECHO_status[2] = {CMD_STAT_NONE, CMD_STAT_NONE};
 int cmd_SGA_status[2] = {CMD_STAT_NONE, CMD_STAT_NONE};
 
+struct SB_SYSTEM_CONFIG CFG_SYS;
+struct SB_SIO_CONFIG CFG_SERIAL[SB_MAX_SIO_PORT];
+
+char ser2net_cmd[] = "monitor both";
+
 void negotiate(int sock, int index, unsigned char *buf, int len)
 {
-/*
+#ifdef DEBUG
+{
+	int i;
 	fprintf(stderr, "len=%d:", len);
-	for(int i = 0; i < len; i ++)
+	for(i = 0; i < len; i ++)
 	{
 		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
 	fprintf(stderr, "\n");
-*/
+}
+#endif
 
 	if (buf[1] == SERVER_WILL)
 	{
@@ -98,19 +115,23 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 			buf[1] = CLIENT_WONT;
 		}
 	}
-	else if (buf[1] == CLIENT_DONT)
+	else if (buf[1] == SERVER_DONT)
 	{
 		return;
 	}
 
-/*
+#ifdef DEBUG
+{
+	int i;
 	fprintf(stderr, "=>len=%d:", len);
-	for(int i = 0; i < len; i ++)
+	for(i = 0; i < len; i ++)
 	{
 		fprintf(stderr, "buf[%d]=0x%02x(%d),", i, buf[i], buf[i]);
 	}
 	fprintf(stderr, "\n");
-*/
+}
+#endif
+
 	if (send(sock, buf, len , 0) < 0)
 		exit(1);
 }
@@ -120,27 +141,90 @@ void negotiate(int sock, int index, unsigned char *buf, int len)
 int main(int argc , char *argv[])
 {
 	int sock_net;
-	int sock_term;
 	struct sockaddr_in server;
 	struct hostent *host;
+	int port;
 	unsigned char buf[BUFLEN];
 	int len;
+	int portnum;
+	int ret;
+#if defined(ENABLE_FILE_LOG) || defined(ENABLE_EM_LOG)
+	char log_file_path[] = "/tmp/";
+	char log_file_name[] = "serial_monitor_";
+#ifdef ENABLE_FILE_LOG
+	char log_file_ext[] = ".txt";
+	char log_file_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + sizeof(log_file_ext) - 1 + 2];
+	FILE *fp_log;
+#endif
+#ifdef ENABLE_EM_LOG
+	char log_em_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + 2];
+	int fd_log;
+#endif
+#endif
 
-	if (argc < 2 || argc > 3)
+	if (argc < 2 || argc > 2)
 	{
-		fprintf(stderr, "Usage: %s address [port]\n", argv[0]);
+		fprintf(stderr, "Usage: %s port_num\n", argv[0]);
 		return 1;
 	}
-	int port = 23;
-	if (argc == 3)
-	port = atoi(argv[2]);
+	portnum = atoi(argv[1]);
+#ifdef DEBUG
+	fprintf(stderr, "portnum = %d\n", portnum);
+#endif
 
-	host = gethostbyname(argv[1]);
+	ret = SB_ReadConfig(CFGFILE_ETC_SYSTEM, (char *)&CFG_SYS, sizeof (struct SB_SYSTEM_CONFIG));
+	if (ret < 0 || strncmp(SB_DEVICE_ID, CFG_SYS.id, 4))	// CFG not found or ID mismatch
+	{
+		fprintf(stderr, "CFG_SYS not found or ID mismatch! %d, %4s !\n", ret, CFG_SYS.id);
+		return -1;
+	}
+	ret = SB_ReadConfig(CFGFILE_ETC_SIO, (char *)&CFG_SERIAL[0], sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);
+	if (ret < 0)	// CFG_SERIAL not found
+	{
+		fprintf(stderr, "CFG_SERIAL not found! %d!\n", ret);
+		return -1;
+	}
+
+	if( CFG_SERIAL[portnum-1].protocol == SB_DISABLE_MODE )
+	{
+		fprintf(stderr, "Serial port %d is disabled !\n", portnum);
+		return 0;
+	}
+
+	host = gethostbyname("localhost");
 	if(host == NULL)
 	{
 		perror("Could find host. Error");
 		return 1;
 	}
+#ifdef DEBUG
+	fprintf(stderr, "ser2net control IP = localhost\n");
+#endif
+
+	if( CFG_SERIAL[portnum-1].protocol == SB_TCP_SERVER_MODE
+		||
+		CFG_SERIAL[portnum-1].protocol == SB_TCP_BROADCAST_MODE
+		||
+		CFG_SERIAL[portnum-1].protocol == SB_TCP_MULTIPLEX_MODE
+		||
+		CFG_SERIAL[portnum-1].protocol == SB_UDP_SERVER_MODE
+		)
+	{
+		port = CFG_SERIAL[portnum-1].local_port + 10000;
+	}
+	else if(
+		// For UDP Client, Needs TCP Server first.
+		CFG_SERIAL[portnum-1].protocol == SB_UDP_CLIENT_MODE
+		||
+		// For TCP Client, Needs UDP Server first.
+		CFG_SERIAL[portnum-1].protocol == SB_TCP_CLIENT_MODE
+		)
+	{
+		port = CFG_SERIAL[portnum-1].remote_port + 10000;
+	}
+#ifdef DEBUG
+	fprintf(stderr, "ser2net control port = %d\n", port);
+#endif
 
 	// copy the network address to sockaddr_in structure
 	//memcpy(&server.sin_addr, host->h_addr, host->h_length);
@@ -149,7 +233,6 @@ int main(int argc , char *argv[])
 	server.sin_family = AF_INET;
 	server.sin_port = htons(port);
 
-#if 1
 	//Create socket
 	sock_net = socket(AF_INET , SOCK_STREAM , 0);
 	if (sock_net == -1)
@@ -161,27 +244,25 @@ int main(int argc , char *argv[])
 	//Connect to remote server
 	if (connect(sock_net , (struct sockaddr *)&server , sizeof(server)) < 0)
 	{
+		close(sock_net);
 		perror("Connect sock_net failed. Error");
 		return 1;
 	}
+#ifdef DEBUG
 	fprintf(stderr, "Connected to controller net ...\n");
 #endif
-#if 0
-	//Create socket
-	sock_term = socket(AF_INET , SOCK_STREAM , 0);
-	if (sock_net == -1)
-	{
-		perror("Could not create sock_term socket. Error");
-		return 1;
-	}
 
-	//Connect to remote server
-	if (connect(sock_term , (struct sockaddr *)&server , sizeof(server)) < 0)
-	{
-		perror("Connect sock_term failed. Error");
-		return 1;
-	}
-	fprintf(stderr, "Connected to controller term ...\n");
+#ifdef ENABLE_FILE_LOG
+	sprintf(log_file_full, "%s%s%1d%s", log_file_path, log_file_name, portnum, log_file_ext);
+#ifdef DEBUG
+	fprintf(stderr, "Log file name = %s\n", log_file_full);
+#endif
+#endif
+#ifdef ENABLE_EM_LOG
+	sprintf(log_em_full, "%s%s%1d", log_file_path, log_file_name, portnum);
+#ifdef DEBUG
+	fprintf(stderr, "Log em name = %s\n", log_em_full);
+#endif
 #endif
 
 	struct timeval ts;
@@ -202,6 +283,7 @@ int main(int argc , char *argv[])
 		nready = select(sock_net + 1, &fds_net, (fd_set *) 0, (fd_set *) 0, &ts);
 		if (nready < 0)
 		{
+			close(sock_net);
 			perror("select. Error");
 			return 1;
 		}
@@ -212,15 +294,21 @@ int main(int argc , char *argv[])
 		}
 		else if (sock_net != 0 && FD_ISSET(sock_net, &fds_net))
 		{
-			if(	cmd_ECHO_status[0] != CMD_STAT_ACK ||
-				cmd_ECHO_status[0] != CMD_STAT_ACK)
+			//if( cmd_ECHO_status[0] < CMD_STAT_ACK ||
+			//    cmd_SGA_status[0] < CMD_STAT_ACK)
+			if( cmd_ECHO_status[0] < CMD_STAT_REPLY ||
+			    cmd_SGA_status[0] < CMD_STAT_REPLY)
 			{
 				// start by reading a single byte
 				int rv;
 				if ((rv = recv(sock_net , buf , 1 , 0)) < 0)
+				{
+					close(sock_net);
 					return 1;
+				}
 				else if (rv == 0)
 				{
+					close(sock_net);
 					fprintf(stderr, "Connection closed by the remote end\n\r");
 					return 0;
 				}
@@ -231,30 +319,76 @@ int main(int argc , char *argv[])
 					len = recv(sock_net , buf + 1 , 2 , 0);
 					if (len  < 0)
 					{
+						close(sock_net);
 						perror("Could not recv. Error");
 						return 1;
 					}
 					else if (len == 0)
 					{
+						close(sock_net);
 						fprintf(stderr, "Connection closed by the remote end\n\r");
 						return 0;
 					}
 					negotiate(sock_net, 0, buf, 3);
-					if(	cmd_ECHO_status[0] == CMD_STAT_ACK &&
-						cmd_ECHO_status[0] == CMD_STAT_ACK)
+					//if( cmd_ECHO_status[0] >= CMD_STAT_ACK &&
+					//    cmd_SGA_status[0] >= CMD_STAT_ACK)
+					if( cmd_ECHO_status[0] >= CMD_STAT_REPLY &&
+					    cmd_SGA_status[0] >= CMD_STAT_REPLY)
 					{
-						char cmd[] = "monitor both\r";
-						//char cmd[] = "help\r";
-						/*
-						fprintf(stderr, ">>>len=%d:", strlen(cmd));
-						for(int i = 0; i < strlen(cmd); i ++)
-						{
-							fprintf(stderr, "cmd[%d]=0x%02x(%d),", i, cmd[i], cmd[i]);
-						}
-						fprintf(stderr, "\n");
-						*/
+						char cmd[sizeof(ser2net_cmd) + 1];
+#ifdef DEBUG
+						fprintf(stderr, "#1 Send ser2net_cmd = %s\n", ser2net_cmd);
+#endif
+
+						sprintf(cmd, "%s\r", ser2net_cmd);
 						send(sock_net, cmd, strlen(cmd) , 0);
+#if 0
+						len = recv(sock_net , buf , BUFLEN - 1 , 0);
+						if(len < 0)
+						{
+							close(sock_net);
+							perror("Could not recv. Error");
+							return -1;
+						}
+						else if(len == 0)
+						{
+							close(sock_net);
+							perror("Connection closed by the remote end");
+							return 0;
+						}
+
+						buf[len] = 0;
+						char *str_s = strstr((char *)buf, ser2net_cmd);
+						if(str_s != NULL)
+						{
+							str_s += strlen(ser2net_cmd) + 2;
+							char *str_e = strstr(str_s, "\r\n");
+							if(str_e != NULL)
+							{
+							}
+						}
+#endif
 					}
+				}
+				else
+				{
+#ifdef DEBUG
+					fprintf(stderr, "skip:0x%02x(%d)[%c]\n", buf[0], buf[0], isprint(buf[0])?buf[0]:' ');
+#endif
+/*
+					// read more bytes
+					len = recv(sock_net , buf + 1 , BUFLEN - 2 , 0);
+					buf[len] = 0;
+					fprintf(stderr, "%s", buf);
+
+					cmd_ECHO_status[0] = cmd_SGA_status[0] = CMD_STAT_ACK;
+
+					char cmd[sizeof(ser2net_cmd) + 1];
+					fprintf(stderr, "#2 Send ser2net_cmd = %s\n", ser2net_cmd);
+					
+					sprintf(cmd, "%s\r", ser2net_cmd);
+						send(sock_net, cmd, strlen(cmd) , 0);
+*/
 				}
 			}
 			else
@@ -262,15 +396,63 @@ int main(int argc , char *argv[])
 				len = recv(sock_net , buf , BUFLEN - 1 , 0);
 				if(len < 0)
 				{
+					close(sock_net);
 					perror("Could not recv. Error");
 					return -1;
 				}
 				else if (len == 0)
 				{
+					close(sock_net);
 					perror("Connection closed by the remote end");
 					return 0;
 				}
 
+#if 0
+				buf[len] = 0;
+				char *str_s = strstr((char *)buf, ser2net_cmd);
+				if( str_s != NULL )
+				{
+					str_s += strlen(ser2net_cmd) + 2;
+					char *str_e = strstr(str_s, "\r\n");
+					if( str_e != NULL )
+					{
+#ifdef ENABLE_FILE_LOG
+						*str_e = '\0';
+						fp_log = fopen(log_file_full, "w");
+						if( fp_log == NULL )
+						{
+							perror("Create file failed. Error");
+							return 1;
+						}
+						fprintf(fp_log, "%s", str_s);
+						fflush(fp_log);
+						fclose(fp_log);
+#endif
+#ifdef ENABLE_EM_LOG
+						*str_e++ = '\n';
+						*str_e = '\0';
+						fd_log = open(log_em_full, O_WRONLY);
+						if( fd_log == -1 )
+						{
+							perror("Could not open of emlog device");
+							return 1;
+						}
+						write(fd_log, str_s, strlen(str_s));
+						close(fd_log);
+#endif
+						//fprintf(stderr, "%s\n", str_s);
+						sleep(3); // sleep 3secs
+
+						char cmd[sizeof(ser2net_cmd) + 1];
+						//fprintf(stderr, "#3 Send ser2net_cmd = %s\n", ser2net_cmd);
+
+						sprintf(cmd, "%s\r", ser2net_cmd);
+						send(sock_net, cmd, strlen(cmd) , 0);
+						
+					}
+				}
+#endif
+#if 0
 				/**/
 				int i;
 				fprintf(stderr, "recv len=%d:", len);
@@ -278,16 +460,30 @@ int main(int argc , char *argv[])
 				{
 					fprintf(stderr, "0x%02x(%d)[%c],", buf[i], buf[i], isprint(buf[i])?buf[i]:' ');
 				}
-				fprintf(stderr, "\n");
+				fprintf(stderr, "\n\n");
 				/**/
-#if 0
+#endif
+#if 1
+#ifdef ENABLE_EM_LOG
+				fd_log = open(log_em_full, O_WRONLY);
+				if( fd_log == -1 )
+				{
+					perror("Could not open of emlog device");
+					return 1;
+				}
+				write(fd_log, buf, len);
+				close(fd_log);
+#endif
+#ifdef DEBUG
 				buf[len] = 0;
-				fprintf(stderr, "%s\n", buf);
+				fprintf(stderr, "%s", buf);
+				//break;
 				//fflush(0);
+#endif
 #endif
 #if 0
 				buf[len] = 0;
-				//printf("len=%d,buf=0x%x\n", len, (int)buf);
+				printf("len=%d,buf=0x%x\n", len, (int)buf);
 				int offset = 0;
 				do
 				{
@@ -295,11 +491,11 @@ int main(int argc , char *argv[])
 					//printf("ret=0x%x\n", (int)ret);
 					if(ret == NULL)
 					{
-						//printf("len=%d - offset=%d = %d\n", len, offset, len - offset);
+						printf("len=%d - offset=%d = %d\n", len, offset, len - offset);
 						fprintf(stderr, "%.*s", len - offset, buf + offset);
 						break;
 					}
-					//printf("len=%d\n", (int)(ret - buf) - offset + 1);
+					printf("len=%d\n", (int)(ret - buf) - offset + 1);
 					fprintf(stderr, "%.*s\n", (int)(ret - buf) - offset + 1, buf + offset);
 					offset = (int)(ret - buf) - offset + 1;
 				} while(1);
@@ -307,94 +503,8 @@ int main(int argc , char *argv[])
 #endif
 			}
 		}
-#if 0
-		// select setup
-		fd_set fds_term;
-		FD_ZERO(&fds_term);
-		if (sock_term != 0)
-			FD_SET(sock_term, &fds_term);
-		FD_SET(0, &fds_term);
-
-		// wait for data
-		nready = select(sock_term + 1, &fds_term, (fd_set *) 0, (fd_set *) 0, &ts);
-		if (nready < 0)
-		{
-			perror("select. Error");
-			return 1;
-		}
-		else if (nready == 0)
-		{
-			ts.tv_sec = 1; // 1 second
-			ts.tv_usec = 0;
-		}
-		else if (sock_term != 0 && FD_ISSET(sock_term, &fds_term))
-		{
-			if(	cmd_ECHO_status[1] != CMD_STAT_ACK ||
-				cmd_ECHO_status[1] != CMD_STAT_ACK)
-			{
-				// start by reading a single byte
-				int rv;
-				if ((rv = recv(sock_term , buf , 1 , 0)) < 0)
-					return 1;
-				else if (rv == 0)
-				{
-					fprintf(stderr, "Connection closed by the remote end\n\r");
-					return 0;
-				}
-
-				if (buf[0] == IAC_CMD)
-				{
-					// read 2 more bytes
-					len = recv(sock_term , buf + 1 , 2 , 0);
-					if (len  < 0)
-					{
-						perror("Could not recv. Error");
-						return 1;
-					}
-					else if (len == 0)
-					{
-						fprintf(stderr, "Connection closed by the remote end\n\r");
-						return 0;
-					}
-					negotiate(sock_term, 1, buf, 3);
-					if(	cmd_ECHO_status[1] == CMD_STAT_ACK &&
-						cmd_ECHO_status[1] == CMD_STAT_ACK)
-					{
-						char cmd[] = "monitor term ipv4,tcp,4001\r";
-						//char cmd[] = "help\r";
-						/*
-						fprintf(stderr, ">>>len=%d:", strlen(cmd));
-						for(i = 0; i < strlen(cmd); i ++)
-						{
-							fprintf(stderr, "cmd[%d]=0x%02x(%d),", i, cmd[i], cmd[i]);
-						}
-						fprintf(stderr, "\n");
-						*/
-						send(sock_term, cmd, strlen(cmd) , 0);
-					}
-				}
-			}
-			else
-			{
-				len = recv(sock_term , buf , BUFLEN - 1 , 0);
-				if(len < 0)
-				{
-					perror("Could not recv. Error");
-					return 1;
-				}
-				else if (len == 0)
-				{
-					perror("Connection closed by the remote end");
-					return 0;
-				}
-				buf[len] = 0;
-				fprintf(stderr, "%s", buf);
-				fflush(0);
-			}
-		}
-#endif
 	}
 	close(sock_net);
-	close(sock_term);
 	return 0;
 }
+
