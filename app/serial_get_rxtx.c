@@ -13,7 +13,7 @@
 
 //#define DEBUG
 
-//#define ENABLE_FILE_LOG
+#define ENABLE_FILE_LOG
 //#define ENABLE_EM_LOG
 
 #define IAC_CMD		0xff	// 255: Interpret as command
