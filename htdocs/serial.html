@@ -183,9 +183,10 @@
 										<input type="hidden" name="PORTNUM" value=[v,port_no] />
 										<tr bgcolor="#393C39"> 
 											<td height="24" colspan="2" class="title">
-												<font color=white><font size=5><blink>Serial Port [v, port_no]</blink>
+												<font color=white size=5><blink>Serial Port [v, port_no]</blink></font>
 											</td>
 										</tr>
+
 										<tr bgcolor="#FFFFFF">
 											<td class="content">Operation Mode</td>
 											<td class="content">
@@ -235,14 +236,13 @@
 
 										<tr bgcolor="#FFFFFF">
 											<td class="content">Interface</td>
-[v,RS232_START]
 											<td class="content">
+[v,RS232_START]
 												<select name="IFTYPE" [v,s_option]>
 													<option [v, s_type_rs232] value="0">RS-232</option>
 												</select>
 [v,RS232_END]
 [v,RS422485_START]
-											<td class="content">
 												<select name="IFTYPE" [v,s_option]>
 													<option [v, s_type_rs422] value="1">RS-422</option>
 													<option [v, s_type_rs485n] value="3">RS-485(No Echo)</option>
