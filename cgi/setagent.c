@@ -232,8 +232,8 @@ int cgiMain()
 			mode = 1;
 			break;
 #endif
-		case 'd':	// DIO
-			strcpy(target_page, "/cgi-bin/getagent.cgi?type=d");
+		case 'i':	// DIO
+			strcpy(target_page, "/cgi-bin/getagent.cgi?type=i");
 			set_dio();
 			mode = 1;
 			break;
