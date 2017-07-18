@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title>[v, device_name] Web Manager</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link  rel="stylesheet" href="/style1.css" type="text/css"></link>
+		<script Language="JavaScript" src="/utility.js"></script>
+		<script Language="JavaScript">
+		function doBlink() 
+		{ 
+			var blink = document.all.tags("BLINK") 
+			for (var i=0; i < blink.length; i++) 
+				blink[i].style.visibility = blink[i].style.visibility == "" ? "hidden" : "" 
+		} 
+
+		function startBlink()
+		{ 
+			if (document.all) setInterval("doBlink()",350) 
+		} 
+
+		function changeType()
+		{
+			document.f1.action=document.URL;
+			document.f1.submit();
+		}
+
+		window.onload = startBlink; 
+
+		function isValid()
+		{
+		    return Validator(document.f1);
+		}
+
+		function Validator(theForm)
+		{
+			if(theForm.OPMODE.value == 3 || theForm.OPMODE.value == 7)
+			{
+				if (!isValidIP(theForm.REMOTE_IP.value))
+				{
+					alert("Remote IP address is invalid!");
+					theForm.REMOTE_IP.focus();
+					return (false);
+				}
+				if(IP2int(theForm.REMOTE_IP.value) == 0)
+				{
+					alert("Remote IP address should not 0.0.0.0!");
+					theForm.REMOTE_IP.focus();
+					return (false);
+				}
+
+				if (!isInValidRange(theForm.REMOTE_PORT.value, 0, 65535))
+				{
+					alert("Remote port number is invalid: Value needs to be between 0 and 65535");
+					theForm.REMOTE_PORT.focus();
+					return (false);
+				}
+			}
+
+			if (!isInValidRange(theForm.LOCAL_PORT.value, 0, 65535))
+			{
+				alert("Local socket port is invalid: Value needs to be between 0 and 65535");
+				theForm.LOCAL_PORT.focus();
+				return (false);
+			}
+
+			/*    
+			if (!isInValidRange(theForm.MTU.value, 1, 1100))
+			{
+				alert("MTU value is invalid: Value needs to be between 1 and 1100");
+				theForm.MTU.focus();
+				return (false);
+			}
+			*/
+
+			if (!isInValidRange(theForm.ALIVE_TIME.value, 0, 65535))
+			{
+				alert("Keepalive time is invalid: Value needs to be between 0 and 65535)");
+				theForm.ALIVE_TIME.focus();
+				return (false);
+			}
+			return (true);
+		}
+		</script>
+	</head>
+
+	<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+		<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<!--
+			<tr valign="top">
+				<td height="16" colspan="4" bgcolor="#000000">&nbsp;</td>
+			</tr>
+-->
+			<tr valign="top">
+				<td width="158" height="121" bgcolor="#000000" valign="top">
+					<img src="/images/LOGO.jpg" width="158" height="72">
+					<TABLE height=26 cellSpacing=0 cellPadding=0 border=0>
+						<TR>
+							<TD class="menutitle" width=158 height=40 bgcolor=393C39>
+								<!-- background=images/left_top.gif -->
+								<font color="white">Setup Menu</font>
+							</TD>
+						</TR>
+					</TABLE>
+					<TABLE  cellSpacing=0 cellPadding=0 bgColor=#848684 border=0>
+						<TR vAlign=top>
+							<TD vAlign=top align=right class="menu">
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=1" class="menu"><font color="white">Summary&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=2" class="menu"><font color="white">Network Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=J" class="menu"><font color="white">Wireless Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=4" class="menu"><font color="white">Peripheral Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=A" class="menu"><font color="white">Serial Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+[v,S4M_START]
+								<A href="/cgi-bin/getagent.cgi?type=i" class="menu"><font color="white">DIO Settings&nbsp;&nbsp;</font></A><BR>
+[v,S4M_END]
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=5" class="menu"><font color="white">SNMP Settings&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=a" class="menu"><font color="white">Serial Con&Mon&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=7" class="menu"><font color="white">Change Password&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=8" class="menu"><font color="white">Update Firmware&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=9" class="menu"><font color="white">Factory Default&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0><BR>
+								<A href="/cgi-bin/getagent.cgi?type=0" class="menu"><font color="white">Save &amp; Reboot&nbsp;&nbsp;</font></A><BR>
+								<IMG src="/images/menu_div.gif" width="158" height=5 border=0>
+							</TD>
+						</TR>
+					</TABLE>
+				</td>
+
+				<td colspan="3" rowspan="2" valign="top" height="68">
+					<table width="100%" height="72" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td height="72" bgcolor="6B0808">
+								<div align="right">
+									<table border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td width="530" rowspan=3 class="pagetitle">
+												<font color="white">[Serial Console & Monitor]</font>
+											</td>
+											<td width="252">
+												<div align="center">
+													<font color="#FFFFFF">Device Name: [v, device_name]</font>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div align="center">
+													<font color="#FFFFFF">Logged in as [v, username]</font>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div align="center">
+													<font color="#FFFFFF">
+														<a href="/cgi-bin/setagent.cgi?type=o">
+															<font color="red">Logout</font>
+														</a>
+													</font>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
+
+					<form method="POST" name="f1" action="/cgi-bin/setagent.cgi?type=2" onSubmit="return Validator(this)">
+						<table width="805" border="0" cellspacing="0" cellpadding="20">
+							<tr>
+								<td>
+									<table width="770" border="0" align="center" cellpadding="4" cellspacing="1" bgcolor="#999999">
+										<input type="hidden" name="PORTNUM" value=[v,port_no] />
+										<tr bgcolor="#393C39">
+											<td height="24" colspan="2" class="title">
+												<font color=white size=5><blink>Serial Port [v, port_no]</blink></font>
+												<select name="OPMODE" disabled >
+													<option [v, s_op_dis] value="0">Disable</option>
+													<option [v, s_op_com]  value="1">COM Redirect</option>
+													<option [v, s_op_tcps] value="2">TCP Server</option>
+													<option [v, s_op_tcpc] value="3">TCP Client</option>
+													<option [v, s_op_tcpb] value="4">TCP Broadcast</option>
+													<option [v, s_op_tcpm] value="5">TCP Multiplex</option>
+													<option [v, s_op_udps] value="6">UDP Server</option>
+													<option [v, s_op_udpc] value="7">UDP Client</option>
+												</select>
+[v,RS232_START]
+												<select name="IFTYPE" disabled >
+													<option [v, s_type_rs232] value="0">RS-232</option>
+												</select>
+[v,RS232_END]
+[v,RS422485_START]
+												<select name="IFTYPE" disabled >
+													<option [v, s_type_rs422] value="1">RS-422</option>
+													<option [v, s_type_rs485n] value="3">RS-485(No Echo)</option>
+													<option [v, s_type_rs485e] value="5">RS-485(Echo)</option>
+												</select>
+[v,RS422485_END]
+												<select name="BAUDRATE" disabled >
+													<option [v, s_b150] value="0">150 bps</option>
+													<option [v, s_b300] value="1">300 bps</option>
+													<option [v, s_b600] value="2">600 bps</option>
+													<option [v, s_b1200] value="3">1200 bps</option>
+													<option [v, s_b2400] value="4">2400 bps</option>
+													<option [v, s_b4800] value="5">4800 bps</option>
+													<option [v, s_b9600] value="6">9600 bps</option>
+													<option [v, s_b19200] value="7">19200 bps</option>
+													<option [v, s_b38400] value="8">38400 bps</option>
+													<option [v, s_b57600] value="9">57600 bps</option>
+													<option [v, s_b115200] value="10">115200 bps</option>
+													<option [v, s_b230400] value="11">230400 bps</option>
+													<option [v, s_b460800] value="12">460800 bps</option>
+													<option [v, s_b921600] value="13">921600 bps</option>
+												</select>
+												<select name="DATABIT" disabled >
+													<option [v, s_d5] value="0">5 bits</option>
+													<option [v, s_d6] value="1">6 bits</option>
+													<option [v, s_d7] value="2">7 bits</option>
+													<option [v, s_d8] value="3">8 bits</option>
+												</select>
+												<select name="STOPBIT" disabled >
+													<option [v, s_s1] value="0">1 bit</option>
+													<option [v, s_s2] value="1">2 bits</option>
+												</select>
+												<select name="PARITY" disabled >
+													<option [v, s_pnone] value="0">None</option>
+													<option [v, s_podd] value="1">Odd</option>
+													<option [v, s_peven] value="2">Even</option>
+												</select>
+											</td>
+										</tr>
+										<tr bgcolor="#FFFFFF">
+											<td bgcolor="#FFFFFF">
+												<div style="height:300px;width:593px;border:1px solid #ccc;font:12px Courier;overflow-y:scroll;overflow-x:hidden;padding:1px;">
+													[v,port_data]
+												</div>
+											</td>
+										</tr>
+									</table>
+
+									<table width="770" border="0" align="center" cellpadding="4" cellspacing="0" bgcolor="#999999">
+										<tr style="background-color=#FFFFFF">
+											<td style="background-color=#FFFFFF">
+												Serial Port Number&nbsp;:&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=a" style="color:red;">(1)</a>
+												&nbsp;&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=b" style="color:red;">(2)</a>
+												&nbsp;&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=c" style="color:red;">(3)</a>
+												&nbsp;&nbsp;&nbsp;
+												<a href="/cgi-bin/getagent.cgi?type=d" style="color:red;">(4)</a>
+												&nbsp;&nbsp;&nbsp;
+											</td>
+										</tr>
+
+										<tr style="background-color=#FFFFFF">
+											<td>
+												&nbsp;
+												<div align="left">
+													<input type="submit" value="Submit" onclick="return isValid()" />
+													&nbsp;&nbsp;&nbsp;
+													<input type="reset" value="Cancel" />
+												</div>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</td>
+			</tr>
+			<tr valign="top">
+				<!--	  <td height="322" valign="top" bgcolor="393C39"> <img src="images/right.jpg" width="158" height="33"></td> -->
+				<td height="500" align="right" bgcolor="393C39">
+					<font color="white">
+						<br />
+						Copyright 2014&nbsp;&nbsp;<br>
+						DASAN-InfoTEK Inc.,&nbsp;&nbsp;<br>
+						All rights reserved.&nbsp;&nbsp;
+					</font>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
+
