@@ -190,60 +190,7 @@
 										<input type="hidden" name="PORTNUM" value=[v,port_no] />
 										<tr bgcolor="#393C39">
 											<td height="24" colspan="2" class="title">
-												<font color=white size=5><blink>Serial Port [v, port_no]</blink></font>
-												<select name="OPMODE" disabled >
-													<option [v, s_op_dis] value="0">Disable</option>
-													<option [v, s_op_com]  value="1">COM Redirect</option>
-													<option [v, s_op_tcps] value="2">TCP Server</option>
-													<option [v, s_op_tcpc] value="3">TCP Client</option>
-													<option [v, s_op_tcpb] value="4">TCP Broadcast</option>
-													<option [v, s_op_tcpm] value="5">TCP Multiplex</option>
-													<option [v, s_op_udps] value="6">UDP Server</option>
-													<option [v, s_op_udpc] value="7">UDP Client</option>
-												</select>
-[v,RS232_START]
-												<select name="IFTYPE" disabled >
-													<option [v, s_type_rs232] value="0">RS-232</option>
-												</select>
-[v,RS232_END]
-[v,RS422485_START]
-												<select name="IFTYPE" disabled >
-													<option [v, s_type_rs422] value="1">RS-422</option>
-													<option [v, s_type_rs485n] value="3">RS-485(No Echo)</option>
-													<option [v, s_type_rs485e] value="5">RS-485(Echo)</option>
-												</select>
-[v,RS422485_END]
-												<select name="BAUDRATE" disabled >
-													<option [v, s_b150] value="0">150 bps</option>
-													<option [v, s_b300] value="1">300 bps</option>
-													<option [v, s_b600] value="2">600 bps</option>
-													<option [v, s_b1200] value="3">1200 bps</option>
-													<option [v, s_b2400] value="4">2400 bps</option>
-													<option [v, s_b4800] value="5">4800 bps</option>
-													<option [v, s_b9600] value="6">9600 bps</option>
-													<option [v, s_b19200] value="7">19200 bps</option>
-													<option [v, s_b38400] value="8">38400 bps</option>
-													<option [v, s_b57600] value="9">57600 bps</option>
-													<option [v, s_b115200] value="10">115200 bps</option>
-													<option [v, s_b230400] value="11">230400 bps</option>
-													<option [v, s_b460800] value="12">460800 bps</option>
-													<option [v, s_b921600] value="13">921600 bps</option>
-												</select>
-												<select name="DATABIT" disabled >
-													<option [v, s_d5] value="0">5 bits</option>
-													<option [v, s_d6] value="1">6 bits</option>
-													<option [v, s_d7] value="2">7 bits</option>
-													<option [v, s_d8] value="3">8 bits</option>
-												</select>
-												<select name="STOPBIT" disabled >
-													<option [v, s_s1] value="0">1 bit</option>
-													<option [v, s_s2] value="1">2 bits</option>
-												</select>
-												<select name="PARITY" disabled >
-													<option [v, s_pnone] value="0">None</option>
-													<option [v, s_podd] value="1">Odd</option>
-													<option [v, s_peven] value="2">Even</option>
-												</select>
+												<font color=white size=5><blink>Serial Port [v, port_no]</blink></font> [v,s_mode] [v,s_conf]
 											</td>
 										</tr>
 										<tr bgcolor="#FFFFFF">

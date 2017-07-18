@@ -1353,17 +1353,19 @@ void get_serial(int portno)
 //---------------------------------------------------------------------------
 void get_ser_con_mon(int portno)
 {
-	struct SB_SIO_CONFIG			cfg  [SB_MAX_SIO_PORT];
-	struct SB_GPIO_CONFIG			gpio;
+	char name[256];
+	char file[50];
+	int fd;
+	struct SB_SIO_CONFIG	serial_cfg[SB_MAX_SIO_PORT];
 	int value, value2, mode;
 	char buff[256];
 	char charval;
 	int p_no;
+	int speed[14]={150, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
 
 	fprintf(stderr, "get_ser_con_mon(portno = %d)\n", portno);
 
-	SB_ReadConfig  (CFGFILE_ETC_SIO, (char *)&cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	
-	SB_ReadConfig  (CFGFILE_ETC_GPIO,(char *)&gpio,		sizeof(struct SB_GPIO_CONFIG));	
+	SB_ReadConfig  (CFGFILE_ETC_SIO, (char *)&serial_cfg[0],	sizeof(struct SB_SIO_CONFIG)*SB_MAX_SIO_PORT);	
 
 	if(cgiFormInteger("PORTNUM",&p_no, 0) == cgiFormSuccess )
 		portno = p_no - 1;
@@ -1371,237 +1373,107 @@ void get_ser_con_mon(int portno)
 
 	listPutf(list, "port_no", "%d", portno+1);
 
-	if (portno < SB_MAX_SIO_PORT) 
+	sprintf(name, "s_mode");
+	switch(serial_cfg[portno].protocol)
 	{
-		listPutf(list,"RS232_START", "");
-		listPutf(list,"RS232_END", "");
-		listPutf(list,"RS422485_START", "<!--");
-		listPutf(list,"RS422485_END", "-->");
-		listPutf(list, "s_type_rs232","selected");
+		case SB_DISABLE_MODE:		strcpy(buff, "Disable"); break;
+		case SB_COM_REDIRECT_MODE:	strcpy(buff, "COM Redirect"); break;
+		case SB_TCP_SERVER_MODE:	strcpy(buff, "TCP Server"); break;
+		case SB_TCP_CLIENT_MODE:	strcpy(buff, "TCP Client"); break;
+		case SB_TCP_BROADCAST_MODE:	strcpy(buff, "TCP Broadcast"); break;
+		case SB_TCP_MULTIPLEX_MODE:	strcpy(buff, "TCP Multiplex"); break;
+		case SB_UDP_SERVER_MODE:	strcpy(buff, "UDP Server"); break;
+		case SB_UDP_CLIENT_MODE:	strcpy(buff, "UDP Client"); break;							
 	}
-	else	
+	if(serial_cfg[portno].protocol != SB_DISABLE_MODE)
 	{
-		listPutf(list,"RS232_START", "<!--");
-		listPutf(list,"RS232_END", "-->");
-		listPutf(list,"RS422485_START", "");
-		listPutf(list,"RS422485_END", "");
-		switch(cfg[portno].interface)
+		int offset, n;
+		sprintf(buff + strlen(buff), " rx tx bytes:");
+#if 0
+		sprintf(file, "/tmp/serial_get_rxtx_%d", portno + 1);
+		offset = strlen(buff);
+		fd = open(file, O_RDONLY);
+		n = read(fd, buff + offset, sizeof(buff) - offset);
+		close(fd);
+		if(n != 0) buff[offset + n] = '\0';
+#endif
+#if 1
+		sprintf(file, "/tmp/serial_get_rxtx_%d.txt", portno + 1);
+		offset = strlen(buff);
+		fd = open(file, O_RDONLY);
+		n = read(fd, buff + offset, sizeof(buff) - offset);
+		close(fd);
+		if(n != 0) buff[offset + n] = '\0';
+#endif
+	}
+	listPutf(list, name, buff);
+
+	sprintf(name, "s%d_conf", portno + 1);
+	if(serial_cfg[portno].protocol == SB_DISABLE_MODE)
+	{
+		sprintf(buff, "");
+	}
+	else
+	{
+		sprintf(buff, "%d ", speed[(int)serial_cfg[portno].speed]);
+		switch((serial_cfg[portno].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT)
 		{
-			case SB_RS422_PTOP:
-				listPutf(list, "s_type_rs422","selected");	break;
-			case SB_RS485_NONE_ECHO:
-				listPutf(list, "s_type_rs485n","selected");	break;
-			case SB_RS485_ECHO:
-				listPutf(list, "s_type_rs485e","selected");	break;	
-		}	
-	}	
-
-	switch (portno)
-	{
-		case 0: if(gpio.serial_1 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
-		case 1: if(gpio.serial_2 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
-		case 2: if(gpio.serial_3 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
-		case 3: if(gpio.serial_4 == SB_DISABLE) listPutf(list,"s_option", "disabled"); break;
-	}
-
-	mode = (int)cfg[portno].protocol;
-	// Switch for Operation Mode
-	switch(mode)
-	{
-		case SB_DISABLE_MODE:	// Disable
-			listPutf(list,"s_op_dis","selected");
-			listPutf(list,"s_option", "disabled");	
-			break;
-		case SB_COM_REDIRECT_MODE: // COM Redirect
-			listPutf(list,"s_op_com","selected");
-			listPutf(list, "s_remote_option", "disabled");
-			break;
-		case SB_TCP_SERVER_MODE: // TCP Server
-			listPutf(list,"s_op_tcps","selected");
-			listPutf(list, "s_remote_option", "disabled");
-			break;
-		case SB_TCP_CLIENT_MODE: // TCP Client
-			listPutf(list,"s_op_tcpc","selected");
-			listPutf(list, "s_local_option", "disabled");
-			break;
-		case SB_TCP_BROADCAST_MODE: // TCP Broadcast
-			listPutf(list,"s_op_tcpb","selected");
-			listPutf(list, "s_remote_option", "disabled");
-			break;
-		case SB_TCP_MULTIPLEX_MODE: // TCP Multiplex
-			listPutf(list,"s_op_tcpm","selected");
-			listPutf(list, "s_remote_option", "disabled");
-			break;
-		case SB_UDP_SERVER_MODE: // UDP Server
-			listPutf(list,"s_op_udps","selected");
-			listPutf(list, "s_remote_option", "disabled");
-			break;
-		case SB_UDP_CLIENT_MODE: // UDP Client
-			listPutf(list,"s_op_udpc","selected");
-			listPutf(list, "s_local_option", "disabled");
-			break;
-		default: // Default SB_DISABLE_MODE
-			listPutf(list,"s_op_dis","selected");
-			listPutf(list,"s_option", "disabled");	
-			break;
-	}
-
-	// baud rate            
-	value = (int)cfg[portno].speed;
-	switch (value)
-	{
-		case 0:
-			listPutf(list, "s_b150", "selected");
-			break;
-		case 1:
-			listPutf(list, "s_b300", "selected");
-			break;
-		case 2:
-			listPutf(list, "s_b600", "selected");
-			break;
-		case 3:
-			listPutf(list, "s_b1200", "selected");
-			break;
-		case 4:
-			listPutf(list, "s_b2400", "selected");
-			break;
-		case 5:
-			listPutf(list, "s_b4800", "selected");
-			break;
-		case 6:
-			listPutf(list, "s_b9600", "selected");
-			break;
-		case 7:
-			listPutf(list, "s_b19200", "selected");
-			break;
-		case 8:
-			listPutf(list, "s_b38400", "selected");
-			break;
-		case 9:
-			listPutf(list, "s_b57600", "selected");
-			break;
-		case 10:
-			listPutf(list, "s_b115200", "selected");
-			break;
-		case 11:
-			listPutf(list, "s_b230400", "selected");
-			break;
-		case 12:
-			listPutf(list, "s_b460800", "selected");
-			break;
-		case 13:
-			listPutf(list, "s_b921600", "selected");
-			break;
-		default:
-			listPutf(list, "s_b9600", "selected");
-	}
-
-	// data bits
-	value = (int)cfg[portno].dps & 0x03;
-	if (value == 0)
-		listPutf(list, "s_d5", "selected");
-	else if (value == 1)
-		listPutf(list, "s_d6", "selected");
-	else if (value == 2)
-		listPutf(list, "s_d7", "selected");
-	else
-		listPutf(list, "s_d8", "selected");
-
-	// stop bits			
-	charval = cfg[portno].dps & 0x04;
-	if (charval != 0x04)
-		value = 0;
-	else
-		value = 1;
-	if (value == 0)
-		listPutf(list, "s_s1", "selected");
-	else
-		listPutf(list, "s_s2", "selected");
-
-	// parity			
-	charval = cfg[portno].dps & 0x18;
-	if (charval == 0x00) value = 0;
-	if (charval == 0x08) value = 1;
-	if (charval == 0x10 || charval == 0x18)  value = 2;
-	if (value == 0)
-		listPutf(list, "s_pnone", "selected");
-	else if (value == 1)
-		listPutf(list, "s_podd", "selected");
-	else
-		listPutf(list, "s_peven", "selected");
-
-/*
-	// flow control
-	value2 = cfg[portno].flow;
-	cgiFormInteger("FLOW", &value, value2);
-	if (value == 0)
-		listPutf(list, "s_fnone", "selected");
-	else 
-		if (value == 1)
-			listPutf(list, "s_fhw", "selected");
-		else
-			listPutf(list, "s_fsw", "selected");
-
-	// signal (device type)	
-
-	value2 = cfg[portno].device;
-	cgiFormInteger("DEVICETYPE", &value, value2);
-	if (value == 0)
-		listPutf(list, "s_ddata", "selected");
-	else
-		listPutf(list, "s_dmodem", "selected");
-
-	// Remote IP Address / Port	
-	if (cgiFormStringNoNewlines("REMOTE_IP", buff, 16) == cgiFormNotFound)
-	{	
-		sprintf(buff, "%d.%d.%d.%d",cfg[portno].remote_ip[0], cfg[portno].remote_ip[1],cfg[portno].remote_ip[2],cfg[portno].remote_ip[3]);
-		listPutf(list, "s_rip", buff);
-	}
-	else
-		listPutf(list, "s_rip", buff);
-
-	if ( cgiFormStringNoNewlines("REMOTE_PORT", buff, 6) == cgiFormNotFound )
-		listPutf(list, "s_rport", "%u", cfg[portno].remote_port);
-	else
-		listPutf(list, "s_rport", buff);	
-
-	// Keepalive
-	if ( cgiFormStringNoNewlines("ALIVE_TIME", buff, 6) == cgiFormNotFound )
-		listPutf(list, "s_alive", "%u", cfg[portno].keepalive);
-	else
-		listPutf(list, "s_alive", buff);	
-
-	// Latency
-	if ( cgiFormStringNoNewlines("LATENCY_TIME", buff, 6) == cgiFormNotFound )
-		listPutf(list, "s_latency", "%u", cfg[portno].packet_latency_time);
-	else
-		listPutf(list, "s_latency", buff);	
-
-
-	// Port Login	
-	value2 = cfg[portno].login;
-	cgiFormInteger("PASSIVELOGIN", &value, value2);
-	if (value == 0)
-		{
-		listPutf(list, "s_pdisable", "selected");
-		listPutf(list, "s_passive_option", "disabled");
+			case SB_DATABITS_5:
+				sprintf(buff + strlen(buff), "5DATABITS");
+				break;
+			case SB_DATABITS_6:
+				sprintf(buff + strlen(buff), "6DATABITS");
+				break;
+			case SB_DATABITS_7:
+				sprintf(buff + strlen(buff), "7DATABITS");
+				break;
+			case SB_DATABITS_8:
+			default:
+				sprintf(buff + strlen(buff), "8DATABITS");
+				break;
 		}
-	else
+		sprintf(buff + strlen(buff), " ");
+		switch((serial_cfg[portno].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT)
 		{
-		listPutf(list, "s_penable", "selected");
+			case SB_PARITY_ODD:
+				sprintf(buff + strlen(buff), "ODD");
+				break;
+			case SB_PARITY_EVEN:
+				sprintf(buff + strlen(buff), "EVEN");
+				break;
+			case SB_PARITY_NONE:
+			default:
+				sprintf(buff + strlen(buff), "NONE");
+				break;
 		}
-		
-	if ( cgiFormStringNoNewlines("PASSIVE_USER", buff, 16) == cgiFormNotFound )
-		listPutf(list, "s_puser", "%s", cfg[portno].login_name);
-	else
-		listPutf(list, "s_puser", "%s", buff);
-
-	memset(buff,0,sizeof(buff));
-	if ( cgiFormStringNoNewlines("PASSIVE_PASS", buff, 16) == cgiFormNotFound )
-		listPutf(list, "s_ppass", "%s", cfg[portno].login_password);
-	else
-		listPutf(list, "s_ppass", "%s", buff);
-*/
+		sprintf(buff + strlen(buff), " ");
+		switch((serial_cfg[portno].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT)
+		{
+			case SB_STOPBITS_2:
+				sprintf(buff + strlen(buff), "2STOPBITS");
+				break;
+			case SB_STOPBITS_1:
+			default:
+				sprintf(buff + strlen(buff), "1STOPBIT");
+				break;
+		}
+		sprintf(buff + strlen(buff), " ");
+		switch(serial_cfg[portno].protocol)
+		{
+			case SB_COM_REDIRECT_MODE:
+			case SB_TCP_SERVER_MODE:
+			case SB_TCP_BROADCAST_MODE:
+			case SB_TCP_MULTIPLEX_MODE:
+			case SB_UDP_SERVER_MODE:
+				sprintf(buff + strlen(buff), "Local:%d", serial_cfg[portno].local_port);
+				break;
+			case SB_TCP_CLIENT_MODE:
+			case SB_UDP_CLIENT_MODE:
+				sprintf(buff + strlen(buff), "Remote:%d.%d.%d.%d(%d)", serial_cfg[portno].remote_ip[0], serial_cfg[portno].remote_ip[1], serial_cfg[portno].remote_ip[2], serial_cfg[portno].remote_ip[3], serial_cfg[portno].remote_port);
+				break;
+		}
+	}
+	listPutf(list, name, buff);
 }
 /*
 //---------------------------------------------------------------------------
