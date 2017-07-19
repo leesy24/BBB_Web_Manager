@@ -263,7 +263,11 @@ int main(int argc , char *argv[])
 #ifdef DEBUG
 	fprintf(stderr, "Log em name = %s\n", log_em_full);
 #endif
-	sprintf((char *)buf, "/usr/bin/mkemlog %s 64", log_em_full);
+	sprintf((char *)buf, "/bin/rm -f %s", log_em_full);
+	system((char *)buf);
+	sprintf((char *)buf, "/usr/bin/mkemlog %s 64 0666", log_em_full);
+	system((char *)buf);
+	sprintf((char *)buf, "/bin/chmod +r %s", log_em_full);
 	system((char *)buf);
 #endif
 
