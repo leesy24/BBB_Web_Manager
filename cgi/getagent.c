@@ -1353,12 +1353,11 @@ void get_serial(int portno)
 //---------------------------------------------------------------------------
 void get_ser_con_mon(int portno)
 {
-	char name[256];
 	char file[50];
 	int fd;
 	struct SB_SIO_CONFIG	serial_cfg[SB_MAX_SIO_PORT];
 	int value, value2, mode;
-	char buff[256];
+	char buff[64*1024];
 	char charval;
 	int p_no;
 	int speed[14]={150, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
@@ -1373,22 +1372,10 @@ void get_ser_con_mon(int portno)
 
 	listPutf(list, "port_no", "%d", portno+1);
 
-	sprintf(name, "s_mode");
-	switch(serial_cfg[portno].protocol)
-	{
-		case SB_DISABLE_MODE:		strcpy(buff, "Disable"); break;
-		case SB_COM_REDIRECT_MODE:	strcpy(buff, "COM Redirect"); break;
-		case SB_TCP_SERVER_MODE:	strcpy(buff, "TCP Server"); break;
-		case SB_TCP_CLIENT_MODE:	strcpy(buff, "TCP Client"); break;
-		case SB_TCP_BROADCAST_MODE:	strcpy(buff, "TCP Broadcast"); break;
-		case SB_TCP_MULTIPLEX_MODE:	strcpy(buff, "TCP Multiplex"); break;
-		case SB_UDP_SERVER_MODE:	strcpy(buff, "UDP Server"); break;
-		case SB_UDP_CLIENT_MODE:	strcpy(buff, "UDP Client"); break;							
-	}
 	if(serial_cfg[portno].protocol != SB_DISABLE_MODE)
 	{
 		int offset, n;
-		sprintf(buff + strlen(buff), " rx tx bytes:");
+		sprintf(buff, " rx tx bytes:");
 #if 0
 		sprintf(file, "/tmp/serial_get_rxtx_%d", portno + 1);
 		offset = strlen(buff);
@@ -1406,9 +1393,21 @@ void get_ser_con_mon(int portno)
 		if(n != 0) buff[offset + n] = '\0';
 #endif
 	}
-	listPutf(list, name, buff);
+	listPutf(list, "s_rxtx", buff);
 
-	sprintf(name, "s%d_conf", portno + 1);
+	switch(serial_cfg[portno].protocol)
+	{
+		case SB_DISABLE_MODE:		strcpy(buff, "Disable"); break;
+		case SB_COM_REDIRECT_MODE:	strcpy(buff, "COM Redirect"); break;
+		case SB_TCP_SERVER_MODE:	strcpy(buff, "TCP Server"); break;
+		case SB_TCP_CLIENT_MODE:	strcpy(buff, "TCP Client"); break;
+		case SB_TCP_BROADCAST_MODE:	strcpy(buff, "TCP Broadcast"); break;
+		case SB_TCP_MULTIPLEX_MODE:	strcpy(buff, "TCP Multiplex"); break;
+		case SB_UDP_SERVER_MODE:	strcpy(buff, "UDP Server"); break;
+		case SB_UDP_CLIENT_MODE:	strcpy(buff, "UDP Client"); break;							
+	}
+	listPutf(list, "s_mode", buff);
+
 	if(serial_cfg[portno].protocol == SB_DISABLE_MODE)
 	{
 		sprintf(buff, "");
@@ -1419,42 +1418,40 @@ void get_ser_con_mon(int portno)
 		switch((serial_cfg[portno].dps & SB_DATABITS_MASK) >> SB_DATABITS_SHIFT)
 		{
 			case SB_DATABITS_5:
-				sprintf(buff + strlen(buff), "5DATABITS");
+				sprintf(buff + strlen(buff), "5");
 				break;
 			case SB_DATABITS_6:
-				sprintf(buff + strlen(buff), "6DATABITS");
+				sprintf(buff + strlen(buff), "6");
 				break;
 			case SB_DATABITS_7:
-				sprintf(buff + strlen(buff), "7DATABITS");
+				sprintf(buff + strlen(buff), "7");
 				break;
 			case SB_DATABITS_8:
 			default:
-				sprintf(buff + strlen(buff), "8DATABITS");
+				sprintf(buff + strlen(buff), "8");
 				break;
 		}
-		sprintf(buff + strlen(buff), " ");
 		switch((serial_cfg[portno].dps & SB_PARITY_MASK) >> SB_PARITY_SHIFT)
 		{
 			case SB_PARITY_ODD:
-				sprintf(buff + strlen(buff), "ODD");
+				sprintf(buff + strlen(buff), "O");
 				break;
 			case SB_PARITY_EVEN:
-				sprintf(buff + strlen(buff), "EVEN");
+				sprintf(buff + strlen(buff), "E");
 				break;
 			case SB_PARITY_NONE:
 			default:
-				sprintf(buff + strlen(buff), "NONE");
+				sprintf(buff + strlen(buff), "NE");
 				break;
 		}
-		sprintf(buff + strlen(buff), " ");
 		switch((serial_cfg[portno].dps & SB_STOPBITS_MASK) >> SB_STOPBITS_SHIFT)
 		{
 			case SB_STOPBITS_2:
-				sprintf(buff + strlen(buff), "2STOPBITS");
+				sprintf(buff + strlen(buff), "2");
 				break;
 			case SB_STOPBITS_1:
 			default:
-				sprintf(buff + strlen(buff), "1STOPBIT");
+				sprintf(buff + strlen(buff), "1");
 				break;
 		}
 		sprintf(buff + strlen(buff), " ");
@@ -1473,7 +1470,23 @@ void get_ser_con_mon(int portno)
 				break;
 		}
 	}
-	listPutf(list, name, buff);
+	listPutf(list, "s_conf", buff);
+
+	if(serial_cfg[portno].protocol == SB_DISABLE_MODE)
+	{
+		sprintf(buff, "--- No data ---");
+	}
+	else
+	{
+		int n;
+
+		sprintf(file, "/tmp/serial_monitor_%d", portno + 1);
+		fd = open(file, O_RDONLY);
+		n = read(fd, buff, sizeof(buff));
+		close(fd);
+		if(n != 0) buff[n] = '\0';
+	}
+	listPutf(list, "s_data", buff);
 }
 /*
 //---------------------------------------------------------------------------
