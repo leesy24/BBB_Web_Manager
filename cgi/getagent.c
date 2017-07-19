@@ -1478,13 +1478,18 @@ void get_ser_con_mon(int portno)
 	}
 	else
 	{
-		int n;
+		int n = 0;
 
 		sprintf(file, "/tmp/serial_monitor_%d", portno + 1);
-		fd = open(file, O_RDONLY);
-		n = read(fd, buff, sizeof(buff));
-		close(fd);
-		if(n != 0) buff[n] = '\0';
+		if((fd = open(file, O_RDONLY)) != -1)
+		{
+			if((n = read(fd, buff, sizeof(buff))) == -1)
+			{
+				n = 0;
+			}
+			close(fd);
+		}
+		buff[n] = '\0';
 	}
 	listPutf(list, "s_data", buff);
 }

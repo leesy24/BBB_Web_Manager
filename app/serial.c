@@ -490,6 +490,55 @@ int main(int argc, char *argv[])
 	sprintf (cmd, "/bin/systemctl start %s", sysd_filename);
 	fprintf(stderr, "system:%s\n", cmd);
 	system (cmd);
+
+	sprintf(sysd_filename, "ttyO%d_monitor.service", portnum);
+	sprintf(sysd_filepath, "/lib/systemd/system/%s", sysd_filename);
+
+	sprintf (cmd, "/bin/systemctl stop %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+
+	sprintf (cmd, "/bin/systemctl disable %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+
+	sprintf(sysd_desc, "Monitor of Serial /dev/ttyO%d", portnum);
+	sprintf(sysd_exec, "/usr/bin/sudo /sbin/serial_monitor %d", portnum);
+
+	if ((fp = fopen(sysd_filepath, "w")) != NULL)
+	{
+		fprintf(fp, "[Unit]\n");
+		fprintf(fp, "Description=%s\n", sysd_desc);
+		fprintf(fp, "After=syslog.target\n");
+		fprintf(fp, "StartLimitIntervalSec=0\n");
+		fprintf(fp, "\n");
+		fprintf(fp, "[Service]\n");
+		fprintf(fp, "ExecStart=%s\n", sysd_exec);
+		fprintf(fp, "KillMode=mixed\n");
+		fprintf(fp, "RestartSec=1\n");
+		fprintf(fp, "Restart=always\n");
+		fprintf(fp, "\n");
+		fprintf(fp, "[Install]\n");
+		fprintf(fp, "WantedBy=multi-user.target\n");
+		fprintf(fp, "Alias=%s\n", sysd_filename);
+		fprintf(fp, "\n");
+
+		fflush(fp);
+		fclose(fp);
+	}
+	else
+	{
+		fprintf(stderr, "fopen error %s\n", sysd_filepath);
+	}
+
+	sprintf (cmd, "/bin/systemctl enable %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+
+	sprintf (cmd, "/bin/systemctl start %s", sysd_filename);
+	fprintf(stderr, "system:%s\n", cmd);
+	system (cmd);
+
 	return 0;
 }
 
