@@ -151,6 +151,7 @@ int main(int argc , char *argv[])
 #if defined(ENABLE_FILE_LOG) || defined(ENABLE_EM_LOG)
 	char log_file_path[] = "/tmp/";
 	char log_file_name[] = "serial_get_rxtx_";
+#endif
 #ifdef ENABLE_FILE_LOG
 	char log_file_ext[] = ".txt";
 	char log_file_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + sizeof(log_file_ext) - 1 + 2];
@@ -159,7 +160,6 @@ int main(int argc , char *argv[])
 #ifdef ENABLE_EM_LOG
 	char log_em_full[sizeof(log_file_path) - 1 + sizeof(log_file_name) - 1 + 2];
 	int fd_log;
-#endif
 #endif
 
 	if (argc < 2 || argc > 2)
